@@ -1,0 +1,433 @@
+<index class="html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReNu Tech.</title>
+    <!-- Link to font awesome for inserting icons-->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Link to Google Fonts for inserting font families -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+     <!-- Link to css file -->
+    <link rel="stylesheet" href="index-style.css">
+</head>
+<body>
+    <div class="transition_div"></div>
+    <!-- Header section -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <!-- now insert tech icons here-->
+                 <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+
+            <nav>
+                <ul>
+                    <li><a href="/index.html">HOME</a></li>
+                    <li><a href="/about.html">ABOUT</a></li>
+                    <li><a href="/products.html">PRODUCTS</a></li>
+                    <li><a href="/contact.html">CONTACT</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
+                <a href="#" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="/cart.html" class="btn btn-primary">    
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="/index.html">Home</a>
+            <span>/</span>
+            <a href="/products.html">Products</a>
+            <span>/</span>
+            iPhone 16 Pro
+        </div>
+    </div>
+
+    <!-- Product Section -->
+    <section class="container">
+        <div class="product-layout">
+
+            <!-- Gallery -->
+            <div class="gallery">
+                <div class="main-image">
+                    <span class="condition-badge-img like-new">Like New</span>
+                    <img src="public/images/iphone-16-pro-neutral.svg" alt="iPhone 16 Pro" id="mainImage">
+                </div>
+                <div class="thumbnails">
+                    <div class="thumb active" data-img="public/images/iphone-16-pro-neutral.svg">
+                        <img src="public/images/iphone-16-pro-neutral.svg" alt="">
+                    </div>
+                    <div class="thumb" data-img="public/images/iphone-16-pro-neutral.svg">
+                        <img src="public/images/iphone-16-pro-neutral.svg" alt="">
+                    </div>
+                    <div class="thumb" data-img="public/images/iphone-16-pro-neutral.svg">
+                        <img src="public/images/iphone-16-pro-neutral.svg" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Panel -->
+            <div class="product-panel">
+                <div class="page-label"><i class="fas fa-mobile-alt"></i> iPhone</div>
+                <h1>iPhone 16 Pro — <span id="selectedColorName">Neutral Titanium</span></h1>
+
+                <!-- Rating -->
+                <div class="rating-row">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="review-count">4.5 · 142 reviews</span>
+                </div>
+
+                <!-- Price -->
+                <div class="price-block">
+                    <div class="price-main" id="currentPrice">$699</div>
+                    <div class="price-original" id="originalPrice">$1,199</div>
+                    <div class="price-save" id="priceSave">Save 42%</div>
+                </div>
+
+                <!-- Color -->
+                <div class="option-section">
+                    <div class="option-label">
+                        Color <span class="selected-value" id="colorLabel">— Neutral Titanium</span>
+                    </div>
+                    <div class="color-options">
+                        <div class="color-swatch active" data-color="neutral-titanium" data-name="Neutral Titanium" title="Neutral Titanium"></div>
+                        <div class="color-swatch" data-color="midnight-black" data-name="Midnight Black" title="Midnight Black"></div>
+                        <div class="color-swatch" data-color="starlight" data-name="Starlight" title="Starlight"></div>
+                    </div>
+                </div>
+
+                <!-- Storage -->
+                <div class="option-section">
+                    <div class="option-label">
+                        Storage <span class="selected-value" id="storageLabel">— 512GB</span>
+                    </div>
+                    <div class="option-chips" id="storageOptions">
+                        <div class="option-chip" data-storage="128gb" data-price="549" data-original="999">128GB</div>
+                        <div class="option-chip" data-storage="256gb" data-price="619" data-original="1,099">256GB</div>
+                        <div class="option-chip active" data-storage="512gb" data-price="699" data-original="1,199">512GB</div>
+                        <div class="option-chip" data-storage="1tb" data-price="849" data-original="1,399">1TB</div>
+                    </div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="option-section">
+                    <div class="option-label">Quantity</div>
+                    <div class="qty-row">
+                        <div class="qty-control">
+                            <button class="qty-btn" id="qtyMinus">−</button>
+                            <input class="qty-display" type="text" value="1" id="qtyInput" readonly>
+                            <button class="qty-btn" id="qtyPlus">+</button>
+                        </div>
+                        <span style="font-size:12px; color:#9aacb5; font-weight:600;">In stock — ships in 1-2 days</span>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="cta-row">
+                    <button class="btn-add-cart" id="addToCartBtn">
+                        <i class="fas fa-cart-plus"></i>
+                        Add to Cart
+                    </button>
+                    <button class="btn-wishlist" id="wishlistBtn">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+
+                <!-- Guarantees -->
+                <div class="guarantees">
+                    <div class="guarantee-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <div style="font-size:11px; font-weight:800; margin-bottom:2px;">12-Month</div>
+                            Warranty
+                        </div>
+                    </div>
+                    <div class="guarantee-item">
+                        <i class="fas fa-undo"></i>
+                        <div>
+                            <div style="font-size:11px; font-weight:800; margin-bottom:2px;">30-Day</div>
+                            Free Return
+                        </div>
+                    </div>
+                    <div class="guarantee-item">
+                        <i class="fas fa-truck"></i>
+                        <div>
+                            <div style="font-size:11px; font-weight:800; margin-bottom:2px;">Free</div>
+                            Shipping
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion Specs -->
+                <div class="specs-accordion">
+                    <div class="accordion-item open">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Technical Specifications</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <table class="spec-table">
+                                <tr><td>Chip</td><td>A18 Pro</td></tr>
+                                <tr><td>Display</td><td>6.3" Super Retina XDR, ProMotion 120Hz</td></tr>
+                                <tr><td>Rear Camera</td><td>48MP Main + 48MP Ultra Wide + 12MP 5x Telephoto</td></tr>
+                                <tr><td>Front Camera</td><td>12MP TrueDepth</td></tr>
+                                <tr><td>Battery</td><td>Up to 27 hours video playback</td></tr>
+                                <tr><td>OS</td><td>iOS 18</td></tr>
+                                <tr><td>5G</td><td>Yes</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Condition Details</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <table class="spec-table">
+                                <tr><td>Grade</td><td>Like New</td></tr>
+                                <tr><td>Battery Health</td><td>97%</td></tr>
+                                <tr><td>Cosmetic</td><td>No visible scratches or marks</td></tr>
+                                <tr><td>Tested</td><td>72-point inspection passed</td></tr>
+                                <tr><td>Unlocked</td><td>Yes — all carriers</td></tr>
+                                <tr><td>Accessories</td><td>USB-C cable included</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Shipping & Returns</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            <table class="spec-table">
+                                <tr><td>Processing</td><td>1-2 business days</td></tr>
+                                <tr><td>Standard Delivery</td><td>3-5 business days (Free)</td></tr>
+                                <tr><td>Express Delivery</td><td>1-2 business days ($12.99)</td></tr>
+                                <tr><td>Return Policy</td><td>30 days, no questions asked</td></tr>
+                                <tr><td>Return Shipping</td><td>Free prepaid label</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Buy Section -->
+    <section class="why-buy">
+        <div class="container">
+            <div class="why-buy-header">
+                <div class="page-label"><i class="fas fa-shield-alt"></i> Our Promise</div>
+                <h2>Why Buy Renewed from ReNu Tech?</h2>
+            </div>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-microscope"></i></div>
+                    <h3>72-Point Inspection</h3>
+                    <p>Every device is tested across hardware, software, battery, and cosmetic criteria before listing.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>12-Month Warranty</h3>
+                    <p>All products include a full 12-month warranty and 30-day no-questions return policy.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-leaf"></i></div>
+                    <h3>Eco-Friendly Choice</h3>
+                    <p>Each renewed device prevents up to 70kg of CO₂ emissions vs. buying new.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-tag"></i></div>
+                    <h3>Up to 40% Off Retail</h3>
+                    <p>Same premium Apple quality, significantly lower price. Smart shopping, responsibly done.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ReNu Tech</h3>
+                    <p style="color:#4682b4; margin-bottom:18px; font-size:13px;">ReNu Tech is dedicated to providing high-quality refurbished Apple products that are reliable, sustainable, and affordable.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="/products.html">Products</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 ReNu Street, Tech City, USA</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@renutech.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">&copy; 2026 ReNu Tech. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Added to cart!</span>
+    </div>
+
+    <script>
+        // ── Cart (localStorage) ──────────────────────────────────────
+        function getCart() {
+            return JSON.parse(localStorage.getItem('renuCart') || '[]');
+        }
+        function saveCart(cart) {
+            localStorage.setItem('renuCart', JSON.stringify(cart));
+        }
+        function updateCartBadge() {
+            const total = getCart().reduce((s, i) => s + i.qty, 0);
+            document.getElementById('cartCount').textContent = total;
+        }
+
+        updateCartBadge();
+
+        // ── Thumbnails ──────────────────────────────────────────────
+        document.querySelectorAll('.thumb').forEach(t => {
+            t.addEventListener('click', () => {
+                document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
+                t.classList.add('active');
+                document.getElementById('mainImage').src = t.dataset.img;
+            });
+        });
+
+        // ── Color swatches ──────────────────────────────────────────
+        document.querySelectorAll('.color-swatch').forEach(sw => {
+            sw.addEventListener('click', () => {
+                document.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('active'));
+                sw.classList.add('active');
+                const name = sw.dataset.name;
+                document.getElementById('colorLabel').textContent = '— ' + name;
+                document.getElementById('selectedColorName').textContent = name;
+            });
+        });
+
+        // ── Storage chips ───────────────────────────────────────────
+        document.querySelectorAll('#storageOptions .option-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                if (chip.classList.contains('unavailable')) return;
+                document.querySelectorAll('#storageOptions .option-chip').forEach(x => x.classList.remove('active'));
+                chip.classList.add('active');
+                document.getElementById('storageLabel').textContent = '— ' + chip.dataset.storage.toUpperCase();
+                document.getElementById('currentPrice').textContent = '$' + chip.dataset.price;
+                document.getElementById('originalPrice').textContent = '$' + chip.dataset.original;
+                // Recalculate save %
+                const current  = parseInt(chip.dataset.price.replace(',',''));
+                const original = parseInt(chip.dataset.original.replace(',',''));
+                const pct = Math.round((1 - current / original) * 100);
+                document.getElementById('priceSave').textContent = 'Save ' + pct + '%';
+            });
+        });
+
+        // ── Quantity ────────────────────────────────────────────────
+        let qty = 1;
+        document.getElementById('qtyMinus').addEventListener('click', () => {
+            if (qty > 1) { qty--; document.getElementById('qtyInput').value = qty; }
+        });
+        document.getElementById('qtyPlus').addEventListener('click', () => {
+            if (qty < 10) { qty++; document.getElementById('qtyInput').value = qty; }
+        });
+
+        // ── Add to Cart ─────────────────────────────────────────────
+        document.getElementById('addToCartBtn').addEventListener('click', () => {
+            const activeStorage = document.querySelector('#storageOptions .option-chip.active');
+            const activeColor   = document.querySelector('.color-swatch.active');
+            const price         = document.getElementById('currentPrice').textContent;
+            const colorName     = activeColor ? activeColor.dataset.name : 'Neutral Titanium';
+            const storage       = activeStorage ? activeStorage.dataset.storage.toUpperCase() : '512GB';
+
+            const item = {
+                id: 'iphone-16-pro-' + storage.toLowerCase() + '-' + activeColor.dataset.color,
+                name: 'iPhone 16 Pro',
+                color: colorName,
+                storage: storage,
+                price: price,
+                priceNum: parseFloat(price.replace('$','').replace(',','')),
+                qty: qty,
+                img: 'public/images/iphone-16-pro-neutral.svg',
+                condition: 'Like New'
+            };
+
+            const cart = getCart();
+            const existingIdx = cart.findIndex(x => x.id === item.id);
+            if (existingIdx > -1) {
+                cart[existingIdx].qty += qty;
+            } else {
+                cart.push(item);
+            }
+            saveCart(cart);
+            updateCartBadge();
+
+            // Button feedback
+            const btn = document.getElementById('addToCartBtn');
+            btn.classList.add('added');
+            btn.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
+            setTimeout(() => {
+                btn.classList.remove('added');
+                btn.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+            }, 2000);
+
+            showToast(item.name + ' (' + storage + ') added to cart!');
+        });
+
+        // ── Wishlist ────────────────────────────────────────────────
+        document.getElementById('wishlistBtn').addEventListener('click', function() {
+            this.classList.toggle('active');
+            const isActive = this.classList.contains('active');
+            this.innerHTML = isActive ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+            showToast(isActive ? 'Added to wishlist!' : 'Removed from wishlist');
+        });
+
+        // ── Accordion ───────────────────────────────────────────────
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            item.classList.toggle('open');
+        }
+
+        // ── Toast ───────────────────────────────────────────────────
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

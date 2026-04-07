@@ -1,0 +1,578 @@
+<index class="html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReNu Tech.</title>
+    <!-- Link to font awesome for inserting icons-->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Link to Google Fonts for inserting font families -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+     <!-- Link to css file -->
+    <link rel="stylesheet" href="products-style.css">
+</head>
+<body>
+    <div class="transition_div"></div>
+    <!-- Header section -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <!-- now insert tech icons here-->
+                 <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+
+            <nav>
+                <ul>
+                    <li><a href="/index.html">HOME</a></li>
+                    <li><a href="/about.html">ABOUT</a></li>
+                    <li><a href="/products.html">PRODUCTS</a></li>
+                    <li><a href="/contact.html">CONTACT</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
+                <a href="#" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="/cart.html" class="btn btn-primary">    
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="transition_div"></div>
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <div class="page-label"><i class="fas fa-mobile-alt"></i> Our Collection</div>
+            <h1>Shop <span>Renewed</span><br>Apple Devices</h1>
+            <p>Every product is certified, tested, and backed by a 12-month warranty. Premium Apple tech at up to 40% off retail — responsibly renewed.</p>
+        </div>
+    </section>
+
+    <!-- ══ Filter Bar ══ -->
+    <div class="filter-bar">
+        <div class="container">
+
+            <!-- Top row: category pills + advanced toggle -->
+            <div class="filter-top">
+                <div class="filter-left">
+                    <span class="filter-label">Category:</span>
+                    <button class="filter-btn active" data-filter="all">All Products</button>
+                    <button class="filter-btn" data-filter="iphone">iPhone</button>
+                    <button class="filter-btn" data-filter="macbook">MacBook</button>
+                    <button class="filter-btn" data-filter="watch">Apple Watch</button>
+                </div>
+                <button class="advanced-toggle" id="advancedToggle">
+                    <i class="fas fa-sliders-h"></i>
+                    Advanced Filters
+                    <span class="filter-badge" id="filterBadge">0</span>
+                    <i class="fas fa-chevron-down toggle-arrow"></i>
+                </button>
+            </div>
+
+            <!-- Advanced panel (slides open) -->
+            <div class="advanced-panel" id="advancedPanel">
+                <div class="advanced-panel-inner">
+
+                    <!-- Model -->
+                    <div class="filter-group">
+                        <div class="filter-group-label"><i class="fas fa-tag"></i> Model</div>
+                        <div class="filter-chips">
+                            <span class="chip" data-group="model" data-value="iphone-16-pro">iPhone 16 Pro</span>
+                            <span class="chip" data-group="model" data-value="iphone-15">iPhone 15</span>
+                            <span class="chip" data-group="model" data-value="iphone-14">iPhone 14</span>
+                            <span class="chip" data-group="model" data-value="macbook-pro-m4">MacBook Pro M4</span>
+                            <span class="chip" data-group="model" data-value="macbook-air-m2">MacBook Air M2</span>
+                            <span class="chip" data-group="model" data-value="macbook-pro-m3">MacBook Pro M3</span>
+                            <span class="chip" data-group="model" data-value="watch-series-10">Watch Series 10</span>
+                            <span class="chip" data-group="model" data-value="watch-se">Watch SE 2nd Gen</span>
+                        </div>
+                    </div>
+
+                    <!-- Screen Size -->
+                    <div class="filter-group">
+                        <div class="filter-group-label"><i class="fas fa-expand-alt"></i> Screen Size</div>
+                        <div class="filter-chips">
+                            <span class="chip" data-group="size" data-value="6.3">6.3"</span>
+                            <span class="chip" data-group="size" data-value="6.1">6.1"</span>
+                            <span class="chip" data-group="size" data-value="13">13"</span>
+                            <span class="chip" data-group="size" data-value="14">14"</span>
+                            <span class="chip" data-group="size" data-value="40mm">40mm</span>
+                            <span class="chip" data-group="size" data-value="44mm">44mm</span>
+                        </div>
+                    </div>
+
+                    <!-- Color -->
+                    <div class="filter-group">
+                        <div class="filter-group-label"><i class="fas fa-palette"></i> Color</div>
+                        <div class="filter-chips">
+                            <span class="chip" data-group="color" data-value="neutral-titanium">Neutral Titanium</span>
+                            <span class="chip" data-group="color" data-value="midnight-black">Midnight Black</span>
+                            <span class="chip" data-group="color" data-value="starlight">Starlight</span>
+                            <span class="chip" data-group="color" data-value="space-black">Space Black</span>
+                            <span class="chip" data-group="color" data-value="midnight">Midnight</span>
+                            <span class="chip" data-group="color" data-value="silver">Silver</span>
+                            <span class="chip" data-group="color" data-value="white">White</span>
+                        </div>
+                    </div>
+
+                    <!-- Storage -->
+                    <div class="filter-group">
+                        <div class="filter-group-label"><i class="fas fa-hdd"></i> Storage</div>
+                        <div class="filter-chips">
+                            <span class="chip" data-group="storage" data-value="128gb">128GB</span>
+                            <span class="chip" data-group="storage" data-value="256gb">256GB</span>
+                            <span class="chip" data-group="storage" data-value="512gb">512GB</span>
+                            <span class="chip" data-group="storage" data-value="1tb">1TB</span>
+                            <span class="chip" data-group="storage" data-value="n-a">N/A (Watch)</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Panel footer -->
+                <div class="advanced-panel-footer">
+                    <div class="active-filters-summary" id="filterSummary">No advanced filters applied.</div>
+                    <button class="clear-advanced" id="clearAdvanced">
+                        <i class="fas fa-times"></i> Clear All Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results count row -->
+            <div class="results-count" id="resultsCount">
+                Showing <strong id="visibleCount">8</strong> of <strong>8</strong> products
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Product Catalog -->
+    <section class="catalog">
+        <div class="container">
+            <div class="catalog-grid" id="catalogGrid">
+
+                <!-- iPhone 16 Pro -->
+                <div class="product-card"
+                     data-category="iphone"
+                     data-model="iphone-16-pro"
+                     data-size="6.3"
+                     data-color="neutral-titanium"
+                     data-storage="512gb">
+                    <div class="product-img">
+                        <img src="public/images/iphone-16-pro-neutral.svg" alt="iPhone 16 Pro Neutral">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag like-new">Like New</div>
+                        <h3 class="product-title">iPhone 16 Pro — Neutral Titanium</h3>
+                        <p class="product-desc">6.3" Super Retina XDR display, A18 Pro chip, 48MP camera system. 512GB. Professionally renewed and tested.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$699</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="iphone-16-pro-512gb-neutral-titanium" data-name="iPhone 16 Pro" data-color="Neutral Titanium" data-storage="512GB" data-price="699" data-condition="Like New" data-img="public/images/iphone-16-pro-neutral.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- iPhone 15 -->
+                <div class="product-card"
+                     data-category="iphone"
+                     data-model="iphone-15"
+                     data-size="6.1"
+                     data-color="midnight-black"
+                     data-storage="256gb">
+                    <div class="product-img">
+                        <img src="public/images/iphone-15-pro-black-titantium.svg" alt="iPhone 15 Pro Black Titantium">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag good">Good Condition</div>
+                        <h3 class="product-title">iPhone 15 Pro — Black Titanium</h3>
+                        <p class="product-desc">6.1" OLED display, A16 Bionic chip, 48MP main camera. 256GB. Minor cosmetic wear, fully functional.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$489</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="iphone-15-pro-256gb-black-titanium" data-name="iPhone 15 Pro" data-color="Black Titanium" data-storage="256GB" data-price="489" data-condition="Good Condition" data-img="public/images/iphone-15-pro-black-titantium.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- iPhone 17 -->
+                <div class="product-card"
+                     data-category="iphone"
+                     data-model="iphone-17-pro"
+                     data-size="6.3"
+                     data-color="blue"
+                     data-storage="512gb">
+                    <div class="product-img">
+                        <img src="public/images/iphone-17-pro-blue.png" alt="iPhone 17 Pro Blue">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag fair">Fair Condition</div>
+                        <h3 class="product-title">iPhone 17 — Blue</h3>
+                        <p class="product-desc">6.3" Super Retina XDR display with ProMotion, A18 Pro chip, 48MP camera with 5x telephoto, all-day battery. 512GB. Professionally renewed and tested.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$749</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="iphone-17-pro-512gb-blue" data-name="iPhone 17 Pro" data-color="Blue" data-storage="512GB" data-price="749" data-condition="Fair Condition" data-img="public/images/iphone-17-pro-blue.png"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- MacBook Pro M4 -->
+                <div class="product-card"
+                     data-category="macbook"
+                     data-model="macbook-pro-m4"
+                     data-size="14"
+                     data-color="space-black"
+                     data-storage="512gb">
+                    <div class="product-img">
+                        <img src="public/images/mac-book-pro-m-4-space-black.svg" alt="MacBook Pro M4 Space Black">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag like-new">Like New</div>
+                        <h3 class="product-title">MacBook Pro M4 — Space Black 14"</h3>
+                        <p class="product-desc">M4 chip, 16GB RAM, 512GB SSD, Liquid Retina XDR display. Barely used, immaculate condition.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$1,299</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="macbook-pro-m4-512gb-space-black" data-name="MacBook Pro M4 14in" data-color="Space Black" data-storage="512GB" data-price="1299" data-condition="Like New" data-img="public/images/mac-book-pro-m-4-space-black.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- MacBook Air M4 -->
+                <div class="product-card"
+                     data-category="macbook"
+                     data-model="macbook-air-m4"
+                     data-size="13"
+                     data-color="midnight"
+                     data-storage="256gb">
+                    <div class="product-img">
+                        <img src="public/images/mac-book-air-m-4-midnight.svg" alt="MacBook Air M4 Midnight">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag good">Good Condition</div>
+                        <h3 class="product-title">MacBook Air M2 — Midnight 13"</h3>
+                        <p class="product-desc">M2 chip, 8GB RAM, 256GB SSD, fanless design. Light surface scratches, battery at 91% health.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$749</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="macbook-air-m2-256gb-midnight" data-name="MacBook Air M2 13in" data-color="Midnight" data-storage="256GB" data-price="749" data-condition="Good Condition" data-img="public/images/mac-book-air-m-4-midnight.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- MacBook Pro M3 -->
+                <div class="product-card"
+                     data-category="macbook"
+                     data-model="macbook-pro-m3"
+                     data-size="14"
+                     data-color="silver"
+                     data-storage="512gb">
+                    <div class="product-img">
+                        <img src="public/images/mac-book-pro-m-3-silver.svg" alt="Mac Book Pro M3 Silver">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag like-new">Like New</div>
+                        <h3 class="product-title">MacBook Pro M3 — Silver 14"</h3>
+                        <p class="product-desc">M3 chip, 18GB RAM, 512GB SSD. ProMotion display, MagSafe charging. Open-box condition.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$999</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="macbook-pro-m3-512gb-silver" data-name="MacBook Pro M3 14in" data-color="Silver" data-storage="512GB" data-price="999" data-condition="Like New" data-img="public/images/mac-book-pro-m-3-silver.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Apple Watch Ultra 3 -->
+                <div class="product-card"
+                     data-category="watch"
+                     data-model="watch-ultra"
+                     data-size="44mm"
+                     data-color="white"
+                     data-storage="n-a">
+                    <div class="product-img">
+                        <img src="public/images/apple-watch-white.svg" alt="Apple Watch White">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag like-new">Like New</div>
+                        <h3 class="product-title">Apple Watch Ultra 3 — Natural</h3>
+                        <p class="product-desc">Always-on Retina display, health sensors, crash detection. 44mm. Renewed with new band included.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$399</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="watch-ultra-3-44mm-natural" data-name="Apple Watch Ultra 3" data-color="Natural" data-storage="N/A" data-price="399" data-condition="Like New" data-img="public/images/apple-watch-white.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+>
+
+                <!-- Apple Watch SE -->
+                <div class="product-card"
+                     data-category="watch"
+                     data-model="watch-se"
+                     data-size="40mm"
+                     data-color="midnight"
+                     data-storage="n-a">
+                    <div class="product-img">
+                        <img src="public/images/apple-watch-se-midnight.svg" alt="Apple Watch SE Midnight">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag good">Good Condition</div>
+                        <h3 class="product-title">Apple Watch SE 2nd Gen — Midnight</h3>
+                        <p class="product-desc">S8 chip, fall detection, fitness tracking. 40mm. Affordable entry into the Apple Watch ecosystem.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$169</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="watch-se-2-40mm-midnight" data-name="Apple Watch SE 2nd Gen" data-color="Midnight" data-storage="N/A" data-price="169" data-condition="Good Condition" data-img="public/images/apple-watch-se-midnight.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- Apple Watch S11 -->
+                <div class="product-card"
+                     data-category="watch"
+                     data-model="watch-ultra"
+                     data-size="46mm"
+                     data-color="midnight"
+                     data-storage="n-a">
+                    <div class="product-img">
+                        <img src="public/images/Apple Watch S11 - 46mm.svg" alt="Apple Watch S11">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag good">Good Condition</div>
+                        <h3 class="product-title">Apple Watch S11 — Midnight</h3>
+                        <p class="product-desc">S11 chip, advanced health tracking, fitness features, larger 46mm. Premium performance in a sleek everyday smartwatch.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$269</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart" data-id="watch-s11-46mm-midnight" data-name="Apple Watch S11" data-color="Midnight" data-storage="N/A" data-price="269" data-condition="Good Condition" data-img="public/images/Apple Watch S11 - 46mm.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+
+                <!-- No results placeholder -->
+                <div class="no-results" id="noResults">
+                    <i class="fas fa-search"></i>
+                    <h3>No products match your filters</h3>
+                    <p>Try adjusting or clearing your filters to see more results.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Buy Renewed -->
+    <section class="why-buy">
+        <div class="container">
+            <div class="why-buy-header">
+                <div class="page-label"><i class="fas fa-shield-alt"></i> Our Promise</div>
+                <h2>Why Buy Renewed from ReNu Tech?</h2>
+            </div>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-microscope"></i></div>
+                    <h3>72-Point Inspection</h3>
+                    <p>Every device is tested across hardware, software, battery, and cosmetic criteria before listing.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>12-Month Warranty</h3>
+                    <p>All products include a full 12-month warranty and 30-day no-questions return policy.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-leaf"></i></div>
+                    <h3>Eco-Friendly Choice</h3>
+                    <p>Each renewed device prevents up to 70kg of CO₂ emissions vs. buying new.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon"><i class="fas fa-tag"></i></div>
+                    <h3>Up to 40% Off Retail</h3>
+                    <p>Same premium Apple quality, significantly lower price. Smart shopping, responsibly done.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+       <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ReNu Tech</h3>
+                    <p style="color: #4682b4; margin-bottom: 20px;">ReNu Tech is dedicated to providing high-quality refurbished Apple products that are reliable, sustainable, and affordable. Our mission is to reduce electronic waste while offering customers the best value for their money.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="/products.html">Products</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 ReNu Street, Tech City, USA</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@renutech.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 ReNu Tech. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+ <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Added to cart!</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // ── Filter State ───────────────────────────────────────────
+        const state = { category: 'all', model: [], size: [], color: [], storage: [] };
+        const allCards     = document.querySelectorAll('.product-card[data-category]');
+        const noResults    = document.getElementById('noResults');
+        const visibleCount = document.getElementById('visibleCount');
+        const filterBadge  = document.getElementById('filterBadge');
+        const filterSummary = document.getElementById('filterSummary');
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.category = btn.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        const advancedToggle = document.getElementById('advancedToggle');
+        const advancedPanel  = document.getElementById('advancedPanel');
+        advancedToggle.addEventListener('click', () => {
+            const isOpen = advancedPanel.classList.contains('open');
+            advancedPanel.classList.toggle('open', !isOpen);
+            advancedToggle.classList.toggle('open', !isOpen);
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const group = chip.dataset.group;
+                const value = chip.dataset.value;
+                const idx   = state[group].indexOf(value);
+                if (idx === -1) { state[group].push(value); chip.classList.add('selected'); }
+                else            { state[group].splice(idx, 1); chip.classList.remove('selected'); }
+                applyFilters();
+            });
+        });
+
+        document.getElementById('clearAdvanced').addEventListener('click', () => {
+            ['model','size','color','storage'].forEach(g => { state[g] = []; });
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+            applyFilters();
+        });
+
+        function applyFilters() {
+            let visible = 0;
+            allCards.forEach(card => {
+                const show = (state.category === 'all' || card.dataset.category === state.category)
+                          && (state.model.length   === 0 || state.model.includes(card.dataset.model))
+                          && (state.size.length    === 0 || state.size.includes(card.dataset.size))
+                          && (state.color.length   === 0 || state.color.includes(card.dataset.color))
+                          && (state.storage.length === 0 || state.storage.includes(card.dataset.storage));
+                card.classList.toggle('hidden', !show);
+                if (show) visible++;
+            });
+            visibleCount.textContent = visible;
+            noResults.style.display  = visible === 0 ? 'block' : 'none';
+            const advCount = state.model.length + state.size.length + state.color.length + state.storage.length;
+            filterBadge.textContent = advCount;
+            filterBadge.classList.toggle('visible', advCount > 0);
+            updateSummary(advCount);
+        }
+
+        function updateSummary(count) {
+            if (count === 0) { filterSummary.innerHTML = 'No advanced filters applied.'; return; }
+            const labels = { model:'Model', size:'Size', color:'Color', storage:'Storage' };
+            const parts  = [];
+            ['model','size','color','storage'].forEach(g => {
+                if (state[g].length > 0)
+                    parts.push(`<span>${state[g].length} ${labels[g]}${state[g].length > 1 ? 's' : ''}</span>`);
+            });
+            filterSummary.innerHTML = `Filtering by: ${parts.join(', ')}`;
+        }
+
+        applyFilters();
+
+        // ── Add to Cart (products grid) ───────────────────────────
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const d = btn.dataset;
+                addToCart({
+                    id:        d.id,
+                    name:      d.name,
+                    color:     d.color,
+                    storage:   d.storage,
+                    price:     '$' + Number(d.price).toLocaleString(),
+                    priceNum:  parseFloat(d.price),
+                    qty:       1,
+                    img:       d.img,
+                    condition: d.condition
+                });
+
+                // Button feedback
+                const original = btn.innerHTML;
+                btn.classList.add('added');
+                btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+                setTimeout(() => {
+                    btn.classList.remove('added');
+                    btn.innerHTML = original;
+                }, 2000);
+
+                showToast(d.name + ' added to cart!');
+            });
+        });
+    </script>
+</body>
+</html>

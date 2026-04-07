@@ -1,0 +1,190 @@
+<index class="html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReNu Tech.</title>
+    <!-- Link to font awesome for inserting icons-->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Link to Google Fonts for inserting font families -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+     <!-- Link to css file -->
+    <link rel="stylesheet" href="index-style.css">
+</head>
+<body>
+    <div class="transition_div"></div>
+    <!-- Header section -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <!-- now insert tech icons here-->
+                 <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+
+            <nav>
+                <ul>
+                    <li><a href="/index.html">HOME</a></li>
+                    <li><a href="/about.html">ABOUT</a></li>
+                    <li><a href="/products.html">PRODUCTS</a></li>
+                    <li><a href="/contact.html">CONTACT</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
+                <a href="#" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="/cart.html" class="btn btn-primary">    
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-subtitle">
+                    <i class="fas fa-seedling"></i>
+                    Reliable, Sustainable, and Affordable Apple Devices
+                </div>
+                <h1 class="hero-title">Quality Electronics <br><span>Responsibly Renewed</span></h1>
+                <p class="hero-text">Discover our wide range of refurbished Apple products, from iPhones to MacBooks, all backed by our commitment to quality, reliability, and sustainability.</p>
+                <div class="hero-buttons">
+                    <a href="#products" class="btn btn-primary">Shop Now</a>
+                    <a href="#" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+            <!-- Wrapper div prevents the image from stretching -->
+            <div class="hero-image-wrap">
+                <img src="public/images/hero-image.png" alt="ReNu Tech hero device">
+            </div>
+        </div>
+    </section>
+
+
+    <!--Products Section-->
+    <section class="products" id="products">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-subtitle">Our Products</div>
+                <h2 class="section-title">Explore Our Apple Collection</h2>
+                <p class="section-desc">Shop certified iPhones, MacBooks, and Apple Watches — premium performance, warranty included, exceptional value.</p>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="public/images/iphone-16-pro-neutral.svg" alt="iPhone 16 Pro Neutral">
+                    </div>
+
+                    <div class="product-info">
+                        <div class="product-tag">New Condition</div>
+                        <h3 class="product-title">iPhone 16 Pro Neutral</h3>
+                        <p class="product-desc">The latest iPhone with a sleek neutral design and enhanced performance.
+                        <div class="product-footer">
+                            <div class="product-price">$699</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="public/images/mac-book-pro-m-4-space-black.svg" alt="MacBook Pro M4 Space Black">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag">New Condition</div>
+                        <h3 class="product-title">MacBook Pro M4 Space Black - 14 inch</h3>
+                        <p class="product-desc">The latest MacBook with a sleek space black design and enhanced performance.
+                        <div class="product-footer">
+                            <div class="product-price">$1,299</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="public/images/apple-watch-white.svg" alt="Apple Watch White">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-tag">New Condition</div>
+                        <h3 class="product-title">Apple Watch White</h3>
+                        <p class="product-desc">The latest Apple Watch with a sleek white design and enhanced performance.
+                        <div class="product-footer">
+                            <div class="product-price">$799</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ReNu Tech</h3>
+                    <p style="color: #4682b4; margin-bottom: 20px;">ReNu Tech is dedicated to providing high-quality refurbished Apple products that are reliable, sustainable, and affordable. Our mission is to reduce electronic waste while offering customers the best value for their money.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="/products.html">Products</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 ReNu Street, Tech City, USA</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@renutech.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 ReNu Tech. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Link to JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
+

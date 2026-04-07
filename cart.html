@@ -1,0 +1,372 @@
+<index class="html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReNu Tech.</title>
+    <!-- Link to font awesome for inserting icons-->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Link to Google Fonts for inserting font families -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+     <!-- Link to css file -->
+    <link rel="stylesheet" href="cart-style.css">
+</head>
+<body>
+    <div class="transition_div"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="/index.html" class="logo">
+                <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/index.html">HOME</a></li>
+                    <li><a href="/about.html">ABOUT</a></li>
+                    <li><a href="/products.html">PRODUCTS</a></li>
+                    <li><a href="/contact.html">CONTACT</a></li>
+                </ul>
+            </nav>
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
+                <a href="#" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="/cart.html" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="transition_div"></div>
+    <!-- Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <div class="page-label"><i class="fas fa-shopping-cart"></i> Checkout</div>
+            <h1>Your <span>Cart</span></h1>
+            <p id="heroSubtext">Review your items and proceed to checkout.</p>
+        </div>
+    </section>
+
+    <!-- Cart Section -->
+    <section class="cart-section">
+        <div class="container">
+
+            <!-- Savings banner -->
+            <div class="savings-banner" id="savingsBanner">
+                <i class="fas fa-piggy-bank"></i>
+                <div class="savings-banner-text">
+                    🎉 You're saving <strong id="savingsAmount">$0</strong> compared to buying new!
+                </div>
+            </div>
+
+            <div class="cart-layout">
+
+                <!-- Left: Items -->
+                <div class="cart-items-col">
+                    <div class="cart-items-header">
+                        <h2 id="itemsHeading">0 Items in Cart</h2>
+                        <button class="clear-cart-btn" id="clearCartBtn">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+
+                    <!-- Items render here -->
+                    <div id="cartItemsContainer"></div>
+
+                    <!-- Empty state -->
+                    <div class="empty-cart" id="emptyCart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Looks like you haven't added anything yet. Browse our renewed Apple collection.</p>
+                        <a href="/products.html"><i class="fas fa-arrow-left"></i> Shop Products</a>
+                    </div>
+
+                    <!-- Promo code -->
+                    <div class="promo-section" id="promoSection" style="display:none;">
+                        <div class="option-label" style="font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--secondary-text-color); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                            <i class="fas fa-tag" style="color:var(--icons-prices-color);"></i>
+                            Promo Code
+                        </div>
+                        <div class="promo-row">
+                            <input class="promo-input" type="text" placeholder="Enter code (e.g. RENU10)" id="promoInput">
+                            <button class="promo-btn" id="promoBtn">Apply</button>
+                        </div>
+                        <div class="promo-success" id="promoSuccess">
+                            <i class="fas fa-check-circle"></i> Code applied — 10% off!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Summary -->
+                <div class="order-summary" id="orderSummary">
+                    <h3><i class="fas fa-receipt" style="color:var(--icons-prices-color); margin-right:8px;"></i>Order Summary</h3>
+
+                    <div class="summary-row">
+                        <span class="label">Subtotal</span>
+                        <span class="value" id="subtotalVal">$0.00</span>
+                    </div>
+                    <div class="summary-row discount" id="discountRow" style="display:none;">
+                        <span class="label">Promo (RENU10)</span>
+                        <span class="value" id="discountVal">-$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Shipping</span>
+                        <span class="value" style="color:#4caf82;">FREE</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Estimated Tax (8%)</span>
+                        <span class="value" id="taxVal">$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span class="label">Total</span>
+                        <span class="value" id="totalVal">$0.00</span>
+                    </div>
+
+                    <button class="checkout-btn" id="checkoutBtn">
+                        <i class="fas fa-lock"></i>
+                        Secure Checkout
+                    </button>
+
+                    <a href="/products.html" class="continue-link">
+                        <i class="fas fa-arrow-left"></i> Continue Shopping
+                    </a>
+
+                    <div class="summary-badges">
+                        <div class="summary-badge">
+                            <i class="fas fa-lock"></i>
+                            Secure<br>Payment
+                        </div>
+                        <div class="summary-badge">
+                            <i class="fas fa-truck"></i>
+                            Free<br>Shipping
+                        </div>
+                        <div class="summary-badge">
+                            <i class="fas fa-undo"></i>
+                            30-Day<br>Returns
+                        </div>
+                        <div class="summary-badge">
+                            <i class="fas fa-shield-alt"></i>
+                            1-Year<br>Warranty
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ReNu Tech</h3>
+                    <p style="color:#4682b4; margin-bottom:18px; font-size:13px;">ReNu Tech is dedicated to providing high-quality refurbished Apple products that are reliable, sustainable, and affordable.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="/products.html">Products</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 ReNu Street, Tech City, USA</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@renutech.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 ReNu Tech. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Done!</span>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // cart helpers come from script.js
+
+        let promoApplied = false;
+        const PROMO_CODE = 'RENU10';
+        const PROMO_PCT  = 0.10;
+        const TAX_RATE   = 0.08;
+
+        // ── Render cart ──────────────────────────────────────────────
+        function renderCart() {
+            const cart      = getCart();
+            const container = document.getElementById('cartItemsContainer');
+            const empty     = document.getElementById('emptyCart');
+            const promo     = document.getElementById('promoSection');
+            const summary   = document.getElementById('orderSummary');
+            const clearBtn  = document.getElementById('clearCartBtn');
+            const savesBanner = document.getElementById('savingsBanner');
+
+            if (cart.length === 0) {
+                container.innerHTML = '';
+                empty.style.display = 'flex';
+                promo.style.display = 'none';
+                summary.style.opacity = '0.4';
+                summary.style.pointerEvents = 'none';
+                clearBtn.style.display = 'none';
+                savesBanner.style.display = 'none';
+                document.getElementById('heroSubtext').textContent = 'Your cart is currently empty.';
+                document.getElementById('itemsHeading').textContent = '0 Items in Cart';
+                updateCartBadge();
+                updateTotals(cart);
+                return;
+            }
+
+            empty.style.display = 'none';
+            promo.style.display = 'block';
+            summary.style.opacity = '1';
+            summary.style.pointerEvents = 'auto';
+            clearBtn.style.display = 'flex';
+
+            const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+            document.getElementById('itemsHeading').textContent = `${totalQty} Item${totalQty !== 1 ? 's' : ''} in Cart`;
+            document.getElementById('heroSubtext').textContent = `You have ${totalQty} item${totalQty !== 1 ? 's' : ''} in your cart.`;
+
+            container.innerHTML = cart.map((item, idx) => `
+                <div class="cart-item" id="item-${idx}">
+                    <div class="cart-item-img">
+                        <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">
+                    </div>
+                    <div class="cart-item-meta">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-details">
+                            <span class="detail-pill"><i class="fas fa-palette" style="margin-right:4px;"></i>${item.color}</span>
+                            ${item.storage !== 'N/A (Watch)' ? `<span class="detail-pill"><i class="fas fa-hdd" style="margin-right:4px;"></i>${item.storage}</span>` : ''}
+                        </div>
+                        <span class="cart-item-condition ${item.condition === 'Like New' ? 'like-new' : item.condition === 'Good Condition' ? 'good' : 'fair'}">${item.condition}</span>
+                    </div>
+                    <div class="cart-item-controls">
+                        <div class="item-price">$${(item.priceNum * item.qty).toLocaleString()}</div>
+                        <div class="item-market-price">$${Math.round(item.priceNum * item.qty * 1.4).toLocaleString()}</div>
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+                            <input class="qty-display" type="text" value="${item.qty}" readonly>
+                            <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+                        </div>
+                        <button class="remove-btn" onclick="removeItem(${idx})">
+                            <i class="fas fa-times"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            updateTotals(cart);
+            updateCartBadge();
+
+            // Savings banner
+            const subtotal = cart.reduce((s, i) => s + i.priceNum * i.qty, 0);
+            savesBanner.style.display = 'flex';
+            const estimated = subtotal * 1.4;
+            document.getElementById('savingsAmount').textContent = '$' + Math.round(estimated - subtotal).toLocaleString();
+        }
+
+        function updateTotals(cart) {
+            const subtotal = cart.reduce((s, i) => s + i.priceNum * i.qty, 0);
+            const discount = promoApplied ? subtotal * PROMO_PCT : 0;
+            const taxable  = subtotal - discount;
+            const tax      = taxable * TAX_RATE;
+            const total    = taxable + tax;
+
+            document.getElementById('subtotalVal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('taxVal').textContent = '$' + tax.toFixed(2);
+            document.getElementById('totalVal').textContent = '$' + total.toFixed(2);
+
+            const discountRow = document.getElementById('discountRow');
+            if (promoApplied && discount > 0) {
+                discountRow.style.display = 'flex';
+                document.getElementById('discountVal').textContent = '-$' + discount.toFixed(2);
+            } else {
+                discountRow.style.display = 'none';
+            }
+        }
+
+        // ── Actions ──────────────────────────────────────────────────
+        function changeQty(idx, delta) {
+            const cart = getCart();
+            cart[idx].qty = Math.max(1, Math.min(10, cart[idx].qty + delta));
+            saveCart(cart);
+            renderCart();
+        }
+
+        function removeItem(idx) {
+            const cart = getCart();
+            const name = cart[idx].name;
+            cart.splice(idx, 1);
+            saveCart(cart);
+            renderCart();
+            showToast(name + ' removed from cart');
+        }
+
+        document.getElementById('clearCartBtn').addEventListener('click', () => {
+            if (confirm('Clear all items from your cart?')) {
+                localStorage.removeItem('renuCart');
+                renderCart();
+                showToast('Cart cleared');
+            }
+        });
+
+        // ── Promo ────────────────────────────────────────────────────
+        document.getElementById('promoBtn').addEventListener('click', () => {
+            const val = document.getElementById('promoInput').value.trim().toUpperCase();
+            const successEl = document.getElementById('promoSuccess');
+            if (val === PROMO_CODE) {
+                promoApplied = true;
+                successEl.style.display = 'block';
+                updateTotals(getCart());
+                showToast('Promo code applied — 10% off!');
+            } else {
+                successEl.style.display = 'none';
+                showToast('Invalid promo code. Try RENU10!');
+                promoApplied = false;
+                updateTotals(getCart());
+            }
+        });
+
+        // ── Checkout ─────────────────────────────────────────────────
+        document.getElementById('checkoutBtn').addEventListener('click', () => {
+            const cart = getCart();
+            if (cart.length === 0) return;
+            showToast('Redirecting to secure checkout…');
+            setTimeout(() => alert('Checkout integration coming soon!'), 1200);
+        });
+
+        // ── Toast ────────────────────────────────────────────────────
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+       
+        // ── Init ─────────────────────────────────────────────────────
+        renderCart();
+    </script>
+</body>
+</html>
