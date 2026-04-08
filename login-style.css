@@ -1,0 +1,82 @@
+        :root {
+            --Major-text-color: #272727;
+            --icons-prices-color: #72AEC8;
+            --secondary-text-color: #3A3A3A;
+            --arrows-color: #D7DDDF;
+            --background-color: #FFFFFF;
+            --banner-color: #EDF1F3;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: "Montserrat", sans-serif; background: var(--background-color); color: var(--Major-text-color); line-height: 1.7; overflow-x: hidden; min-height: 100vh; }
+        header { background: #FFFFFF; position: fixed; width: 100%; top: 0; z-index: 1000; padding: 10px 0; border-bottom: 1px solid var(--banner-color); }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 5px; text-decoration: none; }
+        .logo-icon { color: var(--icons-prices-color); font-size: 28px; }
+        .logo-text { font-family: 'Jost', sans-serif; font-size: 24px; font-weight: bold; color: var(--Major-text-color); }
+        .logo-text span { color: var(--icons-prices-color); }
+        nav ul { display: flex; list-style: none; gap: 40px; }
+        nav a { text-decoration: none; color: var(--Major-text-color); font-weight: 600; font-size: 12px; position: relative; padding: 5px 0; transition: color 0.3s ease; }
+        nav a:after { content: ''; position: absolute; width: 0; height: 2px; background: var(--icons-prices-color); left: 0; bottom: 0; transition: width 0.3s ease; }
+        nav a:hover:after { width: 100%; }
+        .nav-buttons { display: flex; gap: 25px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 8px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; border: none; font-size: 16px; text-decoration: none; transition: all 0.3s ease; font-family: "Montserrat", sans-serif; }
+        .btn-primary { background: var(--icons-prices-color); color: #fff; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(114,174,200,0.35); }
+        .btn-ghost { background: transparent; color: var(--Major-text-color); border: 2px solid transparent; padding: 8px 14px; }
+        .btn-ghost:hover { background: var(--banner-color); transform: translateY(-2px); }
+        .cart-count-badge { background: var(--icons-prices-color); color: #fff; font-size: 10px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px; }
+        .login-page { min-height: 100vh; display: flex; align-items: stretch; padding-top: 62px; }
+        .login-left { flex: 1; background: var(--secondary-text-color); border-right: 4px solid var(--icons-prices-color); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 80px 60px; position: relative; overflow: hidden; }
+        .login-left::before { content: ''; position: absolute; top: -80px; right: -80px; width: 320px; height: 320px; border-radius: 50%; border: 60px solid rgba(114,174,200,0.08); }
+        .login-left::after { content: ''; position: absolute; bottom: -60px; left: -60px; width: 240px; height: 240px; border-radius: 50%; border: 40px solid rgba(114,174,200,0.06); }
+        .login-left-inner { position: relative; z-index: 1; }
+        .page-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--icons-prices-color); display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+        .page-label::before { content: ''; width: 40px; height: 2px; background: var(--icons-prices-color); }
+        .login-left h2 { font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 20px; }
+        .login-left h2 span { color: var(--icons-prices-color); }
+        .login-left p { font-size: 14px; color: var(--arrows-color); line-height: 1.8; max-width: 340px; margin-bottom: 40px; }
+        .trust-items { display: flex; flex-direction: column; gap: 16px; }
+        .trust-item { display: flex; align-items: center; gap: 14px; }
+        .trust-item i { width: 36px; height: 36px; background: rgba(114,174,200,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--icons-prices-color); font-size: 14px; flex-shrink: 0; }
+        .trust-item span { font-size: 13px; font-weight: 600; color: var(--arrows-color); }
+        .login-right { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 60px; }
+        .login-card { width: 100%; max-width: 420px; }
+        .login-card-header { margin-bottom: 36px; }
+        .login-card-header h1 { font-family: 'Montserrat', sans-serif; font-size: 1.9rem; font-weight: 800; margin-bottom: 8px; }
+        .login-card-header h1 span { color: var(--icons-prices-color); }
+        .login-card-header p { font-size: 13px; color: #6a7580; }
+        .login-card-header p a { color: var(--icons-prices-color); font-weight: 700; text-decoration: none; }
+        .login-card-header p a:hover { text-decoration: underline; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--secondary-text-color); margin-bottom: 8px; }
+        .input-wrap { position: relative; }
+        .input-wrap .input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #b0bec5; font-size: 14px; transition: color 0.2s ease; pointer-events: none; }
+        .input-wrap input { width: 100%; padding: 13px 16px 13px 44px; border: 1.5px solid #e0e7ea; border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--Major-text-color); background: var(--banner-color); transition: all 0.25s ease; outline: none; }
+        .input-wrap input:focus { border-color: var(--icons-prices-color); background: #fff; box-shadow: 0 0 0 3px rgba(114,174,200,0.12); }
+        .input-wrap:focus-within .input-icon { color: var(--icons-prices-color); }
+        .toggle-password { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #b0bec5; cursor: pointer; font-size: 14px; padding: 2px; transition: color 0.2s ease; }
+        .toggle-password:hover { color: var(--icons-prices-color); }
+        .form-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; margin-top: -6px; }
+        .remember-me { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .remember-me input[type="checkbox"] { accent-color: var(--icons-prices-color); width: 15px; height: 15px; cursor: pointer; }
+        .remember-me span { font-size: 12px; font-weight: 600; color: #6a7580; }
+        .forgot-link { font-size: 12px; font-weight: 700; color: var(--icons-prices-color); text-decoration: none; }
+        .forgot-link:hover { text-decoration: underline; }
+        .btn-login { width: 100%; padding: 14px; background: var(--icons-prices-color); color: #fff; border: none; border-radius: 30px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; }
+        .btn-login:hover { background: var(--secondary-text-color); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(58,58,58,0.2); }
+        .divider { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e0e7ea; }
+        .divider span { font-size: 11px; font-weight: 700; color: #b0bec5; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+        .social-login { display: flex; gap: 12px; }
+        .btn-social { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border: 1.5px solid #e0e7ea; border-radius: 10px; background: #fff; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: var(--Major-text-color); cursor: pointer; transition: all 0.25s ease; text-decoration: none; }
+        .btn-social:hover { border-color: var(--icons-prices-color); background: var(--banner-color); transform: translateY(-2px); }
+        .btn-social.google i { color: #EA4335; }
+        .btn-social.apple i { color: #000; }
+        .input-wrap input.error { border-color: #e07070; background: #fff5f5; }
+        .error-msg { font-size: 11px; color: #e07070; font-weight: 600; margin-top: 6px; display: none; }
+        .error-msg.visible { display: block; }
+        .alert { padding: 12px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; margin-bottom: 20px; display: none; align-items: center; gap: 10px; }
+        .alert.show { display: flex; }
+        .alert.error { background: #fff5f5; border: 1.5px solid #e07070; color: #c0392b; }
+        @media (max-width: 768px) { .login-left { display: none; } .login-right { padding: 40px 24px; } }

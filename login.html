@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — ReNu Tech.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="login-style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="/index.html" class="logo">
+                <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+            <nav><ul>
+                <li><a href="/index.html">HOME</a></li>
+                <li><a href="/about.html">ABOUT</a></li>
+                <li><a href="/products.html">PRODUCTS</a></li>
+                <li><a href="/contact.html">CONTACT</a></li>
+            </ul></nav>
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
+                <a href="#" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="/cart.html" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="login-page">
+        <div class="login-left">
+            <div class="login-left-inner">
+                <div class="page-label"><i class="fas fa-user-circle"></i> Your Account</div>
+                <h2>Welcome Back to<br><span>ReNu Tech.</span></h2>
+                <p>Sign in to track your orders, manage your wishlist, and access exclusive member pricing on renewed Apple devices.</p>
+                <div class="trust-items">
+                    <div class="trust-item"><i class="fas fa-shield-alt"></i><span>12-Month Warranty on Every Device</span></div>
+                    <div class="trust-item"><i class="fas fa-undo"></i><span>30-Day No-Questions Returns</span></div>
+                    <div class="trust-item"><i class="fas fa-leaf"></i><span>Responsibly Renewed Apple Tech</span></div>
+                    <div class="trust-item"><i class="fas fa-tag"></i><span>Up to 40% Off Retail Price</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="login-card">
+                <div class="login-card-header">
+                    <h1>Sign <span>In</span></h1>
+                    <p>Don't have an account? <a href="/signup.html">Create one free</a></p>
+                </div>
+
+                <div class="alert error" id="loginAlert" style="display:none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="alertMsg">Invalid email or password.</span>
+                </div>
+
+                <form id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+                        </div>
+                        <div class="error-msg" id="emailError">Please enter a valid email address.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                        <div class="error-msg" id="passwordError">Password must be at least 6 characters.</div>
+                    </div>
+                    <div class="form-row">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                </form>
+
+                <div class="divider"><span>or continue with</span></div>
+                <div class="social-login">
+                    <a href="#" class="btn-social google"><i class="fab fa-google"></i> Google</a>
+                    <a href="#" class="btn-social apple"><i class="fab fa-apple"></i> Apple</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password toggle
+        document.getElementById('togglePassword').addEventListener('click', () => {
+            const pw = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            const hidden = pw.type === 'password';
+            pw.type = hidden ? 'text' : 'password';
+            icon.className = hidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+        });
+
+        // Clear errors on type
+        ['email', 'password'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                document.getElementById(id).classList.remove('error');
+                document.getElementById(id + 'Error').classList.remove('visible');
+                document.getElementById('loginAlert').style.display = 'none';
+            });
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email    = document.getElementById('email');
+            const password = document.getElementById('password');
+            let valid = true;
+
+            if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                email.classList.add('error');
+                document.getElementById('emailError').classList.add('visible');
+                valid = false;
+            }
+            if (!password.value || password.value.length < 6) {
+                password.classList.add('error');
+                document.getElementById('passwordError').classList.add('visible');
+                valid = false;
+            }
+            if (!valid) return;
+
+            // ══════════════════════════════════════════════════════════════════
+            // BACKEND HOOK — replace the mock block below with your API call:
+            //
+            // const res  = await fetch('/api/login', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ email: email.value, password: password.value })
+            // });
+            // const data = await res.json();
+            // if (!res.ok) { showAlert(data.message || 'Invalid credentials.'); return; }
+            // sessionStorage.setItem('renutech_user', JSON.stringify(data.user));
+            // window.location.href = data.user.role === 'admin' ? '/admin.html' : '/index.html';
+            // ══════════════════════════════════════════════════════════════════
+
+            // TEMPORARY MOCK (remove when backend is ready)
+            const MOCK_USERS = [
+                { email: 'admin@renutech.com', password: 'admin123', role: 'admin', name: 'Admin' },
+                { email: 'user@renutech.com',  password: 'user123',  role: 'user',  name: 'Alex'  }
+            ];
+            const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
+            if (!match) { showAlert('Invalid email or password. Please try again.'); return; }
+            sessionStorage.setItem('renutech_user', JSON.stringify(match));
+            window.location.href = match.role === 'admin' ? '/admin.html' : '/index.html';
+        });
+
+        function showAlert(msg) {
+            const el = document.getElementById('loginAlert');
+            document.getElementById('alertMsg').textContent = msg;
+            el.style.display = 'flex';
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
