@@ -283,6 +283,34 @@
         }
         .modal-form input:focus, .modal-form select:focus, .modal-form textarea:focus { border-color: var(--teal); background: #fff; }
         .modal-form textarea { resize: vertical; min-height: 80px; }
+
+        /* ── Image upload zone ── */
+        .img-upload-zone {
+            border: 2px dashed var(--muted); border-radius: 10px; padding: 14px;
+            cursor: pointer; transition: border-color 0.2s, background 0.2s; min-height: 80px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .img-upload-zone:hover { border-color: var(--teal); background: #f5fafc; }
+        .img-upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #8a9aa5; }
+        .img-upload-placeholder i { font-size: 22px; color: var(--teal); }
+        .img-upload-placeholder span { font-size: 12px; font-weight: 700; color: var(--dark); }
+        .img-upload-placeholder small { font-size: 10px; }
+        .img-upload-placeholder.hidden { display: none; }
+        .img-preview-grid { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
+        .img-preview-item {
+            position: relative; width: 64px; height: 64px; border-radius: 8px; overflow: hidden;
+            border: 1px solid var(--muted); flex-shrink: 0;
+        }
+        .img-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .img-preview-item .remove-img {
+            position: absolute; top: 2px; right: 2px; width: 16px; height: 16px;
+            background: rgba(0,0,0,0.55); border: none; border-radius: 50%; color: #fff;
+            font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            line-height: 1;
+        }
+        .img-preview-item .remove-img:hover { background: #c0392b; }
+        .product-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+
         .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
         .btn-modal { padding: 10px 22px; border-radius: 30px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: none; }
         .btn-modal.cancel { background: var(--light); color: var(--dark); }
