@@ -19,15 +19,15 @@
                 <div class="logo-text">ReNu <span>Tech.</span></div>
             </a>
             <nav><ul>
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="about.html">ABOUT</a></li>
-                <li><a href="products.html">PRODUCTS</a></li>
-                <li><a href="contact.html">CONTACT</a></li>
+                <li><a href="/index.html">HOME</a></li>
+                <li><a href="/about.html">ABOUT</a></li>
+                <li><a href="/products.html">PRODUCTS</a></li>
+                <li><a href="/contact.html">CONTACT</a></li>
             </ul></nav>
             <div class="nav-buttons">
                 <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
                 <a href="login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
-                <a href="cart.html" class="btn btn-primary">
+                <a href="/cart.html" class="btn btn-primary">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count-badge" id="cartCount">0</span>
                 </a>
@@ -162,7 +162,7 @@
             const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
             if (!match) { showAlert('Invalid email or password. Please try again.'); return; }
             sessionStorage.setItem('renutech_user', JSON.stringify(match));
-            window.location.href = match.role === 'admin' ? '/admin.html' : '/index.html';
+            window.location.href = match.role === 'admin' ? 'admin.html' : 'index.html';
         });
 
         function showAlert(msg) {
