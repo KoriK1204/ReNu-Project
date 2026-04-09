@@ -1,332 +1,661 @@
-<index class="html">
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReNu Tech.</title>
-    <!-- Link to font awesome for inserting icons-->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Link to Google Fonts for inserting font families -->
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
-     <!-- Link to css file -->
-    <link rel="stylesheet" href="about-style.css">
+    <title>Admin — ReNu Tech.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <div class="transition_div"></div>
-    <!-- Header section -->
-    <header>
-        <div class="container header-container">
-            <a href="#" class="logo">
-                <!-- now insert tech icons here-->
-                 <i class="fa-solid fa-recycle logo-icon"></i>
-                <div class="logo-text">ReNu <span>Tech.</span></div>
-            </a>
 
-            <nav>
-                <ul>
-                    <li><a href="index.html">HOME</a></li>
-                    <li><a href="about.html">ABOUT</a></li>
-                    <li><a href="products.html">PRODUCTS</a></li>
-                    <li><a href="contact.html">CONTACT</a></li>
-                </ul>
-            </nav>
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+    <a href="/index.html" class="sidebar-logo">
+        <i class="fa-solid fa-recycle"></i>
+        <div class="logo-text">ReNu <span>Tech.</span></div>
+        <span class="sidebar-badge">Admin</span>
+    </a>
 
-            <div class="nav-buttons">
-                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
-                <a href="login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
-                <a href="cart.html" class="btn btn-primary">    
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count-badge" id="cartCount">0</span>
-                </a>
+    <span class="sidebar-section-label">Overview</span>
+    <a class="nav-item active" data-panel="dashboard" href="#">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+
+    <span class="sidebar-section-label">Operations</span>
+    <a class="nav-item" data-panel="orders" href="#">
+        <i class="fas fa-box"></i> Orders
+        <span class="nav-badge" id="pendingBadge">3</span>
+    </a>
+    <a class="nav-item" data-panel="shipping" href="#">
+        <i class="fas fa-shipping-fast"></i> Shipping
+    </a>
+    <a class="nav-item" data-panel="products" href="#">
+        <i class="fas fa-mobile-alt"></i> Products
+    </a>
+
+    <span class="sidebar-section-label">Insights</span>
+    <a class="nav-item" data-panel="analytics" href="#">
+        <i class="fas fa-chart-bar"></i> Analytics
+    </a>
+
+    <div class="sidebar-divider"></div>
+    <a href="/index.html" class="view-store">
+        <i class="fas fa-external-link-alt"></i> View Store
+    </a>
+
+    <div class="sidebar-footer">
+        <div class="admin-user">
+            <div class="admin-avatar" id="adminAvatar">A</div>
+            <div class="admin-info">
+                <div class="admin-name" id="adminName">Admin</div>
+                <div class="admin-role">Administrator</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn" title="Sign out">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+    <div class="topbar">
+        <div class="topbar-title" id="topbarTitle">Dashboard <span>Overview</span></div>
+        <div class="topbar-right">
+            <a href="/index.html" class="topbar-btn"><i class="fas fa-store"></i> View Store</a>
+            <button class="topbar-btn primary" id="topbarAction" onclick="openAddProduct()">
+                <i class="fas fa-plus"></i> Add Product
+            </button>
+        </div>
+    </div>
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-label">Revenue (Month)</div>
+                <div class="stat-value">$18,420</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> +12% vs last month</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon"><i class="fas fa-box"></i></div>
+                <div class="stat-label">Pending Orders</div>
+                <div class="stat-value">3</div>
+                <div class="stat-change down"><i class="fas fa-arrow-up"></i> 3 need attention</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon"><i class="fas fa-shipping-fast"></i></div>
+                <div class="stat-label">Shipped (Month)</div>
+                <div class="stat-value">41</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> +8% vs last month</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="stat-label">Low Stock Items</div>
+                <div class="stat-value">2</div>
+                <div class="stat-change down"><i class="fas fa-arrow-down"></i> Restock needed</div>
             </div>
         </div>
-    </header>
-    
-    <div class="transition_div"></div>
-    <!-- About Hero -->
-    <section class="about-hero">
-        <div class="container">
-            <div class="section-subtitle">
-                <i class="fas fa-seedling"></i>
-                Our Story
-            </div>
-            <h1>Renewing Tech,<br><span>Renewing the Planet</span></h1>
-            <p>We believe great technology shouldn't cost the earth — literally. ReNu Tech was built on the idea that premium Apple devices can be accessible, sustainable, and responsibly renewed.</p>
-        </div>
-    </section>
 
-    <!-- Stats Bar -->
-    <section class="stats-bar">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-number">5,000+</span>
-                    <span class="stat-label">Devices Renewed</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">98%</span>
-                    <span class="stat-label">Customer Satisfaction</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">12 Mo.</span>
-                    <span class="stat-label">Warranty Included</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">3 Yrs</span>
-                    <span class="stat-label">In Business</span>
-                </div>
+        <div class="charts-row">
+            <div class="chart-card">
+                <div class="chart-title">Monthly Revenue <span>2026</span></div>
+                <div class="bar-chart" id="revenueChart"></div>
             </div>
-        </div>
-    </section>
-
-    <!-- Mission Section -->
-    <section class="about-mission">
-        <div class="container">
-            <div class="mission-grid">
-                <div class="mission-text">
-                    <div class="section-subtitle">
-                        <i class="fas fa-bullseye"></i>
-                        Our Mission
+            <div class="chart-card">
+                <div class="chart-title">Sales by <span>Category</span></div>
+                <div class="donut-wrap">
+                    <div class="donut-row">
+                        <div class="donut-color" style="background:var(--teal)"></div>
+                        <span class="donut-key">iPhone</span>
+                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:52%;background:var(--teal)"></div></div>
+                        <span class="donut-pct">52%</span>
                     </div>
-                    <h2>More Than Just<br><span>Refurbished Devices</span></h2>
-                    <p>At ReNu Tech, we're on a mission to close the loop on electronic waste. Every device we renew is one less gadget in a landfill and one more opportunity for someone to access premium Apple technology at an honest price.</p>
-                    <p>We rigorously test, repair, and certify every product before it reaches your hands — because you deserve the same quality experience whether you're buying new or renewed.</p>
-                </div>
-                <div class="mission-visual">
-                    <div class="mission-point">
-                        <div class="mission-icon"><i class="fas fa-microscope"></i></div>
-                        <div class="mission-point-text">
-                            <h4>Rigorous Testing</h4>
-                            <p>Every device passes a 72-point inspection covering hardware, software, battery health, and cosmetic condition.</p>
-                        </div>
+                    <div class="donut-row">
+                        <div class="donut-color" style="background:var(--dark)"></div>
+                        <span class="donut-key">MacBook</span>
+                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:34%;background:var(--dark)"></div></div>
+                        <span class="donut-pct">34%</span>
                     </div>
-                    <div class="mission-point">
-                        <div class="mission-icon"><i class="fas fa-shield-alt"></i></div>
-                        <div class="mission-point-text">
-                            <h4>Backed by Warranty</h4>
-                            <p>All products come with a 12-month warranty and 30-day return policy — no questions asked.</p>
-                        </div>
-                    </div>
-                    <div class="mission-point">
-                        <div class="mission-icon"><i class="fas fa-leaf"></i></div>
-                        <div class="mission-point-text">
-                            <h4>Sustainability First</h4>
-                            <p>Each renewed device saves approximately 70kg of CO₂ emissions compared to manufacturing a new one.</p>
-                        </div>
-                    </div>
-                    <div class="mission-point">
-                        <div class="mission-icon"><i class="fas fa-tag"></i></div>
-                        <div class="mission-point-text">
-                            <h4>Fair Pricing</h4>
-                            <p>Premium quality at up to 40% off retail price. Great tech should be accessible to everyone.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Our Story Timeline -->
-    <section class="about-story">
-        <div class="container">
-            <div class="story-header">
-                <div class="section-subtitle">
-                    <i class="fas fa-clock"></i>
-                    Our Journey
-                </div>
-                <h2>How ReNu Tech Came to Be</h2>
-                <p>From a small garage operation to a trusted name in refurbished Apple devices — here's our story.</p>
-            </div>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="timeline-year">2023 — The Beginning</span>
-                        <h4>Founded in a Garage</h4>
-                        <p>ReNu Tech started as a passion project, repairing old MacBooks for friends and family and selling them locally at fair prices.</p>
-                    </div>
-                    <div class="timeline-dot"><span></span></div>
-                    <div class="timeline-empty"></div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-empty"></div>
-                    <div class="timeline-dot"><span></span></div>
-                    <div class="timeline-content">
-                        <span class="timeline-year">2024 — Growing Up</span>
-                        <h4>First Official Store</h4>
-                        <p>We moved into our first workshop, hired our first two technicians, and launched our online storefront with a full iPhone and MacBook lineup.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="timeline-year">2025 — Going Green</span>
-                        <h4>Sustainability Commitment</h4>
-                        <p>We formalized our environmental pledge — tracking every device diverted from landfill and partnering with eco-certified recyclers for non-repairable components.</p>
-                    </div>
-                    <div class="timeline-dot"><span></span></div>
-                    <div class="timeline-empty"></div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-empty"></div>
-                    <div class="timeline-dot"><span></span></div>
-                    <div class="timeline-content">
-                        <span class="timeline-year">2026 — Today</span>
-                        <h4>Trusted by Thousands</h4>
-                        <p>With over 5,000 devices renewed and a 98% customer satisfaction rate, ReNu Tech continues to grow as a trusted source for premium refurbished Apple products.</p>
+                    <div class="donut-row">
+                        <div class="donut-color" style="background:var(--green)"></div>
+                        <span class="donut-key">Apple Watch</span>
+                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:14%;background:var(--green)"></div></div>
+                        <span class="donut-pct">14%</span>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Our Values -->
-    <section class="about-values">
-        <div class="container">
-            <div class="values-header">
-                <div class="section-subtitle">
-                    <i class="fas fa-heart"></i>
-                    Our Values
+        <!-- Recent orders -->
+        <div class="section-hd">
+            <h2>Recent <span>Orders</span></h2>
+            <button class="topbar-btn" onclick="switchPanel('orders')">View All <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div class="table-card">
+            <table id="dashRecentTable">
+                <thead><tr>
+                    <th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Action</th>
+                </tr></thead>
+                <tbody id="dashRecentBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══ ORDERS ══ -->
+    <div class="panel" id="panel-orders">
+        <div class="section-hd">
+            <h2>All <span>Orders</span></h2>
+        </div>
+        <div class="table-card">
+            <div class="table-toolbar">
+                <div class="search-input-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="orderSearch" placeholder="Search by order ID or customer…" oninput="renderOrders()">
                 </div>
-                <h2>What We Stand For</h2>
+                <select class="filter-select" id="orderStatusFilter" onchange="renderOrders()">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
             </div>
-            <div class="values-grid">
-                <div class="value-card">
-                    <div class="value-icon"><i class="fas fa-check-circle"></i></div>
-                    <h3>Quality Without Compromise</h3>
-                    <p>We never cut corners. Every device we sell has been thoroughly tested, cleaned, and restored to meet our high standards — or it doesn't leave our workshop.</p>
+            <table>
+                <thead><tr>
+                    <th>Order ID</th><th>Customer</th><th>Product</th><th>Date</th><th>Amount</th><th>Status</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="ordersBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══ SHIPPING ══ -->
+    <div class="panel" id="panel-shipping">
+        <div class="section-hd">
+            <h2>Shipping <span>Queue</span></h2>
+        </div>
+        <div class="table-card">
+            <div class="table-toolbar">
+                <div class="search-input-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="shipSearch" placeholder="Search orders to ship…" oninput="renderShipping()">
                 </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fas fa-handshake"></i></div>
-                    <h3>Honest Transparency</h3>
-                    <p>We clearly grade every device's condition and tell you exactly what to expect. No hidden surprises, no misleading descriptions — just honest selling.</p>
+            </div>
+            <table>
+                <thead><tr>
+                    <th>Order ID</th><th>Customer</th><th>Address</th><th>Product</th><th>Tracking #</th><th>Status</th><th>Action</th>
+                </tr></thead>
+                <tbody id="shippingBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══ PRODUCTS ══ -->
+    <div class="panel" id="panel-products">
+        <div class="section-hd">
+            <h2>Product <span>Inventory</span></h2>
+            <button class="topbar-btn primary" onclick="openAddProduct()"><i class="fas fa-plus"></i> Add Product</button>
+        </div>
+        <div class="table-card">
+            <div class="table-toolbar">
+                <div class="search-input-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="productSearch" placeholder="Search products…" oninput="renderProducts()">
                 </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fas fa-recycle"></i></div>
-                    <h3>Environmental Responsibility</h3>
-                    <p>E-waste is one of the fastest-growing waste streams in the world. Every renewed device is our small act of resistance against a throwaway culture.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fas fa-users"></i></div>
-                    <h3>Customer First</h3>
-                    <p>Our 30-day returns and 12-month warranty aren't just policies — they're our promise that we stand behind everything we sell, long after the purchase.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fas fa-dollar-sign"></i></div>
-                    <h3>Accessible Pricing</h3>
-                    <p>Premium Apple devices should be accessible to everyone, not just those who can afford new. We make that possible without sacrificing quality.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon"><i class="fas fa-tools"></i></div>
-                    <h3>Expert Craftsmanship</h3>
-                    <p>Our certified technicians have years of experience with Apple hardware. Your device is in skilled hands every step of the renewal process.</p>
+                <select class="filter-select" id="productCatFilter" onchange="renderProducts()">
+                    <option value="">All Categories</option>
+                    <option value="iPhone">iPhone</option>
+                    <option value="MacBook">MacBook</option>
+                    <option value="Apple Watch">Apple Watch</option>
+                </select>
+            </div>
+            <table>
+                <thead><tr>
+                    <th>Product</th><th>Category</th><th>Condition</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="productsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══ ANALYTICS ══ -->
+    <div class="panel" id="panel-analytics">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value">$84,290</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> All time</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-value">247</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> All time</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-label">Customers</div>
+                <div class="stat-value">189</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> +14 this month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-undo"></i></div>
+                <div class="stat-label">Return Rate</div>
+                <div class="stat-value">2.1%</div>
+                <div class="stat-change up"><i class="fas fa-arrow-down"></i> Below average</div>
+            </div>
+        </div>
+
+        <div class="charts-row">
+            <div class="chart-card">
+                <div class="chart-title">Orders Per Month <span>2026</span></div>
+                <div class="bar-chart" id="ordersChart"></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Top <span>Products</span></div>
+                <div class="donut-wrap">
+                    <div class="donut-row"><div class="donut-color" style="background:var(--teal)"></div><span class="donut-key">iPhone 16 Pro</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:68%;background:var(--teal)"></div></div><span class="donut-pct">68 sold</span></div>
+                    <div class="donut-row"><div class="donut-color" style="background:var(--dark)"></div><span class="donut-key">MacBook Pro M4</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:42%;background:var(--dark)"></div></div><span class="donut-pct">42 sold</span></div>
+                    <div class="donut-row"><div class="donut-color" style="background:var(--orange)"></div><span class="donut-key">iPhone 15 Pro</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:38%;background:var(--orange)"></div></div><span class="donut-pct">38 sold</span></div>
+                    <div class="donut-row"><div class="donut-color" style="background:var(--green)"></div><span class="donut-key">Watch Ultra 3</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:22%;background:var(--green)"></div></div><span class="donut-pct">22 sold</span></div>
+                    <div class="donut-row"><div class="donut-color" style="background:var(--muted)"></div><span class="donut-key">MacBook Air M2</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:18%;background:var(--muted)"></div></div><span class="donut-pct">18 sold</span></div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</div><!-- end .main -->
 
-    <!-- Team Section -->
-    <section class="about-team">
-        <div class="container">
-            <div class="team-header">
-                <div class="section-subtitle">
-                    <i class="fas fa-user-friends"></i>
-                    Meet the Team
-                </div>
-                <h2>The People Behind ReNu Tech</h2>
-                <p>A small but dedicated team committed to quality, sustainability, and great customer experiences.</p>
+<!-- ── Ship Modal ── -->
+<div class="modal-overlay" id="shipModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('shipModal')">&times;</button>
+        <h3>Mark as <span>Shipped</span></h3>
+        <p>Enter the tracking details for this order. The customer will be notified.</p>
+        <div class="modal-form">
+            <div class="form-group">
+                <label>Carrier</label>
+                <select id="shipCarrier">
+                    <option>UPS</option><option>FedEx</option><option>USPS</option><option>DHL</option>
+                </select>
             </div>
-            <div class="team-grid">
-                <div class="team-card">
-                    <div class="team-avatar">
-                        <div class="avatar-circle">A</div>
-                    </div>
-                    <div class="team-info">
-                        <h3>Alex Rivera</h3>
-                        <span class="team-role">Founder & CEO</span>
-                        <p>Started ReNu Tech with a soldering iron and a belief that great tech deserves a second life. Leads strategy and vision.</p>
-                    </div>
+            <div class="form-group">
+                <label>Tracking Number</label>
+                <input type="text" id="shipTracking" placeholder="e.g. 1Z999AA10123456784">
+            </div>
+            <div class="form-group">
+                <label>Notes (optional)</label>
+                <textarea id="shipNotes" placeholder="Any notes for the customer…"></textarea>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('shipModal')">Cancel</button>
+            <button class="btn-modal confirm" onclick="confirmShip()"><i class="fas fa-shipping-fast"></i> Confirm Shipment</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Add/Edit Product Modal ── -->
+<div class="modal-overlay" id="productModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('productModal')">&times;</button>
+        <h3 id="productModalTitle">Add <span>Product</span></h3>
+        <p>Fill in the product details below.</p>
+        <div class="modal-form">
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="pName" placeholder="e.g. iPhone 16 Pro — Neutral Titanium">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="pCat"><option>iPhone</option><option>MacBook</option><option>Apple Watch</option></select>
                 </div>
-                <div class="team-card">
-                    <div class="team-avatar">
-                        <div class="avatar-circle">M</div>
-                    </div>
-                    <div class="team-info">
-                        <h3>Maya Chen</h3>
-                        <span class="team-role">Lead Technician</span>
-                        <p>Apple-certified with 8+ years of hardware repair experience. If it's broken, Maya can fix it.</p>
-                    </div>
+                <div class="form-group">
+                    <label>Condition</label>
+                    <select id="pCond"><option>Like New</option><option>Good Condition</option><option>Fair Condition</option></select>
                 </div>
-                <div class="team-card">
-                    <div class="team-avatar">
-                        <div class="avatar-circle">J</div>
-                    </div>
-                    <div class="team-info">
-                        <h3>Jordan Lee</h3>
-                        <span class="team-role">Customer Experience</span>
-                        <p>The voice of ReNu Tech. Jordan ensures every customer gets the help they need, before and after purchase.</p>
-                    </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group">
+                    <label>Price ($)</label>
+                    <input type="number" id="pPrice" placeholder="699">
+                </div>
+                <div class="form-group">
+                    <label>Stock Qty</label>
+                    <input type="number" id="pStock" placeholder="5">
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="about-cta">
-        <div class="container">
-            <div class="section-subtitle">
-                <i class="fas fa-arrow-right"></i>
-                Ready to Shop?
-            </div>
-            <h2>Find Your Perfect<br><span>Renewed Device</span></h2>
-            <p>Browse our full collection of certified refurbished iPhones, MacBooks, and Apple Watches — all backed by our quality guarantee.</p>
-            <div class="cta-buttons">
-                <a href="/products.html" class="btn btn-primary">Shop Products</a>
-                <a href="/contact.html" class="btn btn-secondary">Contact Us</a>
-            </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('productModal')">Cancel</button>
+            <button class="btn-modal confirm" onclick="confirmProduct()"><i class="fas fa-check"></i> Save Product</button>
         </div>
-    </section>
+    </div>
+</div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>About ReNu Tech</h3>
-                    <p style="color: #4682b4; margin-bottom: 20px;">ReNu Tech is dedicated to providing high-quality refurbished Apple products that are reliable, sustainable, and affordable. Our mission is to reduce electronic waste while offering customers the best value for their money.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="/index.html">Home</a></li>
-                        <li><a href="/products.html">Products</a></li>
-                        <li><a href="/about.html">About Us</a></li>
-                        <li><a href="/contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Contact Us</h3>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 ReNu Street, Tech City, USA</li>
-                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
-                        <li><i class="fas fa-envelope"></i> info@renutech.com</li>
-                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 5PM</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2026 ReNu Tech. All rights reserved.
-            </div>
-        </div>
-    </footer>
+<!-- ── Toast ── -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done!</span></div>
 
-    <script src="script.js"></script>
+<script>
+// ── Auth guard ─────────────────────────────────────────────────────────────
+(function() {
+    const user = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
+    if (!user || user.role !== 'admin') {
+        window.location.href = 'login.html';
+    } else {
+        document.getElementById('adminName').textContent = user.name || 'Admin';
+        document.getElementById('adminAvatar').textContent = (user.name || 'A')[0].toUpperCase();
+    }
+})();
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem('renutech_user');
+    window.location.href = 'login.html';
+});
+
+// ── Mock data ──────────────────────────────────────────────────────────────
+let orders = [
+    { id: '#RT-1041', customer: 'Sarah Kim',    email: 'sarah@email.com',  product: 'iPhone 16 Pro',     amount: 699,  status: 'pending',   date: 'Apr 06, 2026', address: '12 Oak St, Austin TX', tracking: '' },
+    { id: '#RT-1040', customer: 'Marcus Webb',  email: 'marcus@email.com', product: 'MacBook Pro M4',    amount: 1299, status: 'shipped',    date: 'Apr 05, 2026', address: '88 Pine Ave, Denver CO', tracking: 'UPS-928374651' },
+    { id: '#RT-1039', customer: 'Priya Nair',   email: 'priya@email.com',  product: 'Apple Watch Ultra', amount: 399,  status: 'pending',   date: 'Apr 05, 2026', address: '9 Elm Rd, Seattle WA', tracking: '' },
+    { id: '#RT-1038', customer: 'James Okoye',  email: 'james@email.com',  product: 'MacBook Air M2',    amount: 749,  status: 'delivered',  date: 'Apr 03, 2026', address: '45 Maple Dr, NYC NY', tracking: 'FEDEX-11293847' },
+    { id: '#RT-1037', customer: 'Leila Hassan', email: 'leila@email.com',  product: 'iPhone 15 Pro',     amount: 489,  status: 'pending',   date: 'Apr 02, 2026', address: '7 Cedar Ln, Miami FL', tracking: '' },
+    { id: '#RT-1036', customer: 'Tom Bradley',  email: 'tom@email.com',    product: 'MacBook Pro M3',    amount: 999,  status: 'shipped',    date: 'Apr 01, 2026', address: '33 Birch St, Chicago IL', tracking: 'UPS-761923847' },
+    { id: '#RT-1035', customer: 'Amy Chen',     email: 'amy@email.com',    product: 'Apple Watch SE',    amount: 169,  status: 'delivered',  date: 'Mar 30, 2026', address: '6 Spruce Way, Boston MA', tracking: 'USPS-88271934' },
+    { id: '#RT-1034', customer: 'Raj Patel',    email: 'raj@email.com',    product: 'iPhone 17',         amount: 749,  status: 'cancelled',  date: 'Mar 29, 2026', address: '21 Walnut Blvd, Portland OR', tracking: '' },
+];
+
+let products = [
+    { id: 1, name: 'iPhone 16 Pro — Neutral Titanium', category: 'iPhone',      condition: 'Like New',      price: 699,  stock: 4,  emoji: '📱' },
+    { id: 2, name: 'iPhone 15 Pro — Black Titanium',   category: 'iPhone',      condition: 'Good Condition',price: 489,  stock: 7,  emoji: '📱' },
+    { id: 3, name: 'iPhone 17 — Blue',                 category: 'iPhone',      condition: 'Fair Condition',price: 749,  stock: 2,  emoji: '📱' },
+    { id: 4, name: 'MacBook Pro M4 — Space Black 14"', category: 'MacBook',     condition: 'Like New',      price: 1299, stock: 3,  emoji: '💻' },
+    { id: 5, name: 'MacBook Air M2 — Midnight 13"',    category: 'MacBook',     condition: 'Good Condition',price: 749,  stock: 1,  emoji: '💻' },
+    { id: 6, name: 'MacBook Pro M3 — Silver 14"',      category: 'MacBook',     condition: 'Like New',      price: 999,  stock: 5,  emoji: '💻' },
+    { id: 7, name: 'Apple Watch Ultra 3 — Natural',    category: 'Apple Watch', condition: 'Like New',      price: 399,  stock: 0,  emoji: '⌚' },
+    { id: 8, name: 'Apple Watch SE 2nd Gen — Midnight',category: 'Apple Watch', condition: 'Good Condition',price: 169,  stock: 6,  emoji: '⌚' },
+    { id: 9, name: 'Apple Watch S11 — Midnight',       category: 'Apple Watch', condition: 'Good Condition',price: 269,  stock: 3,  emoji: '⌚' },
+];
+
+let currentShipOrderId = null;
+let editingProductId   = null;
+
+// ── Navigation ─────────────────────────────────────────────────────────────
+const panelTitles = {
+    dashboard: 'Dashboard <span>Overview</span>',
+    orders:    'All <span>Orders</span>',
+    shipping:  'Shipping <span>Queue</span>',
+    products:  'Product <span>Inventory</span>',
+    analytics: 'Analytics <span>& Insights</span>',
+};
+
+document.querySelectorAll('.nav-item[data-panel]').forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchPanel(item.dataset.panel);
+    });
+});
+
+function switchPanel(name) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector(`.nav-item[data-panel="${name}"]`).classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    document.getElementById('topbarTitle').innerHTML = panelTitles[name] || name;
+    if (name === 'orders')   renderOrders();
+    if (name === 'shipping') renderShipping();
+    if (name === 'products') renderProducts();
+}
+
+// ── Status badge helper ────────────────────────────────────────────────────
+function badge(status) {
+    return `<span class="badge ${status.toLowerCase().replace(' ','-')}">${status}</span>`;
+}
+function stockBadge(qty) {
+    if (qty === 0) return `<span class="badge out-stock">Out of Stock</span>`;
+    if (qty <= 2)  return `<span class="badge low-stock">Low (${qty})</span>`;
+    return `<span class="badge in-stock">In Stock (${qty})</span>`;
+}
+
+// ── Dashboard recent orders ────────────────────────────────────────────────
+function renderDashRecent() {
+    const tbody = document.getElementById('dashRecentBody');
+    const rows  = orders.slice(0, 5);
+    tbody.innerHTML = rows.map(o => `
+        <tr>
+            <td><span class="order-id">${o.id}</span></td>
+            <td><div class="customer-cell"><span class="customer-name">${o.customer}</span><span class="customer-email">${o.email}</span></div></td>
+            <td>${o.product}</td>
+            <td><span class="amount">$${o.amount.toLocaleString()}</span></td>
+            <td>${badge(o.status)}</td>
+            <td>${o.status === 'pending' ? `<button class="action-btn ship" onclick="openShipModal('${o.id}')"><i class="fas fa-shipping-fast"></i> Ship</button>` : `<button class="action-btn" onclick="switchPanel('orders')">View</button>`}</td>
+        </tr>`).join('');
+}
+
+// ── Orders ─────────────────────────────────────────────────────────────────
+function renderOrders() {
+    const q      = (document.getElementById('orderSearch')?.value || '').toLowerCase();
+    const filter = document.getElementById('orderStatusFilter')?.value || '';
+    const tbody  = document.getElementById('ordersBody');
+    const filtered = orders.filter(o =>
+        (!q || o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q) || o.product.toLowerCase().includes(q)) &&
+        (!filter || o.status === filter)
+    );
+    if (!filtered.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-box-open"></i><p>No orders match your filters.</p></div></td></tr>`; return; }
+    tbody.innerHTML = filtered.map(o => `
+        <tr>
+            <td><span class="order-id">${o.id}</span></td>
+            <td><div class="customer-cell"><span class="customer-name">${o.customer}</span><span class="customer-email">${o.email}</span></div></td>
+            <td>${o.product}</td>
+            <td>${o.date}</td>
+            <td><span class="amount">$${o.amount.toLocaleString()}</span></td>
+            <td>${badge(o.status)}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${o.status === 'pending'   ? `<button class="action-btn ship" onclick="openShipModal('${o.id}')"><i class="fas fa-shipping-fast"></i> Ship</button>` : ''}
+                ${o.status === 'shipped'   ? `<button class="action-btn success" onclick="markDelivered('${o.id}')"><i class="fas fa-check"></i> Delivered</button>` : ''}
+                ${o.status === 'pending'   ? `<button class="action-btn danger" onclick="cancelOrder('${o.id}')"><i class="fas fa-times"></i> Cancel</button>` : ''}
+                ${['delivered','cancelled','shipped'].includes(o.status) ? `<button class="action-btn"><i class="fas fa-eye"></i> View</button>` : ''}
+            </td>
+        </tr>`).join('');
+    updatePendingBadge();
+}
+
+// ── Shipping ───────────────────────────────────────────────────────────────
+function renderShipping() {
+    const q      = (document.getElementById('shipSearch')?.value || '').toLowerCase();
+    const tbody  = document.getElementById('shippingBody');
+    const toShow = orders.filter(o =>
+        (o.status === 'pending' || o.status === 'shipped') &&
+        (!q || o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q))
+    );
+    if (!toShow.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-check-circle"></i><p>No orders in the shipping queue.</p></div></td></tr>`; return; }
+    tbody.innerHTML = toShow.map(o => `
+        <tr>
+            <td><span class="order-id">${o.id}</span></td>
+            <td><div class="customer-cell"><span class="customer-name">${o.customer}</span><span class="customer-email">${o.email}</span></div></td>
+            <td style="font-size:11px;color:#6a7580;max-width:140px;">${o.address}</td>
+            <td>${o.product}</td>
+            <td style="font-family:'Jost',sans-serif;font-size:11px;color:var(--teal);">${o.tracking || '—'}</td>
+            <td>${badge(o.status)}</td>
+            <td>
+                ${o.status === 'pending' ? `<button class="action-btn ship" onclick="openShipModal('${o.id}')"><i class="fas fa-shipping-fast"></i> Ship Now</button>` : `<button class="action-btn success" onclick="markDelivered('${o.id}')"><i class="fas fa-check"></i> Delivered</button>`}
+            </td>
+        </tr>`).join('');
+}
+
+// ── Products ───────────────────────────────────────────────────────────────
+function renderProducts() {
+    const q      = (document.getElementById('productSearch')?.value || '').toLowerCase();
+    const cat    = document.getElementById('productCatFilter')?.value || '';
+    const tbody  = document.getElementById('productsBody');
+    const filtered = products.filter(p =>
+        (!q || p.name.toLowerCase().includes(q)) &&
+        (!cat || p.category === cat)
+    );
+    if (!filtered.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-search"></i><p>No products found.</p></div></td></tr>`; return; }
+    tbody.innerHTML = filtered.map(p => `
+        <tr>
+            <td><div class="product-cell">
+                <div class="product-thumb">${p.emoji}</div>
+                <div><div class="product-name">${p.name}</div><div class="product-sku">ID-${String(p.id).padStart(4,'0')}</div></div>
+            </div></td>
+            <td>${p.category}</td>
+            <td>${p.condition}</td>
+            <td><span class="amount">$${p.price.toLocaleString()}</span></td>
+            <td>${p.stock}</td>
+            <td>${stockBadge(p.stock)}</td>
+            <td style="display:flex;gap:6px;">
+                <button class="action-btn" onclick="openEditProduct(${p.id})"><i class="fas fa-pen"></i> Edit</button>
+                <button class="action-btn danger" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>`).join('');
+}
+
+// ── Ship modal ─────────────────────────────────────────────────────────────
+function openShipModal(orderId) {
+    currentShipOrderId = orderId;
+    document.getElementById('shipTracking').value = '';
+    document.getElementById('shipNotes').value    = '';
+    document.getElementById('shipModal').classList.add('open');
+}
+
+function confirmShip() {
+    const tracking = document.getElementById('shipTracking').value.trim();
+    if (!tracking) { alert('Please enter a tracking number.'); return; }
+    const order = orders.find(o => o.id === currentShipOrderId);
+    if (order) { order.status = 'shipped'; order.tracking = document.getElementById('shipCarrier').value + '-' + tracking; }
+    closeModal('shipModal');
+    renderDashRecent(); renderOrders(); renderShipping();
+    updatePendingBadge();
+    showToast(`Order ${currentShipOrderId} marked as shipped!`);
+}
+
+function markDelivered(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (order) order.status = 'delivered';
+    renderDashRecent(); renderOrders(); renderShipping();
+    updatePendingBadge();
+    showToast(`Order ${orderId} marked as delivered!`);
+}
+
+function cancelOrder(orderId) {
+    if (!confirm(`Cancel order ${orderId}?`)) return;
+    const order = orders.find(o => o.id === orderId);
+    if (order) order.status = 'cancelled';
+    renderDashRecent(); renderOrders();
+    updatePendingBadge();
+    showToast(`Order ${orderId} cancelled.`, true);
+}
+
+// ── Product modal ──────────────────────────────────────────────────────────
+function openAddProduct() {
+    editingProductId = null;
+    document.getElementById('productModalTitle').innerHTML = 'Add <span>Product</span>';
+    document.getElementById('pName').value  = '';
+    document.getElementById('pPrice').value = '';
+    document.getElementById('pStock').value = '';
+    document.getElementById('productModal').classList.add('open');
+    switchPanel('products');
+}
+
+function openEditProduct(id) {
+    editingProductId = id;
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('productModalTitle').innerHTML = 'Edit <span>Product</span>';
+    document.getElementById('pName').value  = p.name;
+    document.getElementById('pCat').value   = p.category;
+    document.getElementById('pCond').value  = p.condition;
+    document.getElementById('pPrice').value = p.price;
+    document.getElementById('pStock').value = p.stock;
+    document.getElementById('productModal').classList.add('open');
+}
+
+function confirmProduct() {
+    const name  = document.getElementById('pName').value.trim();
+    const cat   = document.getElementById('pCat').value;
+    const cond  = document.getElementById('pCond').value;
+    const price = parseFloat(document.getElementById('pPrice').value);
+    const stock = parseInt(document.getElementById('pStock').value);
+    if (!name || isNaN(price) || isNaN(stock)) { alert('Please fill in all fields.'); return; }
+    const emojiMap = { 'iPhone': '📱', 'MacBook': '💻', 'Apple Watch': '⌚' };
+    if (editingProductId) {
+        const p = products.find(x => x.id === editingProductId);
+        if (p) Object.assign(p, { name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat] });
+        showToast('Product updated!');
+    } else {
+        products.push({ id: Date.now(), name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat] });
+        showToast('Product added!');
+    }
+    closeModal('productModal');
+    renderProducts();
+}
+
+function deleteProduct(id) {
+    if (!confirm('Delete this product?')) return;
+    products = products.filter(p => p.id !== id);
+    renderProducts();
+    showToast('Product deleted.', true);
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function updatePendingBadge() {
+    const count = orders.filter(o => o.status === 'pending').length;
+    document.getElementById('pendingBadge').textContent = count;
+}
+
+function showToast(msg, warn = false) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.className = 'toast' + (warn ? ' warning' : '');
+    t.querySelector('i').className = warn ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Bar charts (CSS-only) ──────────────────────────────────────────────────
+function buildBarChart(containerId, data) {
+    const max = Math.max(...data.map(d => d.v));
+    document.getElementById(containerId).innerHTML = data.map(d => `
+        <div class="bar-col">
+            <div class="bar" style="height:${Math.round((d.v/max)*100)}px" title="${d.v}"></div>
+            <span class="bar-label">${d.l}</span>
+        </div>`).join('');
+}
+
+const months = [
+    {l:'Jan',v:9200},{l:'Feb',v:11400},{l:'Mar',v:10800},
+    {l:'Apr',v:18420},{l:'May',v:0,secondary:true},{l:'Jun',v:0,secondary:true},
+    {l:'Jul',v:0,secondary:true},{l:'Aug',v:0,secondary:true}
+];
+const orderMonths = [
+    {l:'Jan',v:28},{l:'Feb',v:34},{l:'Mar',v:31},{l:'Apr',v:41},
+    {l:'May',v:0,secondary:true},{l:'Jun',v:0,secondary:true}
+];
+
+// ── Init ───────────────────────────────────────────────────────────────────
+renderDashRecent();
+updatePendingBadge();
+setTimeout(() => {
+    buildBarChart('revenueChart', months);
+    buildBarChart('ordersChart', orderMonths);
+}, 100);
+
+// Close modals on overlay click
+['shipModal','productModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', (e) => {
+        if (e.target === document.getElementById(id)) closeModal(id);
+    });
+});
+</script>
 </body>
 </html>
-
