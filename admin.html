@@ -344,6 +344,10 @@
                     <input type="number" id="pStock" placeholder="5">
                 </div>
             </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="pDesc" placeholder="Describe the product's condition, specs, included accessories, etc."></textarea>
+            </div>
         </div>
         <div class="modal-actions">
             <button class="btn-modal cancel" onclick="closeModal('productModal')">Cancel</button>
@@ -611,6 +615,7 @@ function openAddProduct() {
     document.getElementById('pName').value  = '';
     document.getElementById('pPrice').value = '';
     document.getElementById('pStock').value = '';
+    document.getElementById('pDesc').value  = '';
     resetImageUpload();
     document.getElementById('productModal').classList.add('open');
     switchPanel('products');
@@ -626,6 +631,7 @@ function openEditProduct(id) {
     document.getElementById('pCond').value  = p.condition;
     document.getElementById('pPrice').value = p.price;
     document.getElementById('pStock').value = p.stock;
+    document.getElementById('pDesc').value  = p.description || '';
     resetImageUpload(p.images || []);
     document.getElementById('productModal').classList.add('open');
 }
@@ -636,15 +642,16 @@ function confirmProduct() {
     const cond  = document.getElementById('pCond').value;
     const price = parseFloat(document.getElementById('pPrice').value);
     const stock = parseInt(document.getElementById('pStock').value);
+    const description = document.getElementById('pDesc').value.trim();
     if (!name || isNaN(price) || isNaN(stock)) { alert('Please fill in all fields.'); return; }
     const emojiMap = { 'iPhone': '📱', 'MacBook': '💻', 'Apple Watch': '⌚' };
     const images = [...pendingImages];
     if (editingProductId) {
         const p = products.find(x => x.id === editingProductId);
-        if (p) Object.assign(p, { name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat], images });
+        if (p) Object.assign(p, { name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat], images, description });
         showToast('Product updated!');
     } else {
-        products.push({ id: Date.now(), name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat], images });
+        products.push({ id: Date.now(), name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat], images, description });
         showToast('Product added!');
     }
     closeModal('productModal');
