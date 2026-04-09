@@ -309,6 +309,18 @@
         <p>Fill in the product details below.</p>
         <div class="modal-form">
             <div class="form-group">
+                <label>Product Images</label>
+                <div class="img-upload-zone" id="imgUploadZone" onclick="document.getElementById('pImages').click()">
+                    <input type="file" id="pImages" accept="image/*" multiple style="display:none" onchange="handleImageUpload(event)">
+                    <div class="img-upload-placeholder" id="imgPlaceholder">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Click to upload images</span>
+                        <small>PNG, JPG, WEBP — up to 5 images</small>
+                    </div>
+                    <div class="img-preview-grid" id="imgPreviewGrid"></div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label>Product Name</label>
                 <input type="text" id="pName" placeholder="e.g. iPhone 16 Pro — Neutral Titanium">
             </div>
@@ -503,7 +515,7 @@ function renderProducts() {
     tbody.innerHTML = filtered.map(p => `
         <tr>
             <td><div class="product-cell">
-                <div class="product-thumb">${p.emoji}</div>
+                <div class="product-thumb">${p.images && p.images[0] ? `<img src="${p.images[0]}" alt="${p.name}">` : p.emoji}</div>
                 <div><div class="product-name">${p.name}</div><div class="product-sku">ID-${String(p.id).padStart(4,'0')}</div></div>
             </div></td>
             <td>${p.category}</td>
@@ -555,12 +567,51 @@ function cancelOrder(orderId) {
 }
 
 // ── Product modal ──────────────────────────────────────────────────────────
+let pendingImages = []; // array of base64 data URLs for current modal session
+
+function handleImageUpload(e) {
+    const files = Array.from(e.target.files);
+    const remaining = 5 - pendingImages.length;
+    files.slice(0, remaining).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+            pendingImages.push(ev.target.result);
+            renderImagePreviews();
+        };
+        reader.readAsDataURL(file);
+    });
+    e.target.value = ''; // allow re-selecting same file
+}
+
+function renderImagePreviews() {
+    const grid = document.getElementById('imgPreviewGrid');
+    const placeholder = document.getElementById('imgPlaceholder');
+    grid.innerHTML = pendingImages.map((src, i) => `
+        <div class="img-preview-item">
+            <img src="${src}" alt="product image ${i+1}">
+            <button class="remove-img" onclick="removeImage(${i},event)" title="Remove">&times;</button>
+        </div>`).join('');
+    placeholder.classList.toggle('hidden', pendingImages.length > 0);
+}
+
+function removeImage(index, e) {
+    e.stopPropagation();
+    pendingImages.splice(index, 1);
+    renderImagePreviews();
+}
+
+function resetImageUpload(existingImages = []) {
+    pendingImages = [...existingImages];
+    renderImagePreviews();
+}
+
 function openAddProduct() {
     editingProductId = null;
     document.getElementById('productModalTitle').innerHTML = 'Add <span>Product</span>';
     document.getElementById('pName').value  = '';
     document.getElementById('pPrice').value = '';
     document.getElementById('pStock').value = '';
+    resetImageUpload();
     document.getElementById('productModal').classList.add('open');
     switchPanel('products');
 }
@@ -575,6 +626,7 @@ function openEditProduct(id) {
     document.getElementById('pCond').value  = p.condition;
     document.getElementById('pPrice').value = p.price;
     document.getElementById('pStock').value = p.stock;
+    resetImageUpload(p.images || []);
     document.getElementById('productModal').classList.add('open');
 }
 
@@ -586,12 +638,13 @@ function confirmProduct() {
     const stock = parseInt(document.getElementById('pStock').value);
     if (!name || isNaN(price) || isNaN(stock)) { alert('Please fill in all fields.'); return; }
     const emojiMap = { 'iPhone': '📱', 'MacBook': '💻', 'Apple Watch': '⌚' };
+    const images = [...pendingImages];
     if (editingProductId) {
         const p = products.find(x => x.id === editingProductId);
-        if (p) Object.assign(p, { name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat] });
+        if (p) Object.assign(p, { name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat], images });
         showToast('Product updated!');
     } else {
-        products.push({ id: Date.now(), name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat] });
+        products.push({ id: Date.now(), name, category: cat, condition: cond, price, stock, emoji: emojiMap[cat], images });
         showToast('Product added!');
     }
     closeModal('productModal');
