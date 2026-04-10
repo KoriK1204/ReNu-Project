@@ -257,6 +257,28 @@
         .donut-bar-bg { flex: 2; height: 6px; background: var(--light); border-radius: 3px; overflow: hidden; }
         .donut-bar-fill { height: 100%; border-radius: 3px; }
 
+        /* ── Subtabs ── */
+        .subtab-nav {
+            display: flex; gap: 4px; margin-bottom: 24px;
+            background: var(--white); border: 1px solid #e4eaed; border-radius: 10px;
+            padding: 4px; width: fit-content;
+        }
+        .subtab {
+            padding: 8px 18px; border-radius: 7px; border: none; cursor: pointer;
+            font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700;
+            color: #8a9aa5; background: none; transition: all 0.2s;
+            display: flex; align-items: center; gap: 7px;
+        }
+        .subtab:hover { color: var(--teal); }
+        .subtab.active { background: var(--teal); color: #fff; }
+        .subtab-panel { display: none; }
+        .subtab-panel.active { display: block; }
+
+        .badge.ordered   { background: #eef6ff; color: #1a6bbf; }
+        .badge.ordered::before   { background: #4a9ff5; }
+        .badge.received  { background: #edfaf4; color: #1a7a4f; }
+        .badge.received::before  { background: var(--green); }
+
         /* ── Modal ── */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(39,39,39,0.55);
