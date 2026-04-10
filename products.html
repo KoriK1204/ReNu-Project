@@ -160,6 +160,7 @@
 
                 <!-- iPhone 16 Pro -->
                 <div class="product-card"
+                     data-product-id="1"
                      data-category="iphone"
                      data-model="iphone-16-pro"
                      data-size="6.3"
@@ -184,6 +185,7 @@
 
                 <!-- iPhone 15 -->
                 <div class="product-card"
+                     data-product-id="2"
                      data-category="iphone"
                      data-model="iphone-15"
                      data-size="6.1"
@@ -208,6 +210,7 @@
 
                 <!-- iPhone 17 -->
                 <div class="product-card"
+                     data-product-id="3"
                      data-category="iphone"
                      data-model="iphone-17-pro"
                      data-size="6.3"
@@ -232,6 +235,7 @@
 
                 <!-- MacBook Pro M4 -->
                 <div class="product-card"
+                     data-product-id="4"
                      data-category="macbook"
                      data-model="macbook-pro-m4"
                      data-size="14"
@@ -256,6 +260,7 @@
 
                 <!-- MacBook Air M4 -->
                 <div class="product-card"
+                     data-product-id="5"
                      data-category="macbook"
                      data-model="macbook-air-m4"
                      data-size="13"
@@ -280,6 +285,7 @@
 
                 <!-- MacBook Pro M3 -->
                 <div class="product-card"
+                     data-product-id="6"
                      data-category="macbook"
                      data-model="macbook-pro-m3"
                      data-size="14"
@@ -304,6 +310,7 @@
 
                 <!-- Apple Watch Ultra 3 -->
                 <div class="product-card"
+                     data-product-id="7"
                      data-category="watch"
                      data-model="watch-ultra"
                      data-size="44mm"
@@ -329,6 +336,7 @@
 
                 <!-- Apple Watch SE -->
                 <div class="product-card"
+                     data-product-id="8"
                      data-category="watch"
                      data-model="watch-se"
                      data-size="40mm"
@@ -353,6 +361,7 @@
 
                 <!-- Apple Watch S11 -->
                 <div class="product-card"
+                     data-product-id="9"
                      data-category="watch"
                      data-model="watch-ultra"
                      data-size="46mm"
@@ -572,6 +581,15 @@
 
                 showToast(d.name + ' added to cart!');
             });
+        });
+        // ── Make product cards clickable ──────────────────────────────
+        document.querySelectorAll('.product-card').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.add-to-cart')) return;
+            const id = card.dataset.productId;
+            if (id) window.location.href = `/product-detail.html?id=${id}`;
+        });
         });
     </script>
 </body>
