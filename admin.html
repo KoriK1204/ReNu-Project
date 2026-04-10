@@ -42,6 +42,11 @@
         <i class="fas fa-chart-bar"></i> Analytics
     </a>
 
+    <span class="sidebar-section-label">Management</span>
+    <a class="nav-item" data-panel="accounts" href="#">
+        <i class="fas fa-users-cog"></i> Account Management
+    </a>
+
     <div class="sidebar-divider"></div>
     <a href="/index.html" class="view-store">
         <i class="fas fa-external-link-alt"></i> View Store
@@ -353,6 +358,73 @@
             </div>
         </div>
     </div>
+
+    <!-- ══ ACCOUNT MANAGEMENT ══ -->
+    <div class="panel" id="panel-accounts">
+        <div class="subtab-nav">
+            <button class="subtab active" data-subtab="customer-accs">
+                <i class="fas fa-user"></i> Customer Accounts
+            </button>
+            <button class="subtab" data-subtab="staff-accs">
+                <i class="fas fa-user-shield"></i> Staff Accounts
+            </button>
+        </div>
+
+        <!-- Customer Accounts -->
+        <div class="subtab-panel active" id="subtab-customer-accs">
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="custSearch" placeholder="Search by name or email…" oninput="renderCustomerAccounts()">
+                    </div>
+                    <select class="filter-select" id="custStatusFilter" onchange="renderCustomerAccounts()">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+                <table>
+                    <thead><tr>
+                        <th>Customer</th><th>Email</th><th>Joined</th><th>Orders</th><th>Status</th><th>Actions</th>
+                    </tr></thead>
+                    <tbody id="custBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Staff Accounts -->
+        <div class="subtab-panel" id="subtab-staff-accs">
+            <div class="section-hd" style="margin-bottom:16px;">
+                <h2>Staff <span>Accounts</span></h2>
+                <button class="topbar-btn primary" onclick="openCreateStaffModal()"><i class="fas fa-plus"></i> Create Staff Account</button>
+            </div>
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="staffSearch" placeholder="Search by name or email…" oninput="renderStaffAccounts()">
+                    </div>
+                    <select class="filter-select" id="staffRoleFilter" onchange="renderStaffAccounts()">
+                        <option value="">All Roles</option>
+                        <option value="staff">Staff</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <select class="filter-select" id="staffStatusFilter" onchange="renderStaffAccounts()">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+                <table>
+                    <thead><tr>
+                        <th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Status</th><th>Actions</th>
+                    </tr></thead>
+                    <tbody id="staffBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div><!-- end .main -->
 
 <!-- ── Ship Modal ── -->
@@ -439,6 +511,36 @@
     </div>
 </div>
 
+<!-- ── Create Staff Modal ── -->
+<div class="modal-overlay" id="createStaffModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('createStaffModal')">&times;</button>
+        <h3>Create <span>Staff Account</span></h3>
+        <p>Add a staff member directly — useful for employees who won't use the customer-facing store.</p>
+        <div class="modal-form">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="newStaffName" placeholder="e.g. Jordan Lee">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="newStaffEmail" placeholder="e.g. jordan@renutech.com">
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <select id="newStaffRole">
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('createStaffModal')">Cancel</button>
+            <button class="btn-modal confirm" onclick="confirmCreateStaff()"><i class="fas fa-check"></i> Create Account</button>
+        </div>
+    </div>
+</div>
+
 <!-- ── Toast ── -->
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done!</span></div>
 
@@ -493,6 +595,7 @@ const panelTitles = {
     shipping:     'Shipping <span>Queue</span>',
     products:     'Product <span>Inventory</span>',
     analytics:    'Analytics <span>& Insights</span>',
+    accounts:     'Account <span>Management</span>',
 };
 
 document.querySelectorAll('.nav-item[data-panel]').forEach(item => {
@@ -511,28 +614,38 @@ function switchPanel(name) {
     if (name === 'order-mgmt') renderActiveOrderSubtab();
     if (name === 'shipping')   renderShipping();
     if (name === 'products')   renderProducts();
+    if (name === 'accounts')   renderActiveAccountSubtab();
 }
 
-// ── Order Management subtabs ───────────────────────────────────────────────
-let activeOrderSubtab = 'customer-orders';
-
+// ── Subtab system (generic, panel-scoped) ─────────────────────────────────
+// Scoped to the parent panel so multiple panels can each have subtabs independently.
 document.querySelectorAll('.subtab[data-subtab]').forEach(btn => {
-    btn.addEventListener('click', () => switchOrderSubtab(btn.dataset.subtab));
+    btn.addEventListener('click', () => {
+        const panelEl = btn.closest('.panel');
+        panelEl.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        panelEl.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('subtab-' + btn.dataset.subtab).classList.add('active');
+        dispatchSubtab(btn.dataset.subtab);
+    });
 });
 
-function switchOrderSubtab(name) {
-    activeOrderSubtab = name;
-    document.querySelectorAll('.subtab[data-subtab]').forEach(b => b.classList.remove('active'));
-    document.querySelector(`.subtab[data-subtab="${name}"]`).classList.add('active');
-    document.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('subtab-' + name).classList.add('active');
-    renderActiveOrderSubtab();
+function dispatchSubtab(name) {
+    if (name === 'customer-orders') renderOrders();
+    if (name === 'product-orders')  renderRestockOrders();
+    if (name === 'place-order')     populatePlaceOrderProducts();
+    if (name === 'customer-accs')   renderCustomerAccounts();
+    if (name === 'staff-accs')      renderStaffAccounts();
 }
 
 function renderActiveOrderSubtab() {
-    if (activeOrderSubtab === 'customer-orders') renderOrders();
-    if (activeOrderSubtab === 'product-orders')  renderRestockOrders();
-    if (activeOrderSubtab === 'place-order')     populatePlaceOrderProducts();
+    const btn = document.querySelector('#panel-order-mgmt .subtab.active');
+    if (btn) dispatchSubtab(btn.dataset.subtab);
+}
+
+function renderActiveAccountSubtab() {
+    const btn = document.querySelector('#panel-accounts .subtab.active');
+    if (btn) dispatchSubtab(btn.dataset.subtab);
 }
 
 // ── Status badge helper ────────────────────────────────────────────────────
@@ -733,7 +846,146 @@ function placeRestockOrder() {
     document.getElementById('poNotes').value    = '';
     document.getElementById('poTotalDisplay').style.display = 'none';
     showToast(`Restock order placed for ${product}!`);
-    switchOrderSubtab('product-orders');
+    // Switch to Product Orders subtab within the Order Management panel
+    const orderPanel = document.getElementById('panel-order-mgmt');
+    orderPanel.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+    orderPanel.querySelector('[data-subtab="product-orders"]').classList.add('active');
+    orderPanel.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('subtab-product-orders').classList.add('active');
+    renderRestockOrders();
+}
+
+// ── Account Management ─────────────────────────────────────────────────────
+let customerAccounts = [
+    { id: 'C001', name: 'Sarah Kim',    email: 'sarah@email.com',  joined: 'Jan 12, 2026', orders: 3, status: 'active' },
+    { id: 'C002', name: 'Marcus Webb',  email: 'marcus@email.com', joined: 'Feb 03, 2026', orders: 1, status: 'active' },
+    { id: 'C003', name: 'Priya Nair',   email: 'priya@email.com',  joined: 'Feb 18, 2026', orders: 2, status: 'active' },
+    { id: 'C004', name: 'James Okoye',  email: 'james@email.com',  joined: 'Mar 05, 2026', orders: 1, status: 'suspended' },
+    { id: 'C005', name: 'Leila Hassan', email: 'leila@email.com',  joined: 'Mar 22, 2026', orders: 2, status: 'active' },
+    { id: 'C006', name: 'Tom Bradley',  email: 'tom@email.com',    joined: 'Apr 01, 2026', orders: 1, status: 'active' },
+];
+
+let staffAccounts = [
+    { id: 'S001', name: 'Admin',       email: 'admin@renutech.com',  role: 'admin', joined: 'Jan 01, 2026', status: 'active' },
+    { id: 'S002', name: 'Alex Nguyen', email: 'alex@renutech.com',   role: 'staff', joined: 'Feb 10, 2026', status: 'active' },
+    { id: 'S003', name: 'Jordan Lee',  email: 'jordan@renutech.com', role: 'staff', joined: 'Mar 15, 2026', status: 'suspended' },
+];
+let staffCounter = 4;
+
+function renderCustomerAccounts() {
+    const q      = (document.getElementById('custSearch')?.value || '').toLowerCase();
+    const filter = document.getElementById('custStatusFilter')?.value || '';
+    const tbody  = document.getElementById('custBody');
+    const filtered = customerAccounts.filter(c =>
+        (!q || c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)) &&
+        (!filter || c.status === filter)
+    );
+    if (!filtered.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-user-slash"></i><p>No customers found.</p></div></td></tr>`; return; }
+    tbody.innerHTML = filtered.map(c => `
+        <tr>
+            <td><div class="customer-cell"><span class="customer-name">${c.name}</span><span class="customer-email">${c.id}</span></div></td>
+            <td style="font-size:12px;">${c.email}</td>
+            <td style="font-size:11px;color:#6a7580;">${c.joined}</td>
+            <td style="font-family:'Jost',sans-serif;font-weight:700;">${c.orders}</td>
+            <td>${accStatusBadge(c.status)}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${c.status === 'active'
+                    ? `<button class="action-btn danger"  onclick="toggleCustomerStatus('${c.id}')"><i class="fas fa-ban"></i> Suspend</button>`
+                    : `<button class="action-btn success" onclick="toggleCustomerStatus('${c.id}')"><i class="fas fa-check-circle"></i> Activate</button>`}
+                <button class="action-btn" onclick="promoteToStaff('${c.id}')"><i class="fas fa-user-shield"></i> Promote</button>
+            </td>
+        </tr>`).join('');
+}
+
+function renderStaffAccounts() {
+    const q            = (document.getElementById('staffSearch')?.value || '').toLowerCase();
+    const roleFilter   = document.getElementById('staffRoleFilter')?.value || '';
+    const statusFilter = document.getElementById('staffStatusFilter')?.value || '';
+    const tbody        = document.getElementById('staffBody');
+    const filtered = staffAccounts.filter(s =>
+        (!q || s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)) &&
+        (!roleFilter || s.role === roleFilter) &&
+        (!statusFilter || s.status === statusFilter)
+    );
+    if (!filtered.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users-slash"></i><p>No staff accounts found.</p></div></td></tr>`; return; }
+    tbody.innerHTML = filtered.map(s => `
+        <tr>
+            <td><div class="customer-cell"><span class="customer-name">${s.name}</span><span class="customer-email">${s.id}</span></div></td>
+            <td style="font-size:12px;">${s.email}</td>
+            <td>${roleBadge(s.role)}</td>
+            <td style="font-size:11px;color:#6a7580;">${s.joined}</td>
+            <td>${accStatusBadge(s.status)}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${s.status === 'active'
+                    ? `<button class="action-btn danger"  onclick="toggleStaffStatus('${s.id}')"><i class="fas fa-ban"></i> Suspend</button>`
+                    : `<button class="action-btn success" onclick="toggleStaffStatus('${s.id}')"><i class="fas fa-check-circle"></i> Activate</button>`}
+                ${s.role !== 'admin'
+                    ? `<button class="action-btn" onclick="demoteToCustomer('${s.id}')"><i class="fas fa-user-minus"></i> Demote</button>`
+                    : `<span style="font-size:10px;color:#8a9aa5;font-weight:700;padding:5px 4px;">Protected</span>`}
+            </td>
+        </tr>`).join('');
+}
+
+function accStatusBadge(status) {
+    return `<span class="badge ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
+}
+function roleBadge(role) {
+    return `<span class="badge ${role}">${role.charAt(0).toUpperCase() + role.slice(1)}</span>`;
+}
+
+function toggleCustomerStatus(id) {
+    const c = customerAccounts.find(x => x.id === id);
+    if (!c) return;
+    c.status = c.status === 'active' ? 'suspended' : 'active';
+    renderCustomerAccounts();
+    showToast(`${c.name} ${c.status === 'active' ? 'activated' : 'suspended'}.`, c.status === 'suspended');
+}
+
+function toggleStaffStatus(id) {
+    const s = staffAccounts.find(x => x.id === id);
+    if (!s) return;
+    s.status = s.status === 'active' ? 'suspended' : 'active';
+    renderStaffAccounts();
+    showToast(`${s.name} ${s.status === 'active' ? 'activated' : 'suspended'}.`, s.status === 'suspended');
+}
+
+function promoteToStaff(id) {
+    const c = customerAccounts.find(x => x.id === id);
+    if (!c) return;
+    if (!confirm(`Promote ${c.name} to staff? They will be moved to Staff Accounts.`)) return;
+    staffAccounts.push({ id: 'S' + String(staffCounter++).padStart(3,'0'), name: c.name, email: c.email, role: 'staff', joined: c.joined, status: c.status });
+    customerAccounts = customerAccounts.filter(x => x.id !== id);
+    renderCustomerAccounts();
+    showToast(`${c.name} promoted to staff!`);
+}
+
+function demoteToCustomer(id) {
+    const s = staffAccounts.find(x => x.id === id);
+    if (!s || s.role === 'admin') return;
+    if (!confirm(`Demote ${s.name} to customer? They will lose staff access.`)) return;
+    customerAccounts.push({ id: 'C' + String(customerAccounts.length + 1).padStart(3,'0'), name: s.name, email: s.email, joined: s.joined, orders: 0, status: s.status });
+    staffAccounts = staffAccounts.filter(x => x.id !== id);
+    renderStaffAccounts();
+    showToast(`${s.name} moved to customer accounts.`, true);
+}
+
+function openCreateStaffModal() {
+    document.getElementById('newStaffName').value  = '';
+    document.getElementById('newStaffEmail').value = '';
+    document.getElementById('newStaffRole').value  = 'staff';
+    document.getElementById('createStaffModal').classList.add('open');
+}
+
+function confirmCreateStaff() {
+    const name  = document.getElementById('newStaffName').value.trim();
+    const email = document.getElementById('newStaffEmail').value.trim();
+    const role  = document.getElementById('newStaffRole').value;
+    if (!name || !email) { alert('Please fill in name and email.'); return; }
+    const today = new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    staffAccounts.push({ id: 'S' + String(staffCounter++).padStart(3,'0'), name, email, role, joined: today, status: 'active' });
+    closeModal('createStaffModal');
+    renderStaffAccounts();
+    showToast(`Staff account created for ${name}!`);
 }
 
 // ── Ship modal ─────────────────────────────────────────────────────────────
