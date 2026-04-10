@@ -278,6 +278,14 @@
         .badge.ordered::before   { background: #4a9ff5; }
         .badge.received  { background: #edfaf4; color: #1a7a4f; }
         .badge.received::before  { background: var(--green); }
+        .badge.active    { background: #edfaf4; color: #1a7a4f; }
+        .badge.active::before    { background: var(--green); }
+        .badge.suspended { background: #fff0f0; color: #b03a3a; }
+        .badge.suspended::before { background: var(--red); }
+        .badge.staff     { background: #f0eeff; color: #5a3fbf; }
+        .badge.staff::before     { background: #8b6fdf; }
+        .badge.admin     { background: #fff3ee; color: #b05000; }
+        .badge.admin::before     { background: var(--orange); }
 
         /* ── Modal ── */
         .modal-overlay {
