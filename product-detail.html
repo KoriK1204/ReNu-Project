@@ -305,6 +305,145 @@
     </div>
 
     <script>
+        // ── Product Data ──────────────────────────────────────────────
+const allProducts = {
+  1: {
+    name: 'iPhone 16 Pro', category: 'iPhone', icon: 'fa-mobile-alt',
+    condition: 'Like New', image: '/images/iphone-16-pro-neutral.svg',
+    colors: [
+      { color: 'neutral-titanium', name: 'Neutral Titanium' },
+      { color: 'midnight-black',   name: 'Midnight Black' },
+      { color: 'starlight',        name: 'Starlight' },
+    ],
+    storage: [
+      { size: '128gb', price: '549', original: '999' },
+      { size: '256gb', price: '619', original: '1,099' },
+      { size: '512gb', price: '699', original: '1,199' },
+      { size: '1tb',   price: '849', original: '1,399' },
+    ],
+    defaultStorage: '512gb', reviews: '4.5 · 142 reviews',
+  },
+  2: {
+    name: 'iPhone 15 Pro', category: 'iPhone', icon: 'fa-mobile-alt',
+    condition: 'Good Condition', image: '/images/iphone-15-pro-black-titantium.svg',
+    colors: [{ color: 'midnight-black', name: 'Black Titanium' }],
+    storage: [
+      { size: '128gb', price: '399', original: '799' },
+      { size: '256gb', price: '489', original: '999' },
+    ],
+    defaultStorage: '256gb', reviews: '4.0 · 110 reviews',
+  },
+  3: {
+    name: 'iPhone 17', category: 'iPhone', icon: 'fa-mobile-alt',
+    condition: 'Fair Condition', image: '/images/iphone-17-pro-blue.png',
+    colors: [{ color: 'blue', name: 'Blue' }],
+    storage: [
+      { size: '256gb', price: '749', original: '1,199' },
+      { size: '512gb', price: '849', original: '1,399' },
+    ],
+    defaultStorage: '256gb', reviews: '3.5 · 89 reviews',
+  },
+  4: {
+    name: 'MacBook Pro M4 Space Black 14"', category: 'MacBook', icon: 'fa-laptop',
+    condition: 'Like New', image: '/images/mac-book-pro-m-4-space-black.svg',
+    colors: [{ color: 'space-black', name: 'Space Black' }],
+    storage: [
+      { size: '512gb', price: '1,299', original: '1,999' },
+      { size: '1tb',   price: '1,499', original: '2,299' },
+    ],
+    defaultStorage: '512gb', reviews: '4.5 · 98 reviews',
+  },
+  5: {
+    name: 'MacBook Air M2 Midnight 13"', category: 'MacBook', icon: 'fa-laptop',
+    condition: 'Good Condition', image: '/images/mac-book-air-m-4-midnight.svg',
+    colors: [{ color: 'midnight', name: 'Midnight' }],
+    storage: [
+      { size: '256gb', price: '749', original: '1,099' },
+      { size: '512gb', price: '849', original: '1,299' },
+    ],
+    defaultStorage: '256gb', reviews: '4.0 · 134 reviews',
+  },
+  6: {
+    name: 'MacBook Pro M3 Silver 14"', category: 'MacBook', icon: 'fa-laptop',
+    condition: 'Like New', image: '/images/mac-book-pro-m-3-silver.svg',
+    colors: [{ color: 'silver', name: 'Silver' }],
+    storage: [
+      { size: '512gb', price: '999', original: '1,599' },
+      { size: '1tb',   price: '1,199', original: '1,799' },
+    ],
+    defaultStorage: '512gb', reviews: '5.0 · 76 reviews',
+  },
+  7: {
+    name: 'Apple Watch Ultra 3', category: 'Apple Watch', icon: 'fa-clock',
+    condition: 'Like New', image: '/images/apple-watch-white.svg',
+    colors: [{ color: 'natural', name: 'Natural' }],
+    storage: [{ size: '44mm', price: '399', original: '799' }],
+    defaultStorage: '44mm', reviews: '4.5 · 62 reviews',
+  },
+  8: {
+    name: 'Apple Watch SE 2nd Gen', category: 'Apple Watch', icon: 'fa-clock',
+    condition: 'Good Condition', image: '/images/apple-watch-se-midnight.svg',
+    colors: [{ color: 'midnight', name: 'Midnight' }],
+    storage: [
+      { size: '40mm', price: '169', original: '299' },
+      { size: '44mm', price: '199', original: '349' },
+    ],
+    defaultStorage: '40mm', reviews: '4.0 · 203 reviews',
+  },
+  9: {
+    name: 'Apple Watch S11', category: 'Apple Watch', icon: 'fa-clock',
+    condition: 'Good Condition', image: '/images/Apple Watch S11 - 46mm.svg',
+    colors: [{ color: 'midnight', name: 'Midnight' }],
+    storage: [{ size: '46mm', price: '269', original: '499' }],
+    defaultStorage: '46mm', reviews: '4.0 · 88 reviews',
+  },
+};
+// ── Load correct product from URL ?id= ───────────────────────
+const params    = new URLSearchParams(window.location.search);
+const productId = params.get('id') || 1;
+const product   = allProducts[productId];
+
+if (product) {
+  document.title = product.name + ' — ReNu Tech';
+
+  document.querySelector('.breadcrumb').innerHTML = `
+    <a href="/index.html">Home</a><span>/</span>
+    <a href="/products.html">Products</a><span>/</span>
+    ${product.name}
+  `;
+
+  document.getElementById('mainImage').src = product.image;
+  document.querySelectorAll('.thumb img').forEach(img => img.src = product.image);
+  document.querySelectorAll('.thumb').forEach(t => t.dataset.img = product.image);
+
+  document.querySelector('.page-label').innerHTML = `<i class="fas ${product.icon}"></i> ${product.category}`;
+  document.querySelector('h1').innerHTML = `${product.name} — <span id="selectedColorName">${product.colors[0].name}</span>`;
+  document.querySelector('.condition-badge-img').textContent = product.condition;
+  document.querySelector('.review-count').textContent = product.reviews;
+
+  // Colors
+  document.querySelector('.color-options').innerHTML = product.colors.map((c, i) => `
+    <div class="color-swatch ${i === 0 ? 'active' : ''}"
+         data-color="${c.color}" data-name="${c.name}" title="${c.name}"></div>
+  `).join('');
+
+  // Storage
+  document.getElementById('storageOptions').innerHTML = product.storage.map(s => `
+    <div class="option-chip ${s.size === product.defaultStorage ? 'active' : ''}"
+         data-storage="${s.size}" data-price="${s.price}" data-original="${s.original}">
+      ${s.size.toUpperCase()}
+    </div>
+  `).join('');
+
+  // Default price
+  const def = product.storage.find(s => s.size === product.defaultStorage);
+  document.getElementById('currentPrice').textContent  = '$' + def.price;
+  document.getElementById('originalPrice').textContent = '$' + def.original;
+  document.getElementById('storageLabel').textContent  = '— ' + def.size.toUpperCase();
+  document.getElementById('colorLabel').textContent    = '— ' + product.colors[0].name;
+  const pct = Math.round((1 - parseInt(def.price.replace(',','')) / parseInt(def.original.replace(',',''))) * 100);
+  document.getElementById('priceSave').textContent = 'Save ' + pct + '%';
+    }
         // ── Cart (localStorage) ──────────────────────────────────────
         function getCart() {
             return JSON.parse(localStorage.getItem('renuCart') || '[]');
