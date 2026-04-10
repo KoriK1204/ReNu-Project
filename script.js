@@ -53,15 +53,15 @@ searchOverlay.querySelector('.search-form').addEventListener('submit', (e) => {
 
   // Your products list — expand this as you add more
   const products = [
-    { name: 'iPhone 16 Pro Neutral Titanium', price: '$699', link: '/product-detail.html?id=1' },
-    { name: 'iPhone 15 Pro Black Titanium', price: '$489', link: '/product-detail.html?id=2' },
-    { name: 'iPhone 17 Blue', price: '$749', link: '/product-detail.html?id=3' },
-    { name: 'MacBook Pro M4 Space Black - 14 inch', price: '$1,299', link: '/product-detail.html?id=4' },
-    { name: 'MacBook Air M2 Midnight 13"', price: '$749', link: '/product-detail.html?id=5' },
-    { name: 'MacBook Pro M3 Silver 14"', price: '$999', link: '/product-detail.html?id=6' },
-    { name: 'Apple Watch Ultra 3 - Natural', price: '$399', link: '/product-detail.html?id=7' },
-    { name: 'Apple Watch SE 2nd Gen - Midnight', price: '$169', link: '/product-detail.html?id=8' },
-    { name: 'Apple Watch S11 - Midnight', price: '$269', link: '/product-detail.html?id=9' },
+    { name: 'iPhone 16 Pro Neutral Titanium', price: '$699', link: '/ReNu-Project/product-detail.html?id=1' },
+    { name: 'iPhone 15 Pro Black Titanium', price: '$489', link: '/ReNu-Project/product-detail.html?id=2' },
+    { name: 'iPhone 17 Blue', price: '$749', link: '/ReNu-Project/product-detail.html?id=3' },
+    { name: 'MacBook Pro M4 Space Black - 14 inch', price: '$1,299', link: '/ReNu-Project/product-detail.html?id=4' },
+    { name: 'MacBook Air M2 Midnight 13"', price: '$749', link: '/ReNu-Project/product-detail.html?id=5' },
+    { name: 'MacBook Pro M3 Silver 14"', price: '$999', link: '/ReNu-Project/product-detail.html?id=6' },
+    { name: 'Apple Watch Ultra 3 - Natural', price: '$399', link: '/ReNu-Project/product-detail.html?id=7' },
+    { name: 'Apple Watch SE 2nd Gen - Midnight', price: '$169', link: '/ReNu-Project/product-detail.html?id=8' },
+    { name: 'Apple Watch S11 - Midnight', price: '$269', link: '/ReNu-Project/product-detail.html?id=9' },
 
     // Add more products here as your store grows
   ];
