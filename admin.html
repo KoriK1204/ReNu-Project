@@ -26,8 +26,8 @@
     </a>
 
     <span class="sidebar-section-label">Operations</span>
-    <a class="nav-item" data-panel="orders" href="#">
-        <i class="fas fa-box"></i> Orders
+    <a class="nav-item" data-panel="order-mgmt" href="#">
+        <i class="fas fa-clipboard-list"></i> Order Management
         <span class="nav-badge" id="pendingBadge">3</span>
     </a>
     <a class="nav-item" data-panel="shipping" href="#">
@@ -135,7 +135,7 @@
         <!-- Recent orders -->
         <div class="section-hd">
             <h2>Recent <span>Orders</span></h2>
-            <button class="topbar-btn" onclick="switchPanel('orders')">View All <i class="fas fa-arrow-right"></i></button>
+            <button class="topbar-btn" onclick="switchPanel('order-mgmt')">View All <i class="fas fa-arrow-right"></i></button>
         </div>
         <div class="table-card">
             <table id="dashRecentTable">
@@ -147,31 +147,114 @@
         </div>
     </div>
 
-    <!-- ══ ORDERS ══ -->
-    <div class="panel" id="panel-orders">
-        <div class="section-hd">
-            <h2>All <span>Orders</span></h2>
+    <!-- ══ ORDER MANAGEMENT ══ -->
+    <div class="panel" id="panel-order-mgmt">
+        <div class="subtab-nav">
+            <button class="subtab active" data-subtab="customer-orders">
+                <i class="fas fa-users"></i> Customer Orders
+            </button>
+            <button class="subtab" data-subtab="product-orders">
+                <i class="fas fa-truck-loading"></i> Product Orders
+            </button>
+            <button class="subtab" data-subtab="place-order">
+                <i class="fas fa-plus-circle"></i> Place Order
+            </button>
         </div>
-        <div class="table-card">
-            <div class="table-toolbar">
-                <div class="search-input-wrap">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="orderSearch" placeholder="Search by order ID or customer…" oninput="renderOrders()">
+
+        <!-- ── Customer Orders ── -->
+        <div class="subtab-panel active" id="subtab-customer-orders">
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="orderSearch" placeholder="Search by order ID or customer…" oninput="renderOrders()">
+                    </div>
+                    <select class="filter-select" id="orderStatusFilter" onchange="renderOrders()">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
                 </div>
-                <select class="filter-select" id="orderStatusFilter" onchange="renderOrders()">
-                    <option value="">All Statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
+                <table>
+                    <thead><tr>
+                        <th>Order ID</th><th>Customer</th><th>Product</th><th>Date</th><th>Amount</th><th>Status</th><th>Actions</th>
+                    </tr></thead>
+                    <tbody id="ordersBody"></tbody>
+                </table>
             </div>
-            <table>
-                <thead><tr>
-                    <th>Order ID</th><th>Customer</th><th>Product</th><th>Date</th><th>Amount</th><th>Status</th><th>Actions</th>
-                </tr></thead>
-                <tbody id="ordersBody"></tbody>
-            </table>
+        </div>
+
+        <!-- ── Product Orders ── -->
+        <div class="subtab-panel" id="subtab-product-orders">
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="poSearch" placeholder="Search by PO ID, supplier or product…" oninput="renderRestockOrders()">
+                    </div>
+                    <select class="filter-select" id="poStatusFilter" onchange="renderRestockOrders()">
+                        <option value="">All Statuses</option>
+                        <option value="ordered">Ordered</option>
+                        <option value="received">Received</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <table>
+                    <thead><tr>
+                        <th>PO ID</th><th>Supplier</th><th>Product</th><th>Qty</th><th>Unit Cost</th><th>Total</th><th>Expected</th><th>Status</th><th>Actions</th>
+                    </tr></thead>
+                    <tbody id="restockBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── Place Order ── -->
+        <div class="subtab-panel" id="subtab-place-order">
+            <div style="max-width:560px;">
+                <div class="table-card" style="padding:28px;">
+                    <div class="section-hd" style="margin-bottom:20px;">
+                        <h2>Place a <span>Restock Order</span></h2>
+                    </div>
+                    <div class="modal-form" style="display:block;">
+                        <div class="form-group">
+                            <label>Supplier Name</label>
+                            <input type="text" id="poSupplier" placeholder="e.g. Apple Resellers Inc.">
+                        </div>
+                        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">
+                            <div class="form-group">
+                                <label>Product</label>
+                                <select id="poProduct" onchange="updatePoTotal()"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="number" id="poQty" placeholder="10" min="1" oninput="updatePoTotal()">
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div class="form-group">
+                                <label>Unit Cost ($)</label>
+                                <input type="number" id="poUnitCost" placeholder="550" oninput="updatePoTotal()">
+                            </div>
+                            <div class="form-group">
+                                <label>Expected Delivery</label>
+                                <input type="date" id="poExpected">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Notes (optional)</label>
+                            <textarea id="poNotes" placeholder="Any notes about this order…"></textarea>
+                        </div>
+                        <div id="poTotalDisplay" style="font-size:13px;font-weight:700;color:var(--darker);margin-bottom:16px;display:none;">
+                            Order Total: <span id="poTotal" style="color:var(--teal);font-family:'Jost',sans-serif;font-size:16px;font-weight:800;"></span>
+                        </div>
+                        <button class="btn-modal confirm" onclick="placeRestockOrder()" style="width:100%;justify-content:center;display:flex;align-items:center;gap:8px;padding:12px 22px;">
+                            <i class="fas fa-paper-plane"></i> Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -405,11 +488,11 @@ let editingProductId   = null;
 
 // ── Navigation ─────────────────────────────────────────────────────────────
 const panelTitles = {
-    dashboard: 'Dashboard <span>Overview</span>',
-    orders:    'All <span>Orders</span>',
-    shipping:  'Shipping <span>Queue</span>',
-    products:  'Product <span>Inventory</span>',
-    analytics: 'Analytics <span>& Insights</span>',
+    dashboard:    'Dashboard <span>Overview</span>',
+    'order-mgmt': 'Order <span>Management</span>',
+    shipping:     'Shipping <span>Queue</span>',
+    products:     'Product <span>Inventory</span>',
+    analytics:    'Analytics <span>& Insights</span>',
 };
 
 document.querySelectorAll('.nav-item[data-panel]').forEach(item => {
@@ -425,9 +508,31 @@ function switchPanel(name) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
     document.getElementById('topbarTitle').innerHTML = panelTitles[name] || name;
-    if (name === 'orders')   renderOrders();
-    if (name === 'shipping') renderShipping();
-    if (name === 'products') renderProducts();
+    if (name === 'order-mgmt') renderActiveOrderSubtab();
+    if (name === 'shipping')   renderShipping();
+    if (name === 'products')   renderProducts();
+}
+
+// ── Order Management subtabs ───────────────────────────────────────────────
+let activeOrderSubtab = 'customer-orders';
+
+document.querySelectorAll('.subtab[data-subtab]').forEach(btn => {
+    btn.addEventListener('click', () => switchOrderSubtab(btn.dataset.subtab));
+});
+
+function switchOrderSubtab(name) {
+    activeOrderSubtab = name;
+    document.querySelectorAll('.subtab[data-subtab]').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.subtab[data-subtab="${name}"]`).classList.add('active');
+    document.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('subtab-' + name).classList.add('active');
+    renderActiveOrderSubtab();
+}
+
+function renderActiveOrderSubtab() {
+    if (activeOrderSubtab === 'customer-orders') renderOrders();
+    if (activeOrderSubtab === 'product-orders')  renderRestockOrders();
+    if (activeOrderSubtab === 'place-order')     populatePlaceOrderProducts();
 }
 
 // ── Status badge helper ────────────────────────────────────────────────────
@@ -451,7 +556,7 @@ function renderDashRecent() {
             <td>${o.product}</td>
             <td><span class="amount">$${o.amount.toLocaleString()}</span></td>
             <td>${badge(o.status)}</td>
-            <td>${o.status === 'pending' ? `<button class="action-btn ship" onclick="openShipModal('${o.id}')"><i class="fas fa-shipping-fast"></i> Ship</button>` : `<button class="action-btn" onclick="switchPanel('orders')">View</button>`}</td>
+            <td>${o.status === 'pending' ? `<button class="action-btn ship" onclick="openShipModal('${o.id}')"><i class="fas fa-shipping-fast"></i> Ship</button>` : `<button class="action-btn" onclick="switchPanel('order-mgmt')">View</button>`}</td>
         </tr>`).join('');
 }
 
@@ -532,6 +637,103 @@ function renderProducts() {
                 <button class="action-btn danger" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
             </td>
         </tr>`).join('');
+}
+
+// ── Restock Orders ─────────────────────────────────────────────────────────
+let restockOrders = [
+    { id: '#PO-001', supplier: 'Apple Resellers Inc.', product: 'iPhone 16 Pro — Neutral Titanium', qty: 10, unitCost: 550, expected: 'Apr 15, 2026', status: 'ordered',   notes: '' },
+    { id: '#PO-002', supplier: 'MacSource Co.',         product: 'MacBook Pro M4 — Space Black 14"', qty: 5,  unitCost: 980, expected: 'Apr 12, 2026', status: 'received',  notes: 'All units in good condition' },
+    { id: '#PO-003', supplier: 'WatchWorld Ltd.',       product: 'Apple Watch Ultra 3 — Natural',    qty: 8,  unitCost: 310, expected: 'Apr 20, 2026', status: 'ordered',   notes: '' },
+    { id: '#PO-004', supplier: 'Apple Resellers Inc.',  product: 'iPhone 15 Pro — Black Titanium',   qty: 6,  unitCost: 380, expected: 'Apr 08, 2026', status: 'cancelled', notes: 'Supplier unavailable' },
+];
+let poCounter = 5;
+
+function renderRestockOrders() {
+    const q      = (document.getElementById('poSearch')?.value || '').toLowerCase();
+    const filter = document.getElementById('poStatusFilter')?.value || '';
+    const tbody  = document.getElementById('restockBody');
+    const filtered = restockOrders.filter(o =>
+        (!q || o.id.toLowerCase().includes(q) || o.supplier.toLowerCase().includes(q) || o.product.toLowerCase().includes(q)) &&
+        (!filter || o.status === filter)
+    );
+    if (!filtered.length) { tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><i class="fas fa-truck"></i><p>No restock orders found.</p></div></td></tr>`; return; }
+    tbody.innerHTML = filtered.map(o => `
+        <tr>
+            <td><span class="order-id">${o.id}</span></td>
+            <td style="font-size:12px;font-weight:600;">${o.supplier}</td>
+            <td style="font-size:12px;">${o.product}</td>
+            <td style="font-family:'Jost',sans-serif;font-weight:700;">${o.qty}</td>
+            <td><span class="amount">$${o.unitCost.toLocaleString()}</span></td>
+            <td><span class="amount">$${(o.qty * o.unitCost).toLocaleString()}</span></td>
+            <td style="font-size:11px;color:#6a7580;">${o.expected}</td>
+            <td>${restockBadge(o.status)}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${o.status === 'ordered' ? `<button class="action-btn success" onclick="markRestockReceived('${o.id}')"><i class="fas fa-check"></i> Received</button>` : ''}
+                ${o.status === 'ordered' ? `<button class="action-btn danger"  onclick="cancelRestockOrder('${o.id}')"><i class="fas fa-times"></i> Cancel</button>` : ''}
+                ${o.status !== 'ordered' ? `<span style="font-size:11px;color:#b0bec5;font-weight:600;">—</span>` : ''}
+            </td>
+        </tr>`).join('');
+}
+
+function restockBadge(status) {
+    const labels = { ordered: 'Ordered', received: 'Received', cancelled: 'Cancelled' };
+    return `<span class="badge ${status}">${labels[status] || status}</span>`;
+}
+
+function markRestockReceived(id) {
+    const o = restockOrders.find(x => x.id === id);
+    if (o) o.status = 'received';
+    renderRestockOrders();
+    showToast(`${id} marked as received!`);
+}
+
+function cancelRestockOrder(id) {
+    if (!confirm(`Cancel restock order ${id}?`)) return;
+    const o = restockOrders.find(x => x.id === id);
+    if (o) o.status = 'cancelled';
+    renderRestockOrders();
+    showToast(`Restock order ${id} cancelled.`, true);
+}
+
+function populatePlaceOrderProducts() {
+    const sel = document.getElementById('poProduct');
+    if (!sel) return;
+    sel.innerHTML = products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    updatePoTotal();
+}
+
+function updatePoTotal() {
+    const qty  = parseFloat(document.getElementById('poQty')?.value) || 0;
+    const cost = parseFloat(document.getElementById('poUnitCost')?.value) || 0;
+    const display = document.getElementById('poTotalDisplay');
+    const span    = document.getElementById('poTotal');
+    if (display && span) {
+        const show = qty > 0 && cost > 0;
+        display.style.display = show ? 'block' : 'none';
+        if (show) span.textContent = '$' + (qty * cost).toLocaleString();
+    }
+}
+
+function placeRestockOrder() {
+    const supplier = document.getElementById('poSupplier').value.trim();
+    const product  = document.getElementById('poProduct').value;
+    const qty      = parseInt(document.getElementById('poQty').value);
+    const unitCost = parseFloat(document.getElementById('poUnitCost').value);
+    const expected = document.getElementById('poExpected').value;
+    const notes    = document.getElementById('poNotes').value.trim();
+    if (!supplier || !product || isNaN(qty) || qty < 1 || isNaN(unitCost) || !expected) {
+        alert('Please fill in all required fields.'); return;
+    }
+    const dateFormatted = new Date(expected + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    restockOrders.unshift({ id: `#PO-${String(poCounter++).padStart(3,'0')}`, supplier, product, qty, unitCost, expected: dateFormatted, status: 'ordered', notes });
+    document.getElementById('poSupplier').value = '';
+    document.getElementById('poQty').value      = '';
+    document.getElementById('poUnitCost').value = '';
+    document.getElementById('poExpected').value = '';
+    document.getElementById('poNotes').value    = '';
+    document.getElementById('poTotalDisplay').style.display = 'none';
+    showToast(`Restock order placed for ${product}!`);
+    switchOrderSubtab('product-orders');
 }
 
 // ── Ship modal ─────────────────────────────────────────────────────────────
