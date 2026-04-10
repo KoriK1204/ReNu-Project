@@ -67,14 +67,14 @@
                     <img src="./images/iphone-16-pro-neutral.svg" alt="iPhone 16 Pro" id="mainImage">
                 </div>
                 <div class="thumbnails">
-                    <div class="thumb active" data-img="./images/iphone-16-pro-neutral.svg">
-                        <img src="./images/iphone-16-pro-neutral.svg" alt="">
+                    <div class="thumb active" data-img="./public/images/iphone-16-pro-neutral.svg">
+                        <img src="./public/images/iphone-16-pro-neutral.svg" alt="">
                     </div>
-                    <div class="thumb" data-img="./images/iphone-16-pro-neutral.svg">
-                        <img src="./images/iphone-16-pro-neutral.svg" alt="">
+                    <div class="thumb" data-img="./public/images/iphone-16-pro-neutral.svg">
+                        <img src="./public/images/iphone-16-pro-neutral.svg" alt="">
                     </div>
-                    <div class="thumb" data-img="./images/iphone-16-pro-neutral.svg">
-                        <img src="./images/iphone-16-pro-neutral.svg" alt="">
+                    <div class="thumb" data-img="./public/images/iphone-16-pro-neutral.svg">
+                        <img src="./public/images/iphone-16-pro-neutral.svg" alt="">
                     </div>
                 </div>
             </div>
@@ -279,10 +279,10 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="/index.html">Home</a></li>
-                        <li><a href="/products.html">Products</a></li>
-                        <li><a href="/about.html">About Us</a></li>
-                        <li><a href="/contact.html">Contact</a></li>
+                        <li><a href="/ReNu-Project/index.html">Home</a></li>
+                        <li><a href="/ReNu-Project/products.html">Products</a></li>
+                        <li><a href="/ReNu-Project/about.html">About Us</a></li>
+                        <li><a href="/ReNu-Project/contact.html">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -309,7 +309,7 @@
 const allProducts = {
   1: {
     name: 'iPhone 16 Pro', category: 'iPhone', icon: 'fa-mobile-alt',
-    condition: 'Like New', image: './images/iphone-16-pro-neutral.svg',
+    condition: 'Like New', image: './public/images/iphone-16-pro-neutral.svg',
     colors: [
       { color: 'neutral-titanium', name: 'Neutral Titanium' },
       { color: 'midnight-black',   name: 'Midnight Black' },
@@ -325,7 +325,7 @@ const allProducts = {
   },
   2: {
     name: 'iPhone 15 Pro', category: 'iPhone', icon: 'fa-mobile-alt',
-    condition: 'Good Condition', image: './images/iphone-15-pro-black-titantium.svg',
+    condition: 'Good Condition', image: './public/images/iphone-15-pro-black-titantium.svg',
     colors: [{ color: 'midnight-black', name: 'Black Titanium' }],
     storage: [
       { size: '128gb', price: '399', original: '799' },
@@ -335,7 +335,7 @@ const allProducts = {
   },
   3: {
     name: 'iPhone 17', category: 'iPhone', icon: 'fa-mobile-alt',
-    condition: 'Fair Condition', image: './images/iphone-17-pro-blue.png',
+    condition: 'Fair Condition', image: './public/images/iphone-17-pro-blue.png',
     colors: [{ color: 'blue', name: 'Blue' }],
     storage: [
       { size: '256gb', price: '749', original: '1,199' },
@@ -345,7 +345,7 @@ const allProducts = {
   },
   4: {
     name: 'MacBook Pro M4 Space Black 14"', category: 'MacBook', icon: 'fa-laptop',
-    condition: 'Like New', image: './images/mac-book-pro-m-4-space-black.svg',
+    condition: 'Like New', image: './public/images/mac-book-pro-m-4-space-black.svg',
     colors: [{ color: 'space-black', name: 'Space Black' }],
     storage: [
       { size: '512gb', price: '1,299', original: '1,999' },
@@ -355,7 +355,7 @@ const allProducts = {
   },
   5: {
     name: 'MacBook Air M2 Midnight 13"', category: 'MacBook', icon: 'fa-laptop',
-    condition: 'Good Condition', image: './images/mac-book-air-m-4-midnight.svg',
+    condition: 'Good Condition', image: './public/images/mac-book-air-m-4-midnight.svg',
     colors: [{ color: 'midnight', name: 'Midnight' }],
     storage: [
       { size: '256gb', price: '749', original: '1,099' },
@@ -365,7 +365,7 @@ const allProducts = {
   },
   6: {
     name: 'MacBook Pro M3 Silver 14"', category: 'MacBook', icon: 'fa-laptop',
-    condition: 'Like New', image: './images/mac-book-pro-m-3-silver.svg',
+    condition: 'Like New', image: './public/images/mac-book-pro-m-3-silver.svg',
     colors: [{ color: 'silver', name: 'Silver' }],
     storage: [
       { size: '512gb', price: '999', original: '1,599' },
@@ -375,14 +375,14 @@ const allProducts = {
   },
   7: {
     name: 'Apple Watch Ultra 3', category: 'Apple Watch', icon: 'fa-clock',
-    condition: 'Like New', image: './images/apple-watch-white.svg',
+    condition: 'Like New', image: './public/images/apple-watch-white.svg',
     colors: [{ color: 'natural', name: 'Natural' }],
     storage: [{ size: '44mm', price: '399', original: '799' }],
     defaultStorage: '44mm', reviews: '4.5 · 62 reviews',
   },
   8: {
     name: 'Apple Watch SE 2nd Gen', category: 'Apple Watch', icon: 'fa-clock',
-    condition: 'Good Condition', image: './images/apple-watch-se-midnight.svg',
+    condition: 'Good Condition', image: './public/images/apple-watch-se-midnight.svg',
     colors: [{ color: 'midnight', name: 'Midnight' }],
     storage: [
       { size: '40mm', price: '169', original: '299' },
@@ -392,7 +392,7 @@ const allProducts = {
   },
   9: {
     name: 'Apple Watch S11', category: 'Apple Watch', icon: 'fa-clock',
-    condition: 'Good Condition', image: './images/Apple Watch S11 - 46mm.svg',
+    condition: 'Good Condition', image: './public/images/Apple Watch S11 - 46mm.svg',
     colors: [{ color: 'midnight', name: 'Midnight' }],
     storage: [{ size: '46mm', price: '269', original: '499' }],
     defaultStorage: '46mm', reviews: '4.0 · 88 reviews',
