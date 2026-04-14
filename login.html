@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="login-style.css">
+    <link rel="stylesheet" href="login-style.css">
 </head>
 <body>
     <header>
@@ -19,15 +18,15 @@
                 <div class="logo-text">ReNu <span>Tech.</span></div>
             </a>
             <nav><ul>
-                <li><a href="/ReNu-Project/index.html">HOME</a></li>
-                <li><a href="/ReNu-Project/about.html">ABOUT</a></li>
-                <li><a href="/ReNu-Project/products.html">PRODUCTS</a></li>
-                <li><a href="/ReNu-Project/contact.html">CONTACT</a></li>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="about.html">ABOUT</a></li>
+                <li><a href="products.html">PRODUCTS</a></li>
+                <li><a href="contact.html">CONTACT</a></li>
             </ul></nav>
             <div class="nav-buttons">
                 <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
                 <a href="login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
-                <a href="/cart.html" class="btn btn-primary">
+                <a href="cart.html" class="btn btn-primary">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count-badge" id="cartCount">0</span>
                 </a>
@@ -54,7 +53,7 @@
             <div class="login-card">
                 <div class="login-card-header">
                     <h1>Sign <span>In</span></h1>
-                    <p>Don't have an account? <a href="/signup.html">Create one free</a></p>
+                    <p>Don't have an account? <a href="signup.html">Create one free</a></p>
                 </div>
 
                 <div class="alert error" id="loginAlert" style="display:none;">
@@ -104,6 +103,11 @@
     </div>
 
     <script>
+        // Redirect if already logged in
+        if (localStorage.getItem('renutech_session')) {
+            window.location.href = 'index.html';
+        }
+
         // Password toggle
         document.getElementById('togglePassword').addEventListener('click', () => {
             const pw = document.getElementById('password');
@@ -122,47 +126,50 @@
             });
         });
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const email    = document.getElementById('email');
-            const password = document.getElementById('password');
+            const emailInput    = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
             let valid = true;
 
-            if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-                email.classList.add('error');
+            if (!emailInput.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+                emailInput.classList.add('error');
                 document.getElementById('emailError').classList.add('visible');
                 valid = false;
             }
-            if (!password.value || password.value.length < 6) {
-                password.classList.add('error');
+            if (!passwordInput.value || passwordInput.value.length < 6) {
+                passwordInput.classList.add('error');
                 document.getElementById('passwordError').classList.add('visible');
                 valid = false;
             }
             if (!valid) return;
 
-            // ══════════════════════════════════════════════════════════════════
-            // BACKEND HOOK — replace the mock block below with your API call:
-            //
-            // const res  = await fetch('/api/login', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ email: email.value, password: password.value })
-            // });
-            // const data = await res.json();
-            // if (!res.ok) { showAlert(data.message || 'Invalid credentials.'); return; }
-            // sessionStorage.setItem('renutech_user', JSON.stringify(data.user));
-            // window.location.href = data.user.role === 'admin' ? '/admin.html' : '/index.html';
-            // ══════════════════════════════════════════════════════════════════
+            const email = emailInput.value.trim().toLowerCase();
 
-            // TEMPORARY MOCK (remove when backend is ready)
-            const MOCK_USERS = [
-                { email: 'admin@renutech.com', password: 'admin123', role: 'admin', name: 'Admin' },
-                { email: 'user@renutech.com',  password: 'user123',  role: 'user',  name: 'Alex'  }
-            ];
-            const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
-            if (!match) { showAlert('Invalid email or password. Please try again.'); return; }
-            sessionStorage.setItem('renutech_user', JSON.stringify(match));
-            window.location.href = match.role === 'admin' ? 'admin.html' : 'index.html';
+            // Look up user from the same store signup.html writes to
+            const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
+            const match = users[email];
+
+            if (!match || match.password !== passwordInput.value) {
+                showAlert('Invalid email or password. Please try again.');
+                return;
+            }
+
+            // Save session — same format signup uses
+            const session = {
+                email: match.email,
+                firstName: match.firstName,
+                lastName: match.lastName
+            };
+
+            // Honour "remember me" — session storage clears on tab close, local persists
+            if (document.getElementById('rememberMe').checked) {
+                localStorage.setItem('renutech_session', JSON.stringify(session));
+            } else {
+                sessionStorage.setItem('renutech_session', JSON.stringify(session));
+            }
+
+            window.location.href = 'index.html';
         });
 
         function showAlert(msg) {
@@ -171,6 +178,5 @@
             el.style.display = 'flex';
         }
     </script>
-    <script src="script.js"></script>
 </body>
 </html>
