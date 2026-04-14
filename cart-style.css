@@ -141,7 +141,7 @@
         }
         
         .cart-count-badge {
-            background: var(--accent); 
+            background: var(--icons-prices-color); 
             color: #fff; 
             font-size: 10px; 
             font-weight: 800;
