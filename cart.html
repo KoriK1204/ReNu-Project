@@ -256,7 +256,7 @@
                         <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">
                     </div>
                     <div class="cart-item-meta">
-                        <div class="cart-item-name">${item.name}</div>
+                        <a href="product-detail.html?id=${item.id}" class="cart-item-name" style="text-decoration:none; color:inherit; cursor:pointer;">${item.name}</a>
                         <div class="cart-item-details">
                             <span class="detail-pill"><i class="fas fa-palette" style="margin-right:4px;"></i>${item.color}</span>
                             ${item.storage !== 'N/A (Watch)' ? `<span class="detail-pill"><i class="fas fa-hdd" style="margin-right:4px;"></i>${item.storage}</span>` : ''}
