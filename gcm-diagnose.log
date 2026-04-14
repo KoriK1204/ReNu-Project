@@ -1,0 +1,199 @@
+﻿Diagnose log at 2026-04-07T23:45:10Z
+
+AppPath: C:\Program Files\Git\mingw64\bin\git-credential-manager.exe
+InstallDir: C:\Program Files\Git\mingw64\bin\
+Version: 2.7.3+5fa7116896c82164996a609accd1c5ad90fe730a
+
+------------
+Diagnostic: Environment
+Skipped: False
+Success: True
+Exception: None
+Log:
+OSType: Windows
+OSVersion: 10.0 (build 22631)
+Reading environment variables... OK
+ Variables:
+SESSIONNAME=Console
+ProgramFiles(x86)=C:\Program Files (x86)
+MSYSTEM=MINGW64
+ProgramW6432=C:\Program Files
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 170 Stepping 4, GenuineIntel
+OnlineServices=Online Services
+PROCESSOR_ARCHITECTURE=AMD64
+VSCODE_GIT_ASKPASS_MAIN=c:\Users\karen\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\493597c785d4c5cb\askpass-main.js
+Path=C:/Program Files/Git/mingw64/libexec/git-core;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\karen\bin;c:\Users\karen\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand;c:\Users\karen\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\copilotCli;C:\Users\karen\AppData\Local\Programs\Microsoft VS Code;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Razer Chroma SDK\bin;C:\Program Files\Razer Chroma SDK\bin;C:\Program Files (x86)\Razer\ChromaBroadcast\bin;C:\Program Files\Razer\ChromaBroadcast\bin;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Users\karen\AppData\Local\Microsoft\WindowsApps;C:\Program Files\dotnet\;C:\Program Files\Java\jdk-23\bin;C:\Program Files\Git\cmd;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\karen\AppData\Local\Programs\Python\Launcher\;C:\Users\karen\AppData\Local\Microsoft\WindowsApps;C:\Users\karen\AppData\Local\Muse Hub\lib;C:\Users\karen\AppData\Local\Programs\Microsoft VS Code\bin;c:\Users\karen\.vscode\extensions\vscjava.vscode-java-debug-0.58.5\bundled\scripts\noConfigScripts
+USERPROFILE=C:\Users\karen
+VSCODE_GIT_IPC_HANDLE=\\.\pipe\vscode-git-773755c4d6-sock
+PROCESSOR_REVISION=aa04
+TEMP=C:\Users\karen\AppData\Local\Temp
+FPS_BROWSER_APP_PROFILE_STRING=Internet Explorer
+FPS_BROWSER_USER_PROFILE_STRING=Default
+LOGONSERVER=\\NHI_LAPTOP
+TERM=xterm-256color
+USERNAME=karen
+SystemRoot=C:\windows
+CHROME_CRASHPAD_PIPE_NAME=\\.\pipe\crashpad_42516_IHMFHMPXXVGSWUSY
+GIT_EXEC_PATH=C:/Program Files/Git/mingw64/libexec/git-core
+PLINK_PROTOCOL=ssh
+VSCODE_A11Y_MODE=0
+OneDrive=C:\Users\karen\OneDrive
+USERDOMAIN_ROAMINGPROFILE=NHI_LAPTOP
+VSCODE_NONCE=933279cb-6770-4233-825f-fc2ee0c72cc0
+CommonProgramFiles=C:\Program Files\Common Files
+ZES_ENABLE_SYSMAN=1
+VSCODE_JAVA_EXEC=C:\Program Files\Java\jdk-23\bin\java
+ProgramData=C:\ProgramData
+platformcode=M8
+GIT_ASKPASS=c:\Users\karen\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\493597c785d4c5cb\askpass.sh
+HOMEPATH=\Users\karen
+OneDriveConsumer=C:\Users\karen\OneDrive
+COMPUTERNAME=NHI_LAPTOP
+CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+VSCODE_INJECTION=1
+ALLUSERSPROFILE=C:\ProgramData
+CommonProgramW6432=C:\Program Files\Common Files
+TMP=C:\Users\karen\AppData\Local\Temp
+VSCODE_JDWP_ADAPTER_ENDPOINTS=c:\Users\karen\.vscode\extensions\vscjava.vscode-java-debug-0.58.5\.noConfigDebugAdapterEndpoints\endpoint-39e89760bc1d9015.txt
+DriverData=C:\Windows\System32\Drivers\DriverData
+HOMEDRIVE=C:
+windir=C:\windows
+GIT_TRACE2_PARENT_SID=c81817d6-3044-422b-ad31-d5163af85408
+SystemDrive=C:
+NUMBER_OF_PROCESSORS=14
+OS=Windows_NT
+ProgramFiles=C:\Program Files
+ComSpec=C:\windows\system32\cmd.exe
+VSCODE_STABLE=1
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL
+HOME=C:\Users\karen
+LANG=en_US.UTF-8
+JAVA_HOME=C:\Program Files\Java\jdk-23\bin
+PSModulePath=C:\Users\karen\OneDrive\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\windows\system32\WindowsPowerShell\v1.0\Modules
+TMPDIR=C:\Users\karen\AppData\Local\Temp
+APPDATA=C:\Users\karen\AppData\Roaming
+USERDOMAIN=NHI_LAPTOP
+PROCESSOR_LEVEL=6
+LOCALAPPDATA=C:\Users\karen\AppData\Local
+VSCODE_GIT_ASKPASS_NODE=C:\Users\karen\AppData\Local\Programs\Microsoft VS Code\Code.exe
+VSCODE_GIT_ASKPASS_EXTRA_ARGS=
+TERM_PROGRAM_VERSION=1.113.0
+RegionCode=NA
+COLORTERM=truecolor
+PUBLIC=C:\Users\Public
+TERM_PROGRAM=vscode
+EFC_41804=1
+
+
+------------
+Diagnostic: File system
+Skipped: False
+Success: True
+Exception: None
+Log:
+Temporary directory is 'C:\Users\karen\AppData\Local\Temp\'...
+Checking basic file I/O...
+Writing to temporary file 'C:\Users\karen\AppData\Local\Temp\6fd64b0587c27078d6aad63d'... OK
+Reading from temporary file 'C:\Users\karen\AppData\Local\Temp\6fd64b0587c27078d6aad63d'... OK
+Deleting temporary file 'C:\Users\karen\AppData\Local\Temp\6fd64b0587c27078d6aad63d'... OK
+Testing IFileSystem instance...
+UserHomePath: C:\Users\karen
+UserDataDirectoryPath: C:\Users\karen\.gcm
+GetCurrentDirectory(): C:\Users\karen\ReNu Project
+
+------------
+Diagnostic: Networking
+Skipped: False
+Success: True
+Exception: None
+Log:
+Checking networking and HTTP stack...
+Creating HTTP client... OK
+IsNetworkAvailable: True
+Sending HEAD request to http://example.com...Sending HEAD request to https://example.com... OK
+ OK
+Acquiring free TCP port... OK
+Testing local HTTP loopback connections...
+Creating new HTTP listener for http://localhost:61215/... OK
+Waiting for loopback connection... OK
+Writing response... OK
+Waiting for response data... OK
+Loopback connection data OK
+
+------------
+Diagnostic: Git
+Skipped: False
+Success: True
+Exception: None
+Log:
+Getting Git version... OK
+Git version is '2.53.0.windows.2'
+Locating current repository...Git repository at 'C:/Users/karen/ReNu Project/.git'
+ OK
+Listing all Git configuration... OK
+Git configuration:
+file:C:/Program Files/Git/etc/gitconfig	diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig	http.sslbackend=schannel
+file:C:/Program Files/Git/etc/gitconfig	core.autocrlf=true
+file:C:/Program Files/Git/etc/gitconfig	core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig	core.symlinks=false
+file:C:/Program Files/Git/etc/gitconfig	pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig	credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig	credential.https://dev.azure.com.usehttppath=true
+file:C:/Program Files/Git/etc/gitconfig	init.defaultbranch=master
+file:C:/Users/karen/.gitconfig	filter.lfs.clean=git-lfs clean -- %f
+file:C:/Users/karen/.gitconfig	filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Users/karen/.gitconfig	filter.lfs.process=git-lfs filter-process
+file:C:/Users/karen/.gitconfig	filter.lfs.required=true
+file:C:/Users/karen/.gitconfig	user.name=KoriK1204
+file:C:/Users/karen/.gitconfig	user.email=kori48468@gmail.com
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=false
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	core.symlinks=false
+file:.git/config	core.ignorecase=true
+file:.git/config	remote.origin.url=https://github.com/KoriK1204/ReNu-Project.git
+file:.git/config	remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+file:.git/config	lfs.repositoryformatversion=0
+
+
+------------
+Diagnostic: Credential storage
+Skipped: False
+Success: True
+Exception: None
+Log:
+ICredentialStore instance is of type: CredentialStore
+Writing test credential... OK
+Reading test credential... OK
+Deleting test credential... OK
+
+------------
+Diagnostic: Microsoft authentication (AAD/MSA)
+Skipped: False
+Success: True
+Exception: None
+Log:
+Broker is not enabled.
+Flow type is: Auto
+Gathering MSAL token cache data... OK
+CacheDirectory: C:\Users\karen\AppData\Local\.IdentityService
+CacheFileName: msal.cache
+CacheFilePath: C:\Users\karen\AppData\Local\.IdentityService\msal.cache
+Creating cache helper... OK
+Verifying MSAL token cache persistence... OK
+
+------------
+Diagnostic: GitHub API
+Skipped: False
+Success: True
+Exception: None
+Log:
+Using 'https://github.com/' as API target.
+Querying '/meta' endpoint... OK
+
