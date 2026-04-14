@@ -130,18 +130,18 @@
 
         .btn-ghost {
             background: transparent; 
-            color: var(--major-text);
-            border: 2px solid var(--secondary-text); 
+            color: var(--Major-text-color);
+            border: 2px solid var(--secondary-text-color); 
             padding: 8px 14px;
         }
         
         .btn-ghost:hover { 
-            background: var(--banner); 
+            background: var(--banner-color); 
             transform: translateY(-2px); 
         }
         
         .cart-count-badge {
-            background: var(--accent); 
+            background: var(--icons-prices-color); 
             color: #fff; 
             font-size: 10px; 
             font-weight: 800;
