@@ -1,4 +1,4 @@
-:root {
+            :root {
             --Major-text-color: #272727;
             --icons-prices-color: #72AEC8;
             --secondary-text-color: #3A3A3A;
@@ -36,6 +36,7 @@
             top: 0;
             z-index: 1000;
             padding: 10px 0;
+            border-bottom: 1px solid var(--banner);
             transition: all 0.4s ease;
         }
 
