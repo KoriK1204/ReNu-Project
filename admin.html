@@ -577,7 +577,7 @@ const panelTitles = {
     dashboard:    'Dashboard <span>Overview</span>',
     'order-mgmt': 'Order <span>Management</span>',
     shipping:     'Shipping <span>Queue</span>',
-    products:     'Product <span>Inventory</span>',
+    products:     'Product <span>Management</span>',
     analytics:    'Analytics <span>& Insights</span>',
     accounts:     'Account <span>Management</span>',
 };
@@ -591,13 +591,13 @@ document.querySelectorAll('.nav-item[data-panel]').forEach(item => {
 
 function switchPanel(name) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelector(`.nav-item[data-panel="${name}"]`).classList.add('active');
+    const navEl = document.querySelector(`.nav-item[data-panel="${name}"]`);
+    if (navEl) navEl.classList.add('active');
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
     document.getElementById('topbarTitle').innerHTML = panelTitles[name] || name;
     document.getElementById('topbarAction').style.display = name === 'products' ? '' : 'none';
     if (name === 'order-mgmt') renderActiveOrderSubtab();
-    if (name === 'shipping')   renderShipping();
     if (name === 'products')   renderProducts();
     if (name === 'accounts')   renderActiveAccountSubtab();
 }
@@ -1057,7 +1057,6 @@ function openAddProduct() {
     document.getElementById('pDesc').value  = '';
     resetImageUpload();
     document.getElementById('productModal').classList.add('open');
-    switchPanel('products');
 }
 
 function openEditProduct(id) {
@@ -1150,7 +1149,7 @@ setTimeout(() => {
 }, 100);
 
 // Close modals on overlay click
-['shipModal','productModal'].forEach(id => {
+['shipModal','productModal','createStaffModal'].forEach(id => {
     document.getElementById(id).addEventListener('click', (e) => {
         if (e.target === document.getElementById(id)) closeModal(id);
     });
