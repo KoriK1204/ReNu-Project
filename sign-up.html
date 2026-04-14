@@ -1,0 +1,241 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | ReNu Tech.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="sign-up-style.css">
+    <div class="auth-page">
+
+        <!-- Left decorative panel -->
+        <div class="auth-panel-left">
+            <a href="/index.html" class="auth-logo">
+                <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+
+            <div class="auth-panel-content">
+                <h2>Join the<br><span>ReNu</span> Community</h2>
+                <p>Create your free account and enjoy exclusive perks, order tracking, and a greener way to shop Apple tech.</p>
+                <div class="auth-perks">
+                    <div class="auth-perk">
+                        <div class="auth-perk-icon"><i class="fas fa-box"></i></div>
+                        <span>Track all your orders in one place</span>
+                    </div>
+                    <div class="auth-perk">
+                        <div class="auth-perk-icon"><i class="fas fa-tag"></i></div>
+                        <span>Early access to deals & new arrivals</span>
+                    </div>
+                    <div class="auth-perk">
+                        <div class="auth-perk-icon"><i class="fas fa-shield-alt"></i></div>
+                        <span>Manage warranties & returns easily</span>
+                    </div>
+                    <div class="auth-perk">
+                        <div class="auth-perk-icon"><i class="fas fa-leaf"></i></div>
+                        <span>Track your personal CO₂ savings</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-panel-footer">
+                &copy; 2026 ReNu Tech. All rights reserved.
+            </div>
+        </div>
+
+        <!-- Right form panel -->
+        <div class="auth-panel-right">
+            <div class="auth-form-wrap">
+                <div class="auth-form-header">
+                    <div class="step-label"><i class="fas fa-user-plus"></i> New Account</div>
+                    <h1>Create Account</h1>
+                    <p>Already have an account? <a href="/login.html">Sign in here</a></p>
+                </div>
+
+                <div class="auth-alert" id="alertBanner">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span id="alertText"></span>
+                </div>
+
+                <div class="auth-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <div class="input-wrap">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="firstName" placeholder="Karen" autocomplete="given-name">
+                            </div>
+                            <span class="field-error" id="err-firstName"><i class="fas fa-circle-xmark"></i> Required</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <div class="input-wrap">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="lastName" placeholder="Smith" autocomplete="family-name">
+                            </div>
+                            <span class="field-error" id="err-lastName"><i class="fas fa-circle-xmark"></i> Required</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" placeholder="karen@example.com" autocomplete="email">
+                        </div>
+                        <span class="field-error" id="err-email"><i class="fas fa-circle-xmark"></i> Enter a valid email</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" placeholder="At least 8 characters" autocomplete="new-password" oninput="checkStrength(this.value)">
+                            <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="strength-bar" id="strengthBar">
+                            <span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span>
+                        </div>
+                        <span class="strength-label" id="strengthLabel"></span>
+                        <span class="field-error" id="err-password"><i class="fas fa-circle-xmark"></i> Must be at least 8 characters</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password">
+                            <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="field-error" id="err-confirmPassword"><i class="fas fa-circle-xmark"></i> Passwords do not match</span>
+                    </div>
+
+                    <div class="terms-row">
+                        <input type="checkbox" id="terms">
+                        <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                    </div>
+
+                    <button class="auth-submit" onclick="handleSignup()">
+                        <i class="fas fa-user-plus"></i> Create My Account
+                    </button>
+
+                    <div class="auth-divider"><span>or</span></div>
+                    <div class="auth-switch">Already have an account? <a href="/login.html">Sign in</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Password visibility toggle ──
+        function togglePassword(id, btn) {
+            const input = document.getElementById(id);
+            const icon  = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // ── Password strength ──
+        function checkStrength(val) {
+            const bars  = [document.getElementById('s1'), document.getElementById('s2'), document.getElementById('s3'), document.getElementById('s4')];
+            const label = document.getElementById('strengthLabel');
+            const colors = ['#e05c5c','#e09a3a','#72AEC8','#4caf82'];
+            const labels = ['Weak','Fair','Good','Strong'];
+
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            bars.forEach((b, i) => {
+                b.style.background = i < score ? colors[score - 1] : 'var(--arrows-color)';
+            });
+            label.textContent = val.length ? labels[score - 1] || '' : '';
+            label.style.color = score > 0 ? colors[score - 1] : '';
+        }
+
+        // ── Field error helpers ──
+        function showError(id) { document.getElementById('err-' + id).classList.add('show'); }
+        function hideError(id) { document.getElementById('err-' + id).classList.remove('show'); }
+
+        function showAlert(msg, type = 'error') {
+            const banner = document.getElementById('alertBanner');
+            document.getElementById('alertText').textContent = msg;
+            banner.className = 'auth-alert ' + type;
+        }
+        function hideAlert() {
+            document.getElementById('alertBanner').className = 'auth-alert';
+        }
+
+        // ── Sign up logic ──
+        function handleSignup() {
+            hideAlert();
+            let valid = true;
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName  = document.getElementById('lastName').value.trim();
+            const email     = document.getElementById('email').value.trim().toLowerCase();
+            const password  = document.getElementById('password').value;
+            const confirm   = document.getElementById('confirmPassword').value;
+            const terms     = document.getElementById('terms').checked;
+
+            // Validate fields
+            firstName ? hideError('firstName') : (showError('firstName'), valid = false);
+            lastName  ? hideError('lastName')  : (showError('lastName'),  valid = false);
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('email'); valid = false;
+            } else { hideError('email'); }
+
+            if (!password || password.length < 8) {
+                showError('password'); valid = false;
+            } else { hideError('password'); }
+
+            if (password !== confirm) {
+                showError('confirmPassword'); valid = false;
+            } else { hideError('confirmPassword'); }
+
+            if (!valid) return;
+
+            if (!terms) {
+                showAlert('Please accept the Terms of Service to continue.');
+                return;
+            }
+
+            // Check if account already exists
+            const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
+            if (users[email]) {
+                showAlert('An account with this email already exists. Try signing in.');
+                return;
+            }
+
+            // Save new user
+            users[email] = { firstName, lastName, email, password, createdAt: new Date().toISOString() };
+            localStorage.setItem('renutech_users', JSON.stringify(users));
+
+            // Auto-login
+            localStorage.setItem('renutech_session', JSON.stringify({ email, firstName, lastName }));
+
+            // Redirect to home with success flag
+            window.location.href = '/index.html?welcome=1';
+        }
+
+        // Redirect if already logged in
+        if (localStorage.getItem('renutech_session')) {
+            window.location.href = '/index.html';
+        }
+    </script>
+</body>
+</html>
