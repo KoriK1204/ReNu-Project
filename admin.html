@@ -26,30 +26,20 @@
     </a>
 
     <span class="sidebar-section-label">Operations</span>
+    <a class="nav-item" data-panel="products" href="#">
+        <i class="fas fa-mobile-alt"></i> Product Management
+    </a>
     <a class="nav-item" data-panel="order-mgmt" href="#">
         <i class="fas fa-clipboard-list"></i> Order Management
         <span class="nav-badge" id="pendingBadge">3</span>
     </a>
-    <a class="nav-item" data-panel="shipping" href="#">
-        <i class="fas fa-shipping-fast"></i> Shipping
-    </a>
-    <a class="nav-item" data-panel="products" href="#">
-        <i class="fas fa-mobile-alt"></i> Products
+    <a class="nav-item" data-panel="accounts" href="#">
+        <i class="fas fa-users-cog"></i> Account Management
     </a>
 
     <span class="sidebar-section-label">Insights</span>
     <a class="nav-item" data-panel="analytics" href="#">
         <i class="fas fa-chart-bar"></i> Analytics
-    </a>
-
-    <span class="sidebar-section-label">Management</span>
-    <a class="nav-item" data-panel="accounts" href="#">
-        <i class="fas fa-users-cog"></i> Account Management
-    </a>
-
-    <div class="sidebar-divider"></div>
-    <a href="/index.html" class="view-store">
-        <i class="fas fa-external-link-alt"></i> View Store
     </a>
 
     <div class="sidebar-footer">
@@ -71,10 +61,8 @@
     <div class="topbar">
         <div class="topbar-title" id="topbarTitle">Dashboard <span>Overview</span></div>
         <div class="topbar-right">
+            <button class="topbar-btn primary" id="topbarAction" onclick="openAddProduct()" style="display:none"><i class="fas fa-plus"></i> Add Product</button>
             <a href="/index.html" class="topbar-btn"><i class="fas fa-store"></i> View Store</a>
-            <button class="topbar-btn primary" id="topbarAction" onclick="openAddProduct()">
-                <i class="fas fa-plus"></i> Add Product
-            </button>
         </div>
     </div>
 
@@ -286,10 +274,6 @@
 
     <!-- ══ PRODUCTS ══ -->
     <div class="panel" id="panel-products">
-        <div class="section-hd">
-            <h2>Product <span>Inventory</span></h2>
-            <button class="topbar-btn primary" onclick="openAddProduct()"><i class="fas fa-plus"></i> Add Product</button>
-        </div>
         <div class="table-card">
             <div class="table-toolbar">
                 <div class="search-input-wrap">
@@ -611,6 +595,7 @@ function switchPanel(name) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
     document.getElementById('topbarTitle').innerHTML = panelTitles[name] || name;
+    document.getElementById('topbarAction').style.display = name === 'products' ? '' : 'none';
     if (name === 'order-mgmt') renderActiveOrderSubtab();
     if (name === 'shipping')   renderShipping();
     if (name === 'products')   renderProducts();
