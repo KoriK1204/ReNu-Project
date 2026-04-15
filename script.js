@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dropdown.innerHTML = `
             <div class="user-drop-name">${user.firstName} ${user.lastName}</div>
             <div class="user-drop-id">${user.customerId}</div>
-            <a href="/account.html" class="user-drop-item"><i class="fas fa-user"></i> View Account</a>
+            <a href="account.html" class="user-drop-item"><i class="fas fa-user"></i> View Account</a>
             <div class="user-drop-divider"></div>
             <a href="#" class="user-drop-item danger" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
         `;
@@ -214,11 +214,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('logoutLink').addEventListener('click', (e) => {
             e.preventDefault();
             sessionStorage.removeItem('renutech_user');
-            window.location.href = '/login.html';
+            window.location.href = 'login.html';
         });
 
     } else {
         // Not logged in — plain link to login
-        userBtn.href = '/login.html';
+        userBtn.href = 'login.html';
     }
 });
