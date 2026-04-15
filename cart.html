@@ -215,6 +215,26 @@
         const PROMO_PCT  = 0.10;
         const TAX_RATE   = 0.0825;
 
+        function getProductId(item) {
+            if (item.productId && String(item.productId).trim() !== 'undefined') {
+                return item.productId;
+            }
+        
+            const productMap = {
+                'iPhone 16 Pro': 1,
+                'iPhone 15 Pro': 2,
+                'iPhone 17': 3,
+                'MacBook Pro M4 Space Black 14"': 4,
+                'MacBook Air M2 Midnight 13"': 5,
+                'MacBook Pro M3 Silver 14"': 6,
+                'Apple Watch Ultra 3': 7,
+                'Apple Watch SE 2nd Gen': 8,
+                'Apple Watch S11': 9
+            };
+        
+            return productMap[item.name] || 1;
+        }
+
         // ── Render cart ──────────────────────────────────────────────
         function renderCart() {
             const cart      = getCart();
@@ -256,7 +276,7 @@
                         <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">
                     </div>
                     <div class="cart-item-meta">
-                        <a href="product-detail.html?id=${item.productId}" class="cart-item-name" style="text-decoration:none; color:inherit; cursor:pointer;">${item.name}</a>
+                        <a href="product-detail.html?id=${getProductId(item)}" class="cart-item-name" style="text-decoration:none; color:inherit; cursor:pointer;">${item.name}</a>
                         <div class="cart-item-details">
                             <span class="detail-pill"><i class="fas fa-palette" style="margin-right:4px;"></i>${item.color}</span>
                             ${item.storage !== 'N/A (Watch)' ? `<span class="detail-pill"><i class="fas fa-hdd" style="margin-right:4px;"></i>${item.storage}</span>` : ''}
