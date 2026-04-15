@@ -130,7 +130,7 @@
 
         .btn-ghost {
             background: transparent; 
-            color: var(--Major-text-color);
+            color: var(--major-text-color);
             border: 2px solid var(--secondary-text-color); 
             padding: 8px 14px;
         }
