@@ -100,14 +100,41 @@ function updateCartBadge() {
 }
 
 // Adds an item to cart (merges qty if same id already exists)
+function getProductIdFromName(name) {
+    const productMap = {
+        'iPhone 16 Pro': 1,
+        'iPhone 15 Pro': 2,
+        'iPhone 17': 3,
+        'MacBook Pro M4 Space Black 14"': 4,
+        'MacBook Air M2 Midnight 13"': 5,
+        'MacBook Pro M3 Silver 14"': 6,
+        'Apple Watch Ultra 3': 7,
+        'Apple Watch SE 2nd Gen': 8,
+        'Apple Watch S11': 9
+    };
+
+    return productMap[name] || null;
+}
+
 function addToCart(item) {
     const cart = getCart();
-    const idx = cart.findIndex(x => x.id === item.id);
+
+    const normalizedItem = {
+        ...item,
+        productId: item.productId ?? getProductIdFromName(item.name)
+    };
+
+    const idx = cart.findIndex(x => x.id === normalizedItem.id);
+
     if (idx > -1) {
-        cart[idx].qty += item.qty;
+        cart[idx].qty += normalizedItem.qty;
+        if (!cart[idx].productId) {
+            cart[idx].productId = normalizedItem.productId;
+        }
     } else {
-        cart.push(item);
+        cart.push(normalizedItem);
     }
+
     saveCart(cart);
     updateCartBadge();
 }
