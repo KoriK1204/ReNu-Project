@@ -36,7 +36,7 @@
             top: 0;
             z-index: 1000;
             padding: 10px 0;
-            border-bottom: 1px solid var(--banner);
+            border-bottom: 1px solid var(--banner-color);
             transition: all 0.4s ease;
         }
 
@@ -131,18 +131,18 @@
 
         .btn-ghost {
             background: transparent; 
-            color: var(--major-text);
-            border: 2px solid var(--secondary-text); 
+            color: var(--major-text-color);
+            border: 2px solid var(--secondary-text-color); 
             padding: 8px 14px;
         }
         
         .btn-ghost:hover { 
-            background: var(--banner); 
+            background: var(--banner-color); 
             transform: translateY(-2px); 
         }
         
         .cart-count-badge {
-            background: var(--accent); 
+            background: var(--icons-prices-color); 
             color: #fff; 
             font-size: 10px; 
             font-weight: 800;
@@ -253,6 +253,7 @@
             margin-top: 40px;
             flex-wrap: wrap;
         }
+
 
         /* Products Section */
         .products {
@@ -613,6 +614,7 @@
                 font-size: 17px;
             }
         }
+
  /* Search Overlay */
 .search-overlay {
   position: fixed;
