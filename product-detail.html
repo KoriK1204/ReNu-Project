@@ -404,7 +404,7 @@ const allProducts = {
 };
 // ── Load correct product from URL ?id= ───────────────────────
 const params = new URLSearchParams(window.location.search);
-const rawId = params.get('id');
+const productId = Number(params.get('id')) || 1;
 const productId = Number(rawId);
 const product = allProducts[productId];
 
