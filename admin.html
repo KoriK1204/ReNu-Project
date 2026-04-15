@@ -525,6 +525,29 @@
     </div>
 </div>
 
+<!-- ── View Order Modal ── -->
+<div class="modal-overlay" id="viewOrderModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('viewOrderModal')">&times;</button>
+        <h3>Order <span id="viewOrderRef"></span></h3>
+        <p id="viewOrderStatus"></p>
+        <div class="modal-form" style="display:block;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group"><label>Customer</label><div id="viewOrderCustomer" style="font-size:13px;font-weight:600;padding:8px 0;"></div></div>
+                <div class="form-group"><label>Email</label><div id="viewOrderEmail" style="font-size:13px;padding:8px 0;"></div></div>
+                <div class="form-group"><label>Product</label><div id="viewOrderProduct" style="font-size:13px;padding:8px 0;"></div></div>
+                <div class="form-group"><label>Total</label><div id="viewOrderTotal" style="font-size:13px;font-weight:700;color:var(--teal);padding:8px 0;"></div></div>
+                <div class="form-group"><label>Date</label><div id="viewOrderDate" style="font-size:13px;padding:8px 0;"></div></div>
+                <div class="form-group"><label>Tracking</label><div id="viewOrderTracking" style="font-size:13px;padding:8px 0;font-family:'Jost',sans-serif;"></div></div>
+            </div>
+            <div class="form-group"><label>Shipping Address</label><div id="viewOrderAddress" style="font-size:13px;padding:8px 0;"></div></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('viewOrderModal')">Close</button>
+        </div>
+    </div>
+</div>
+
 <!-- ── Toast ── -->
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done!</span></div>
 
@@ -557,6 +580,7 @@ async function api(method, path, body) {
 
 // ── State ──────────────────────────────────────────────────────────────────
 let productsCache       = [];
+let ordersCache         = [];
 let currentShipOrderId  = null;
 let currentShipOrderRef = null;
 let editingProductId    = null;
@@ -679,11 +703,12 @@ async function renderOrders() {
     if (q)      p.push(`search=${encodeURIComponent(q)}`);
     if (p.length) url += '?' + p.join('&');
     const orders = await api('GET', url);
-    if (!Array.isArray(orders) || !orders.length) {
+    ordersCache = Array.isArray(orders) ? orders : [];
+    if (!ordersCache.length) {
         tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-box-open"></i><p>No orders match your filters.</p></div></td></tr>`;
         return;
     }
-    tbody.innerHTML = orders.map(o => `
+    tbody.innerHTML = ordersCache.map(o => `
         <tr>
             <td><span class="order-id">${o.ref}</span></td>
             <td><div class="customer-cell"><span class="customer-name">${o.customer}</span><span class="customer-email">${o.email}</span></div></td>
@@ -695,10 +720,10 @@ async function renderOrders() {
                 ${o.status === 'pending'   ? `<button class="action-btn ship" onclick="openShipModal(${o.id},'${o.ref}')"><i class="fas fa-shipping-fast"></i> Ship</button>` : ''}
                 ${o.status === 'shipped'   ? `<button class="action-btn success" onclick="markDelivered(${o.id},'${o.ref}')"><i class="fas fa-check"></i> Delivered</button>` : ''}
                 ${o.status === 'pending'   ? `<button class="action-btn danger" onclick="cancelOrder(${o.id},'${o.ref}')"><i class="fas fa-times"></i> Cancel</button>` : ''}
-                ${['delivered','cancelled','shipped'].includes(o.status) ? `<button class="action-btn"><i class="fas fa-eye"></i> View</button>` : ''}
+                ${['delivered','cancelled','shipped'].includes(o.status) ? `<button class="action-btn" onclick="viewOrder(${o.id})"><i class="fas fa-eye"></i> View</button>` : ''}
             </td>
         </tr>`).join('');
-    updatePendingBadge(orders);
+    updatePendingBadge(ordersCache);
 }
 
 // ── Products ───────────────────────────────────────────────────────────────
@@ -1071,6 +1096,21 @@ async function deleteProduct(id) {
 // ── Helpers ────────────────────────────────────────────────────────────────
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+function viewOrder(id) {
+    const o = ordersCache.find(x => x.id === id);
+    if (!o) return;
+    document.getElementById('viewOrderRef').textContent      = o.ref;
+    document.getElementById('viewOrderStatus').innerHTML     = badge(o.status);
+    document.getElementById('viewOrderCustomer').textContent = o.customer;
+    document.getElementById('viewOrderEmail').textContent    = o.email;
+    document.getElementById('viewOrderProduct').textContent  = o.products || '—';
+    document.getElementById('viewOrderTotal').textContent    = '$' + parseFloat(o.total).toLocaleString();
+    document.getElementById('viewOrderDate').textContent     = fmtDate(o.date);
+    document.getElementById('viewOrderTracking').textContent = o.tracking || '—';
+    document.getElementById('viewOrderAddress').textContent  = o.address || '—';
+    document.getElementById('viewOrderModal').classList.add('open');
+}
+
 function updatePendingBadge(orders) {
     const count = Array.isArray(orders) ? orders.filter(o => o.status === 'pending').length : 0;
     document.getElementById('pendingBadge').textContent = count;
@@ -1113,7 +1153,7 @@ setTimeout(() => {
 }, 100);
 
 // Close modals on overlay click
-['shipModal','productModal','createStaffModal'].forEach(id => {
+['shipModal','productModal','createStaffModal','viewOrderModal'].forEach(id => {
     document.getElementById(id).addEventListener('click', (e) => {
         if (e.target === document.getElementById(id)) closeModal(id);
     });
