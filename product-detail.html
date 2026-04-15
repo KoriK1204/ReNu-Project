@@ -403,9 +403,14 @@ const allProducts = {
   },
 };
 // ── Load correct product from URL ?id= ───────────────────────
-const params    = new URLSearchParams(window.location.search);
-const productId = params.get('id') || 1;
-const product   = allProducts[productId];
+const params = new URLSearchParams(window.location.search);
+const rawId = params.get('id');
+const productId = Number(rawId);
+const product = allProducts[productId];
+
+if (!product) {
+  window.location.href = 'products.html';
+}
 
 if (product) {
   document.title = product.name + ' — ReNu Tech';
