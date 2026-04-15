@@ -133,7 +133,7 @@
         <div class="table-card">
             <table id="dashRecentTable">
                 <thead><tr>
-                    <th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Action</th>
+                    <th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th>
                 </tr></thead>
                 <tbody id="dashRecentBody"></tbody>
             </table>
@@ -671,10 +671,10 @@ function stockBadge(qty) {
 // ── Dashboard recent orders ────────────────────────────────────────────────
 async function renderDashRecent() {
     const tbody = document.getElementById('dashRecentBody');
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
     const orders = await api('GET', '/api/orders');
     if (!Array.isArray(orders) || !orders.length) {
-        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-box-open"></i><p>No orders yet.</p></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-box-open"></i><p>No orders yet.</p></div></td></tr>`;
         return;
     }
     tbody.innerHTML = orders.slice(0, 5).map(o => `
@@ -684,9 +684,6 @@ async function renderDashRecent() {
             <td>${o.products || '—'}</td>
             <td><span class="amount">$${parseFloat(o.total).toLocaleString()}</span></td>
             <td>${badge(o.status)}</td>
-            <td>${o.status === 'pending'
-                ? `<button class="action-btn ship" onclick="openShipModal(${o.id},'${o.ref}')"><i class="fas fa-shipping-fast"></i> Ship</button>`
-                : `<button class="action-btn" onclick="switchPanel('order-mgmt')">View</button>`}</td>
         </tr>`).join('');
     updatePendingBadge(orders);
 }
