@@ -67,7 +67,7 @@
             <div class="gallery">
                 <div class="main-image">
                     <span class="condition-badge-img like-new">Like New</span>
-                    <img src="./images/iphone-16-pro-neutral.svg" alt="iPhone 16 Pro" id="mainImage">
+                    <img src="./public/images/iphone-16-pro-neutral.svg" alt="iPhone 16 Pro" id="mainImage">
                 </div>
                 <div class="thumbnails">
                     <div class="thumb active" data-img="./public/images/iphone-16-pro-neutral.svg">
@@ -404,7 +404,7 @@ const allProducts = {
 };
 // ── Load correct product from URL ?id= ───────────────────────
 const params = new URLSearchParams(window.location.search);
-const productId = params.get('id');
+const rawId = params.get('id');
 const productId = Number(rawId) || 1;
 const product = allProducts[productId];
 
