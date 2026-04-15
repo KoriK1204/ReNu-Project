@@ -19,16 +19,16 @@
                 <div class="logo-text">ReNu <span>Tech.</span></div>
             </a>
             <nav><ul>
-                <li><a href="/index.html">HOME</a></li>
-                <li><a href="/about.html">ABOUT</a></li>
-                <li><a href="/products.html">PRODUCTS</a></li>
-                <li><a href="/blog.html">BLOG</a></li>
-                <li><a href="/contact.html">CONTACT</a></li>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="about.html">ABOUT</a></li>
+                <li><a href="products.html">PRODUCTS</a></li>
+                <li><a href="blog.html">BLOG</a></li>
+                <li><a href="contact.html">CONTACT</a></li>
             </ul></nav>
             <div class="nav-buttons">
                 <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
-                <a href="/login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
-                <a href="/cart.html" class="btn btn-primary">
+                <a href="login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="cart.html" class="btn btn-primary">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count-badge" id="cartCount">0</span>
                 </a>
@@ -169,11 +169,11 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="/index.html">Home</a></li>
-                        <li><a href="/products.html">Products</a></li>
-                        <li><a href="/about.html">About Us</a></li>
-                        <li><a href="/blog.html">Blog</a></li>
-                        <li><a href="/contact.html">Contact</a></li>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -194,7 +194,7 @@
     <script>
         // Redirect if not logged in
         const user = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
-        if (!user) window.location.href = '/login.html';
+        if (!user) window.location.href = 'login.html';
 
         // Fill profile
         document.getElementById('heroName').textContent         = user.firstName + ' ' + user.lastName;
