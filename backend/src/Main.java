@@ -531,12 +531,38 @@ public class Main {
             String id = queryParams(ex).get("id");
             if (id == null) { send(ex, 400, "{\"error\":\"id is required\"}"); return; }
             Map<String, String> b = parseJson(readBody(ex));
-            try (Connection conn = getConnection();
-                 PreparedStatement ps = conn.prepareStatement(
-                         "UPDATE restock_orders SET status = ? WHERE id = ?")) {
-                ps.setString(1, b.getOrDefault("status", "ordered"));
-                ps.setInt(2, Integer.parseInt(id));
-                send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
+            String newStatus = b.getOrDefault("status", "ordered");
+            try (Connection conn = getConnection()) {
+                conn.setAutoCommit(false);
+                // Update the restock order status
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE restock_orders SET status = ? WHERE id = ?")) {
+                    ps.setString(1, newStatus);
+                    ps.setInt(2, Integer.parseInt(id));
+                    ps.executeUpdate();
+                }
+                // If marked received, add the quantity to the matching product's stock
+                if ("received".equals(newStatus)) {
+                    String productName;
+                    int qty;
+                    try (PreparedStatement fetch = conn.prepareStatement(
+                            "SELECT product_name, quantity FROM restock_orders WHERE id = ?")) {
+                        fetch.setInt(1, Integer.parseInt(id));
+                        ResultSet rs = fetch.executeQuery();
+                        if (rs.next()) {
+                            productName = rs.getString("product_name");
+                            qty         = rs.getInt("quantity");
+                            try (PreparedStatement upd = conn.prepareStatement(
+                                    "UPDATE products SET stock = stock + ? WHERE name = ?")) {
+                                upd.setInt(1, qty);
+                                upd.setString(2, productName);
+                                upd.executeUpdate();
+                            }
+                        }
+                    }
+                }
+                conn.commit();
+                send(ex, 200, "{\"success\":true}");
             } catch (SQLException e) {
                 send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
             }
