@@ -259,13 +259,9 @@
             }));
 
             // Redirect to home with success flag
-            window.location.href = '/index.html?welcome=1';
+            window.location.href = 'index.html';
         }
         
-        // Redirect if already logged in
-        if (sessionStorage.getItem('renutech_user') || localStorage.getItem('renutech_user')) {
-            window.location.href = '/index.html';
-        }
     </script>
 </body>
 </html>
