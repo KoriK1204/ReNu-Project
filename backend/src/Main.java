@@ -82,6 +82,7 @@ public class Main {
             if (kv.length != 2) continue;
             String k = kv[0].trim().replaceAll("^\"|\"$", "");
             String v = kv[1].trim().replaceAll("^\"|\"$", "");
+            v = v.replace("\\\"", "\"").replace("\\\\", "\\");
             map.put(k, v);
         }
         return map;
@@ -541,24 +542,14 @@ public class Main {
                     ps.setInt(2, Integer.parseInt(id));
                     ps.executeUpdate();
                 }
-                // If marked received, add the quantity to the matching product's stock
+                // If marked received, add the restock quantity directly to the matching product's stock
+                // using a JOIN so there is no Java-side string comparison (avoids encoding mismatches)
                 if ("received".equals(newStatus)) {
-                    String productName;
-                    int qty;
-                    try (PreparedStatement fetch = conn.prepareStatement(
-                            "SELECT product_name, quantity FROM restock_orders WHERE id = ?")) {
-                        fetch.setInt(1, Integer.parseInt(id));
-                        ResultSet rs = fetch.executeQuery();
-                        if (rs.next()) {
-                            productName = rs.getString("product_name");
-                            qty         = rs.getInt("quantity");
-                            try (PreparedStatement upd = conn.prepareStatement(
-                                    "UPDATE products SET stock = stock + ? WHERE name = ?")) {
-                                upd.setInt(1, qty);
-                                upd.setString(2, productName);
-                                upd.executeUpdate();
-                            }
-                        }
+                    try (PreparedStatement upd = conn.prepareStatement(
+                            "UPDATE products p JOIN restock_orders r ON p.name = r.product_name " +
+                            "SET p.stock = p.stock + r.quantity WHERE r.id = ?")) {
+                        upd.setInt(1, Integer.parseInt(id));
+                        upd.executeUpdate();
                     }
                 }
                 conn.commit();
