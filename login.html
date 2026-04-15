@@ -127,7 +127,7 @@
             });
         });
 
-document.getElementById('loginForm').addEventListener('submit', (e) => {
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const emailInput = document.getElementById('email');
             const passwordInput = document.getElementById('password');
@@ -179,32 +179,7 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
                 showAlert('Invalid email or password. Please try again.');
             }
         });
-            // Look up user from the same store signup.html writes to
-            const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
-            const match = users[email];
-
-            if (!match || match.password !== passwordInput.value) {
-                showAlert('Invalid email or password. Please try again.');
-                return;
-            }
-
-            // Save session — same format signup uses
-            const session = {
-                email: match.email,
-                firstName: match.firstName,
-                lastName: match.lastName
-            };
-
-            // Honour "remember me" — session storage clears on tab close, local persists
-            if (document.getElementById('rememberMe').checked) {
-                localStorage.setItem('renutech_user', JSON.stringify(session));
-            } else {
-                sessionStorage.setItem('renutech_user', JSON.stringify(session));
-            }
-
-            window.location.href = 'index.html';
-        });
-
+        
         function showAlert(msg) {
             const el = document.getElementById('loginAlert');
             document.getElementById('alertMsg').textContent = msg;
