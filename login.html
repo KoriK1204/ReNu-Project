@@ -127,50 +127,58 @@
             });
         });
 
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
+document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const emailInput    = document.getElementById('email');
+            const emailInput = document.getElementById('email');
             const passwordInput = document.getElementById('password');
+            const emailValue = emailInput.value.trim().toLowerCase();
+            const passwordValue = passwordInput.value;
             let valid = true;
 
-            if (!emailInput.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+            // 1. Validation
+            if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
                 emailInput.classList.add('error');
                 document.getElementById('emailError').classList.add('visible');
                 valid = false;
             }
-            if (!passwordInput.value || passwordInput.value.length < 6) {
+            if (!passwordValue || passwordValue.length < 6) {
                 passwordInput.classList.add('error');
                 document.getElementById('passwordError').classList.add('visible');
                 valid = false;
             }
             if (!valid) return;
 
-            // TEMPORARY MOCK (remove when backend is ready)
+            // 2. Define Admin/Mock Users
             const MOCK_USERS = [
                 { email: 'admin@renutech.com', password: 'admin123', role: 'admin', name: 'Admin' },
                 { email: 'user@renutech.com',  password: 'user123',  role: 'user',  name: 'Alex'  }
             ];
-            
-            //Check Mock Users first (admin)
-            const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
-            
-            // Check real signups first
-            const realCustomers = JSON.parse(localStorage.getItem('renutech_customers') || '[]');
-            const realMatch = realCustomers.find(u => u.email === email.value);
-            
-            if (realMatch) {
-                sessionStorage.setItem('renutech_user', JSON.stringify(realMatch));
-                window.location.href = 'account.html';
+
+            // 3. Check for Match (Admin goes to admin.html)
+            const match = MOCK_USERS.find(u => u.email === emailValue && u.password === passwordValue);
+
+            if (match) {
+                sessionStorage.setItem('renutech_user', JSON.stringify(match));
+                window.location.href = (match.role === 'admin') ? 'admin.html' : 'index.html';
                 return;
             }
-            /*const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
-                    if (!match) { showAlert('Invalid email or password. Please try again.'); return; }
-                    sessionStorage.setItem('renutech_user', JSON.stringify(match));
-                    window.location.href = match.role === 'admin' ? '/admin.html' : '/index.html';
-            });
 
-            const email = emailInput.value.trim().toLowerCase(); */
+            // 4. Check Local Storage (For users created via signup.html)
+            const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
+            const localMatch = users[emailValue];
 
+            if (localMatch && localMatch.password === passwordValue) {
+                const session = { email: localMatch.email, firstName: localMatch.firstName };
+                if (document.getElementById('rememberMe').checked) {
+                    localStorage.setItem('renutech_user', JSON.stringify(session));
+                } else {
+                    sessionStorage.setItem('renutech_user', JSON.stringify(session));
+                }
+                window.location.href = 'index.html';
+            } else {
+                showAlert('Invalid email or password. Please try again.');
+            }
+        });
             // Look up user from the same store signup.html writes to
             const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
             const match = users[email];
