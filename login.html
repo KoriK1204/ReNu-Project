@@ -155,7 +155,7 @@
             const realMatch = realCustomers.find(u => u.email === email.value);
             if (realMatch) {
                 sessionStorage.setItem('renutech_user', JSON.stringify(realMatch));
-                window.location.href = '/index.html';
+                window.location.href = 'account.html';
                 return;
             }
             const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
