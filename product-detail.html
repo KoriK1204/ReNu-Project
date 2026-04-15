@@ -51,9 +51,9 @@
     <!-- Breadcrumb -->
     <div class="container">
         <div class="breadcrumb">
-            <a href="/index.html">Home</a>
+            <a href="index.html">Home</a>
             <span>/</span>
-            <a href="/products.html">Products</a>
+            <a href="products.html">Products</a>
             <span>/</span>
             iPhone 16 Pro
         </div>
@@ -404,8 +404,8 @@ const allProducts = {
 };
 // ── Load correct product from URL ?id= ───────────────────────
 const params = new URLSearchParams(window.location.search);
-const productId = Number(params.get('id')) || 1;
-const productId = Number(rawId);
+const productId = params.get('id');
+const productId = Number(rawId) || 1;
 const product = allProducts[productId];
 
 if (!product) {
