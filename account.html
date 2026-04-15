@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account — ReNu Tech.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login-style.css">
+    <link rel="stylesheet" href="account-style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="/index.html" class="logo">
+                <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+            <nav><ul>
+                <li><a href="/index.html">HOME</a></li>
+                <li><a href="/about.html">ABOUT</a></li>
+                <li><a href="/products.html">PRODUCTS</a></li>
+                <li><a href="/blog.html">BLOG</a></li>
+                <li><a href="/contact.html">CONTACT</a></li>
+            </ul></nav>
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
+                <a href="/login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="/cart.html" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="account-hero">
+        <div class="container">
+            <div class="account-hero-inner">
+                <div class="account-avatar-big" id="avatarBig">?</div>
+                <div class="account-hero-text">
+                    <div class="page-label" style="margin-bottom:10px;"><i class="fas fa-user-circle"></i> My Account</div>
+                    <h1 id="heroName">Welcome</h1>
+                    <div class="customer-id-pill" id="heroCustomerId">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Account Body -->
+    <section class="account-section">
+        <div class="container account-layout">
+
+            <!-- Sidebar Nav -->
+            <aside class="account-sidebar">
+                <nav class="account-nav">
+                    <a href="#" class="acc-nav-item active" data-tab="profile">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="#" class="acc-nav-item" data-tab="orders">
+                        <i class="fas fa-box"></i> My Orders
+                    </a>
+                    <a href="#" class="acc-nav-item" data-tab="address">
+                        <i class="fas fa-map-marker-alt"></i> Shipping Address
+                    </a>
+                </nav>
+                <div class="acc-sidebar-logout">
+                    <button id="sidebarLogout" class="acc-logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="account-main">
+
+                <!-- ── PROFILE TAB ── -->
+                <div class="acc-tab active" id="tab-profile">
+                    <div class="acc-block">
+                        <div class="acc-block-header">
+                            <h2><i class="fas fa-id-card"></i> Account Information</h2>
+                        </div>
+                        <div class="profile-grid">
+                            <div class="profile-field">
+                                <span class="field-label">Customer ID</span>
+                                <span class="field-value highlight" id="profileCustomerId">—</span>
+                            </div>
+                            <div class="profile-field">
+                                <span class="field-label">Account Status</span>
+                                <span class="field-value"><span class="status-pill active">Active</span></span>
+                            </div>
+                            <div class="profile-field">
+                                <span class="field-label">First Name</span>
+                                <span class="field-value" id="profileFirstName">—</span>
+                            </div>
+                            <div class="profile-field">
+                                <span class="field-label">Last Name</span>
+                                <span class="field-value" id="profileLastName">—</span>
+                            </div>
+                            <div class="profile-field">
+                                <span class="field-label">Email Address</span>
+                                <span class="field-value" id="profileEmail">—</span>
+                            </div>
+                            <div class="profile-field">
+                                <span class="field-label">Phone Number</span>
+                                <span class="field-value" id="profilePhone">—</span>
+                            </div>
+                            <div class="profile-field">
+                                <span class="field-label">Date of Birth</span>
+                                <span class="field-value" id="profileDob">—</span>
+                            </div>
+                            <div class="profile-field">
+                                <span class="field-label">Member Since</span>
+                                <span class="field-value" id="profileJoined">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── ORDERS TAB ── -->
+                <div class="acc-tab" id="tab-orders">
+                    <div class="acc-block">
+                        <div class="acc-block-header">
+                            <h2><i class="fas fa-box-open"></i> My Orders</h2>
+                        </div>
+                        <div id="ordersContent"></div>
+                    </div>
+                </div>
+
+                <!-- ── ADDRESS TAB ── -->
+                <div class="acc-tab" id="tab-address">
+                    <div class="acc-block">
+                        <div class="acc-block-header">
+                            <h2><i class="fas fa-map-marker-alt"></i> Shipping Address</h2>
+                        </div>
+                        <div id="addressContent">
+                            <div class="address-empty" id="addressEmpty">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <p>No shipping address saved yet. Your address will be saved automatically after your first order.</p>
+                            </div>
+                            <div class="address-card" id="addressCard" style="display:none;">
+                                <i class="fas fa-home address-card-icon"></i>
+                                <div id="addressText"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ReNu Tech</h3>
+                    <p style="color:#4682b4; margin-bottom:18px; font-size:13px;">ReNu Tech is dedicated to providing high-quality refurbished Apple products.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="/products.html">Products</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 ReNu Street, Tech City, USA</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@renutech.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">&copy; 2026 ReNu Tech. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Redirect if not logged in
+        const user = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
+        if (!user) window.location.href = '/login.html';
+
+        // Fill profile
+        document.getElementById('heroName').textContent         = user.firstName + ' ' + user.lastName;
+        document.getElementById('heroCustomerId').textContent   = user.customerId;
+        document.getElementById('avatarBig').textContent        = (user.firstName || '?')[0].toUpperCase();
+        document.getElementById('profileCustomerId').textContent = user.customerId;
+        document.getElementById('profileFirstName').textContent  = user.firstName || '—';
+        document.getElementById('profileLastName').textContent   = user.lastName  || '—';
+        document.getElementById('profileEmail').textContent      = user.email     || '—';
+        document.getElementById('profilePhone').textContent      = user.phone     || 'Not provided';
+        document.getElementById('profileDob').textContent        = user.dob       || 'Not provided';
+        document.getElementById('profileJoined').textContent     = user.joined    || 'Today';
+
+        // Load orders belonging to this customer
+        function loadOrders() {
+            const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
+            const myOrders  = allOrders.filter(o => o.customerId === user.customerId || o.email === user.email);
+            const container = document.getElementById('ordersContent');
+
+            if (myOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="orders-empty">
+                        <i class="fas fa-box-open"></i>
+                        <p>No orders yet. <a href="/products.html">Start shopping!</a></p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = myOrders.map(o => `
+                <div class="order-card">
+                    <div class="order-card-header">
+                        <div>
+                            <span class="order-card-id">${o.orderId}</span>
+                            <span class="order-card-date">${o.datePurchased}</span>
+                        </div>
+                        <span class="order-status-badge ${o.status.toLowerCase()}">${o.status}</span>
+                    </div>
+                    <div class="order-card-items">
+                        ${o.items.map(item => `
+                            <div class="order-item-row">
+                                <span class="order-item-name">${item.name} <span class="order-item-qty">×${item.qty}</span></span>
+                                <span class="order-item-price">$${(item.priceNum * item.qty).toLocaleString()}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="order-card-footer">
+                        <span class="order-ship-to"><i class="fas fa-map-marker-alt"></i> ${o.shippingAddress}</span>
+                        <span class="order-total">Total: <strong>$${o.total}</strong></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        loadOrders();
+
+        // Load shipping address from last order
+        function loadAddress() {
+            const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
+            const myOrders  = allOrders.filter(o => o.customerId === user.customerId || o.email === user.email);
+            const addr      = user.shippingAddress || (myOrders.length ? myOrders[myOrders.length - 1].shippingAddress : '');
+            if (addr) {
+                document.getElementById('addressEmpty').style.display = 'none';
+                document.getElementById('addressCard').style.display  = 'flex';
+                document.getElementById('addressText').textContent     = addr;
+            }
+        }
+        loadAddress();
+
+        // Tab switching
+        document.querySelectorAll('.acc-nav-item').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.acc-nav-item').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.acc-tab').forEach(t => t.classList.remove('active'));
+                link.classList.add('active');
+                document.getElementById('tab-' + link.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Logout
+        document.getElementById('sidebarLogout').addEventListener('click', () => {
+            sessionStorage.removeItem('renutech_user');
+            window.location.href = '/login.html';
+        });
+    </script>
+</body>
+</html>
