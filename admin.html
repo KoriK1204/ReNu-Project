@@ -72,26 +72,26 @@
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
                 <div class="stat-label">Revenue (Month)</div>
-                <div class="stat-value">$18,420</div>
-                <div class="stat-change up"><i class="fas fa-arrow-up"></i> +12% vs last month</div>
+                <div class="stat-value" id="statRevenue">—</div>
+                <div class="stat-change up" id="statRevenueChange"><i class="fas fa-arrow-up"></i> Loading…</div>
             </div>
             <div class="stat-card orange">
                 <div class="stat-icon"><i class="fas fa-box"></i></div>
                 <div class="stat-label">Pending Orders</div>
-                <div class="stat-value">3</div>
-                <div class="stat-change down"><i class="fas fa-arrow-up"></i> 3 need attention</div>
+                <div class="stat-value" id="statPending">—</div>
+                <div class="stat-change down" id="statPendingChange"><i class="fas fa-arrow-up"></i> Loading…</div>
             </div>
             <div class="stat-card green">
                 <div class="stat-icon"><i class="fas fa-shipping-fast"></i></div>
                 <div class="stat-label">Shipped (Month)</div>
-                <div class="stat-value">41</div>
-                <div class="stat-change up"><i class="fas fa-arrow-up"></i> +8% vs last month</div>
+                <div class="stat-value" id="statShipped">—</div>
+                <div class="stat-change up" id="statShippedChange"><i class="fas fa-arrow-up"></i> Loading…</div>
             </div>
             <div class="stat-card red">
                 <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
                 <div class="stat-label">Low Stock Items</div>
-                <div class="stat-value">2</div>
-                <div class="stat-change down"><i class="fas fa-arrow-down"></i> Restock needed</div>
+                <div class="stat-value" id="statLowStock">—</div>
+                <div class="stat-change down" id="statLowStockChange"><i class="fas fa-arrow-down"></i> Loading…</div>
             </div>
         </div>
 
@@ -668,6 +668,42 @@ function stockBadge(qty) {
     return `<span class="badge in-stock">In Stock (${qty})</span>`;
 }
 
+// ── Dashboard stat cards ───────────────────────────────────────────────────
+async function renderDashStats() {
+    const [orders, products] = await Promise.all([
+        api('GET', '/api/orders'),
+        api('GET', '/api/products')
+    ]);
+    const orderList   = Array.isArray(orders)   ? orders   : [];
+    const productList = Array.isArray(products) ? products : [];
+
+    const now       = new Date();
+    const thisMonth = now.getMonth();
+    const thisYear  = now.getFullYear();
+
+    const monthOrders = orderList.filter(o => {
+        if (!o.date) return false;
+        const d = new Date(o.date);
+        return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+    });
+
+    const revenue  = monthOrders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+    const pending  = orderList.filter(o => o.status === 'pending').length;
+    const shipped  = monthOrders.filter(o => o.status === 'shipped' || o.status === 'delivered').length;
+    const lowStock = productList.filter(p => p.stock > 0 && p.stock <= 2).length;
+
+    document.getElementById('statRevenue').textContent  = '$' + revenue.toLocaleString();
+    document.getElementById('statPending').textContent  = pending;
+    document.getElementById('statShipped').textContent  = shipped;
+    document.getElementById('statLowStock').textContent = lowStock;
+
+    document.getElementById('statPendingChange').innerHTML   = `<i class="fas fa-arrow-up"></i> ${pending} need attention`;
+    document.getElementById('statShippedChange').innerHTML   = `<i class="fas fa-arrow-up"></i> ${shipped} this month`;
+    document.getElementById('statLowStockChange').innerHTML  = lowStock > 0
+        ? `<i class="fas fa-exclamation-triangle"></i> Restock needed`
+        : `<i class="fas fa-check"></i> All stocked up`;
+}
+
 // ── Dashboard recent orders ────────────────────────────────────────────────
 async function renderDashRecent() {
     const tbody = document.getElementById('dashRecentBody');
@@ -800,6 +836,7 @@ async function markRestockReceived(id, ref) {
     await api('PUT', `/api/restock-orders?id=${id}`, { status: 'received' });
     showToast(`${ref} marked as received!`);
     renderRestockOrders();
+    renderDashStats();
 }
 
 async function cancelRestockOrder(id, ref) {
@@ -981,20 +1018,20 @@ async function confirmShip() {
     const fullTracking = document.getElementById('shipCarrier').value + '-' + tracking;
     await api('PUT', `/api/orders?id=${currentShipOrderId}`, { status: 'shipped', tracking: fullTracking });
     closeModal('shipModal');
-    renderDashRecent(); renderOrders();
+    renderDashStats(); renderDashRecent(); renderOrders();
     showToast(`Order ${currentShipOrderRef} marked as shipped!`);
 }
 
 async function markDelivered(orderId, orderRef) {
     await api('PUT', `/api/orders?id=${orderId}`, { status: 'delivered', tracking: '' });
-    renderDashRecent(); renderOrders();
+    renderDashStats(); renderDashRecent(); renderOrders();
     showToast(`Order ${orderRef} marked as delivered!`);
 }
 
 async function cancelOrder(orderId, orderRef) {
     if (!confirm(`Cancel order ${orderRef}?`)) return;
     await api('PUT', `/api/orders?id=${orderId}`, { status: 'cancelled', tracking: '' });
-    renderDashRecent(); renderOrders();
+    renderDashStats(); renderDashRecent(); renderOrders();
     showToast(`Order ${orderRef} cancelled.`, true);
 }
 
@@ -1143,6 +1180,7 @@ const orderMonths = [
 ];
 
 // ── Init ───────────────────────────────────────────────────────────────────
+renderDashStats();
 renderDashRecent();
 setTimeout(() => {
     buildBarChart('revenueChart', months);
