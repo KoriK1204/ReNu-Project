@@ -167,8 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const dropdown = document.createElement('div');
         dropdown.id = 'userDropdown';
         dropdown.innerHTML = `
-            <div class="user-drop-name">${user.firstName} ${user.lastName}</div>
-            <div class="user-drop-id">${user.customerId}</div>
+            <div class="user-drop-name">${user.firstName || ''} ${user.lastName || ''}</div>
+            <div class="user-drop-id">${user.customerId || 'GUEST'}</div>
             <a href="account.html" class="user-drop-item"><i class="fas fa-user"></i> View Account</a>
             <div class="user-drop-divider"></div>
             <a href="#" class="user-drop-item danger" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
