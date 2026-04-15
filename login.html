@@ -104,11 +104,6 @@
     </div>
 
     <script>
-        // Redirect if already logged in
-      /*  if (localStorage.getItem('renutech_user')) || sessionStorage.getItem('renutech_user')) {
-            window.location.href = 'account.html';
-        } */
-
         // Password toggle
         document.getElementById('togglePassword').addEventListener('click', () => {
             const pw = document.getElementById('password');
@@ -178,7 +173,7 @@
             } else {
                 showAlert('Invalid email or password. Please try again.');
             }
-        );
+            });
         
         function showAlert(msg) {
             const el = document.getElementById('loginAlert');
