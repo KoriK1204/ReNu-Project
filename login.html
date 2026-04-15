@@ -53,7 +53,7 @@
             <div class="login-card">
                 <div class="login-card-header">
                     <h1>Sign <span>In</span></h1>
-                    <p>Don't have an account? <a href="/ReNu-Project/signup.html">Create one free</a></p>
+                    <p>Don't have an account? <a href="signup.html">Create one free</a></p>
                 </div>
 
                 <div class="alert error" id="loginAlert" style="display:none;">
@@ -149,22 +149,26 @@
                 { email: 'admin@renutech.com', password: 'admin123', role: 'admin', name: 'Admin' },
                 { email: 'user@renutech.com',  password: 'user123',  role: 'user',  name: 'Alex'  }
             ];
-            //const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
+            
+            //Check Mock Users first (admin)
+            const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
+            
             // Check real signups first
             const realCustomers = JSON.parse(localStorage.getItem('renutech_customers') || '[]');
             const realMatch = realCustomers.find(u => u.email === email.value);
+            
             if (realMatch) {
                 sessionStorage.setItem('renutech_user', JSON.stringify(realMatch));
                 window.location.href = 'account.html';
                 return;
             }
-            const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
+            /*const match = MOCK_USERS.find(u => u.email === email.value && u.password === password.value);
                     if (!match) { showAlert('Invalid email or password. Please try again.'); return; }
                     sessionStorage.setItem('renutech_user', JSON.stringify(match));
                     window.location.href = match.role === 'admin' ? '/admin.html' : '/index.html';
             });
 
-            const email = emailInput.value.trim().toLowerCase();
+            const email = emailInput.value.trim().toLowerCase(); */
 
             // Look up user from the same store signup.html writes to
             const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
