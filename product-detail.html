@@ -15,7 +15,9 @@
     <link rel="stylesheet" href="./product-detail-style.css">
 </head>
 <body>
+    <div id="searchOverlay" class="search-overlay"></div>
     <div class="transition_div"></div>
+    
     <!-- Header section -->
     <header>
         <div class="container header-container">
@@ -511,19 +513,20 @@ if (product) {
             const activeStorage = document.querySelector('#storageOptions .option-chip.active');
             const activeColor   = document.querySelector('.color-swatch.active');
             const price         = document.getElementById('currentPrice').textContent;
-            const colorName     = activeColor ? activeColor.dataset.name : 'Neutral Titanium';
-            const storage       = activeStorage ? activeStorage.dataset.storage.toUpperCase() : '512GB';
-
+            const colorName     = activeColor ? activeColor.dataset.name : product.colors[0].name;
+            const storage       = activeStorage ? activeStorage.dataset.storage.toUpperCase() : product.defaultStorage.toUpperCase();
+        
             const item = {
-                id: 'iphone-16-pro-' + storage.toLowerCase() + '-' + activeColor.dataset.color,
-                name: 'iPhone 16 Pro',
+                id: product.name.toLowerCase().replace(/\s+/g, '-') + '-' + storage.toLowerCase() + '-' + (activeColor ? activeColor.dataset.color : ''),
+                productId: productId,   // ← numeric ID for linking back
+                name: product.name,
                 color: colorName,
                 storage: storage,
                 price: price,
                 priceNum: parseFloat(price.replace('$','').replace(',','')),
                 qty: qty,
-                img: 'public/images/iphone-16-pro-neutral.svg',
-                condition: 'Like New'
+                img: product.image,
+                condition: product.condition
             };
 
             const cart = getCart();
