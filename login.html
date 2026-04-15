@@ -104,7 +104,7 @@
 
     <script>
         // Redirect if already logged in
-        if (localStorage.getItem('renutech_session')) {
+        if (localStorage.getItem('renutech_user')) || sessionStorage.getItem('renutech_user')) {
             window.location.href = 'index.html';
         }
 
@@ -164,9 +164,9 @@
 
             // Honour "remember me" — session storage clears on tab close, local persists
             if (document.getElementById('rememberMe').checked) {
-                localStorage.setItem('renutech_session', JSON.stringify(session));
+                localStorage.setItem('renutech_user', JSON.stringify(session));
             } else {
-                sessionStorage.setItem('renutech_session', JSON.stringify(session));
+                sessionStorage.setItem('renutech_user', JSON.stringify(session));
             }
 
             window.location.href = 'index.html';
