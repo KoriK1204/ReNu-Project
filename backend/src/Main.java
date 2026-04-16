@@ -35,7 +35,7 @@ public class Main {
         server.createContext("/api/orders",         new OrdersHandler());
         server.createContext("/api/users",          new UsersHandler());
         server.createContext("/api/restock-orders", new RestockHandler());
-        server.createContext("/api/contact",        new ContactHandler());
+        server.createContext("/api/contact-messages", new ContactMessagesHandler());
         server.createContext("/",                   new StaticFileHandler(projectRoot));
         server.setExecutor(null);
         System.out.println("ReNu Tech server running at http://localhost:" + port);
@@ -650,6 +650,99 @@ static class ContactHandler implements HttpHandler {
     }
 }
 
+// ── /api/contact-messages (GET, PUT, DELETE) ─────────────────
+static class ContactMessagesHandler implements HttpHandler {
+    public void handle(HttpExchange ex) throws IOException {
+        cors(ex.getResponseHeaders());
+        if (ex.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+            ex.sendResponseHeaders(204, -1); return;
+        }
+
+        String method = ex.getRequestMethod().toUpperCase();
+
+        // GET — return all messages ordered newest first
+        if (method.equals("GET")) {
+            try (Connection conn = getConnection();
+                 PreparedStatement ps = conn.prepareStatement(
+                     "SELECT id, first_name, last_name, email, subject, message, is_read, submitted_at " +
+                     "FROM contact_messages ORDER BY submitted_at DESC")) {
+                ResultSet rs = ps.executeQuery();
+                StringBuilder sb = new StringBuilder("[");
+                boolean first = true;
+                while (rs.next()) {
+                    if (!first) sb.append(",");
+                    first = false;
+                    sb.append("{")
+                      .append("\"id\":").append(rs.getInt("id")).append(",")
+                      .append("\"first_name\":\"").append(esc(rs.getString("first_name"))).append("\",")
+                      .append("\"last_name\":\"").append(esc(rs.getString("last_name"))).append("\",")
+                      .append("\"email\":\"").append(esc(rs.getString("email"))).append("\",")
+                      .append("\"subject\":\"").append(esc(rs.getString("subject"))).append("\",")
+                      .append("\"message\":\"").append(esc(rs.getString("message"))).append("\",")
+                      .append("\"is_read\":").append(rs.getInt("is_read")).append(",")
+                      .append("\"submitted_at\":\"").append(rs.getTimestamp("submitted_at")).append("\"")
+                      .append("}");
+                }
+                sb.append("]");
+                send(ex, 200, sb.toString());
+            } catch (SQLException e) {
+                send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
+            }
+            return;
+        }
+
+        // PUT — mark message read/unread  (?id=X)
+        if (method.equals("PUT")) {
+            String query = ex.getRequestURI().getQuery();
+            int id = parseId(query);
+            if (id < 1) { send(ex, 400, "{\"error\":\"Missing id\"}"); return; }
+            Map<String, String> body = parseJson(readBody(ex));
+            int isRead = Integer.parseInt(body.getOrDefault("is_read", "1"));
+            try (Connection conn = getConnection();
+                 PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE contact_messages SET is_read=? WHERE id=?")) {
+                ps.setInt(1, isRead);
+                ps.setInt(2, id);
+                ps.executeUpdate();
+                send(ex, 200, "{\"success\":true}");
+            } catch (SQLException e) {
+                send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
+            }
+            return;
+        }
+
+        // DELETE — remove a message (?id=X)
+        if (method.equals("DELETE")) {
+            String query = ex.getRequestURI().getQuery();
+            int id = parseId(query);
+            if (id < 1) { send(ex, 400, "{\"error\":\"Missing id\"}"); return; }
+            try (Connection conn = getConnection();
+                 PreparedStatement ps = conn.prepareStatement(
+                     "DELETE FROM contact_messages WHERE id=?")) {
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                send(ex, 200, "{\"success\":true}");
+            } catch (SQLException e) {
+                send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
+            }
+            return;
+        }
+
+        ex.sendResponseHeaders(405, -1);
+    }
+
+    private int parseId(String query) {
+        if (query == null) return -1;
+        for (String p : query.split("&")) {
+            String[] kv = p.split("=");
+            if (kv.length == 2 && kv[0].equals("id")) {
+                try { return Integer.parseInt(kv[1]); } catch (NumberFormatException e) { return -1; }
+            }
+        }
+        return -1;
+    }
+}
+    
     // ── Static file server ───────────────────────────────────────────────────
     static class StaticFileHandler implements HttpHandler {
         private final Path root;
