@@ -1075,6 +1075,14 @@ async function renderCustomerAccounts() {
                     : `<button class="action-btn success" onclick="toggleLocalUserStatus(${c.id},'${c.name}','active')"><i class="fas fa-check-circle"></i> Activate</button>`}
                 <button class="action-btn" onclick="promoteToStaff(${c.id},'${c.name}')"><i class="fas fa-user-shield"></i> Promote</button>
             </td>
+            <td>
+            <div style="display:flex; gap:8px;">
+                <button class="btn-action" onclick="alert('Viewing Customer ${c.name}')"><i class="fas fa-eye"></i></button>
+                <button class="btn-action" style="color:#ef4444; border-color:#fca5a5;" onclick="deleteAccount('${c.email}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            </td>
         </tr>`).join('');
 }
 
@@ -1828,6 +1836,23 @@ document.addEventListener('DOMContentLoaded', renderOrders);
         // Refresh the admin table and dashboard stats
         renderOrders(); 
         if (typeof renderDashboardRecent === "function") renderDashboardRecent();
+    }
+}
+    function deleteAccount(email) {
+    if (confirm(`Are you sure you want to delete the account for ${email}?`)) {
+        // 1. Get current accounts from the same key used in your login/signup
+        let allAccounts = JSON.parse(localStorage.getItem('renutech_users') || '[]');
+
+        // 2. Remove the account with that email
+        allAccounts = allAccounts.filter(acc => acc.email !== email);
+
+        // 3. Save the updated list back
+        localStorage.setItem('renutech_users', JSON.stringify(allAccounts));
+
+        // 4. Refresh the table so the account disappears immediately
+        renderCustomerAccounts();
+        
+        showToast('Account deleted successfully.');
     }
 }
 </script>
