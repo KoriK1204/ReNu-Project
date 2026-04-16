@@ -217,7 +217,7 @@
         // Load orders belonging to this customer
         function loadOrders() {
             const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
-            const myOrders  = allOrders.filter(o => o.customerId === user.Id || o.email === user.email);
+            const myOrders  = allOrders.filter(o => o.customerId === user.id || o.email === user.email);
             const container = document.getElementById('ordersContent');
 
             if (myOrders.length === 0) {
@@ -258,7 +258,7 @@
         // Load shipping address from last order
         function loadAddress() {
             const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
-            const myOrders  = allOrders.filter(o => o.customerId === user.Id || o.email === user.email);
+            const myOrders  = allOrders.filter(o => o.customerId === user.id || o.email === user.email);
             const addr      = user.shippingAddress || (myOrders.length ? myOrders[myOrders.length - 1].shippingAddress : '');
             if (addr) {
                 document.getElementById('addressEmpty').style.display = 'none';
