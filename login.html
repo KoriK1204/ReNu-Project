@@ -11,8 +11,18 @@
     <link rel="stylesheet" href="login-style.css">
 </head>
 <body>
-    <div id="searchOverlay" class="search-overlay"></div>
-    <div class="transition_div"></div>
+    <!--<div id="searchOverlay" class="search-overlay"></div> <div class="transition_div"></div>-->
+    <div id="searchOverlay" class="search-overlay">
+    <div class="search-container">
+        <button class="search-close" id="closeSearch"><i class="fas fa-times"></i></button>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for products..." autocomplete="off">
+            <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+        <div id="searchResults" class="search-results">
+            </div>
+    </div>
+</div>
     <header>
         <div class="container header-container">
             <a href="/index.html" class="logo">
