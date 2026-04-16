@@ -106,82 +106,93 @@
     </div>
 
     <script>
-        // Password toggle
-        document.getElementById('togglePassword').addEventListener('click', () => {
-            const pw = document.getElementById('password');
-            const icon = document.getElementById('eyeIcon');
-            const hidden = pw.type === 'password';
-            pw.type = hidden ? 'text' : 'password';
-            icon.className = hidden ? 'fas fa-eye-slash' : 'fas fa-eye';
-        });
+    document.getElementById('togglePassword').addEventListener('click', () => {
+        const pw = document.getElementById('password');
+        const icon = document.getElementById('eyeIcon');
+        const hidden = pw.type === 'password';
+        pw.type = hidden ? 'text' : 'password';
+        icon.className = hidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
 
-        // Clear errors on type
-        ['email', 'password'].forEach(id => {
-            document.getElementById(id).addEventListener('input', () => {
-                document.getElementById(id).classList.remove('error');
-                document.getElementById(id + 'Error').classList.remove('visible');
-                document.getElementById('loginAlert').style.display = 'none';
+    ['email', 'password'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+            document.getElementById(id).classList.remove('error');
+            document.getElementById(id + 'Error').classList.remove('visible');
+            document.getElementById('loginAlert').style.display = 'none';
+        });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailValue = emailInput.value.trim().toLowerCase();
+        const passwordValue = passwordInput.value;
+
+        let valid = true;
+
+        if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+            emailInput.classList.add('error');
+            document.getElementById('emailError').classList.add('visible');
+            valid = false;
+        }
+
+        if (!passwordValue || passwordValue.length < 6) {
+            passwordInput.classList.add('error');
+            document.getElementById('passwordError').classList.add('visible');
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: emailValue,
+                    password: passwordValue
+                })
             });
-        });
 
-            document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            const emailValue = emailInput.value.trim().toLowerCase();
-            const passwordValue = passwordInput.value;
-            let valid = true;
+            const data = await res.json();
 
-            // 1. Validation
-            if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-                emailInput.classList.add('error');
-                document.getElementById('emailError').classList.add('visible');
-                valid = false;
-            }
-            if (!passwordValue || passwordValue.length < 6) {
-                passwordInput.classList.add('error');
-                document.getElementById('passwordError').classList.add('visible');
-                valid = false;
-            }
-            if (!valid) return;
-
-            // 2. Define Admin/Mock Users
-            const MOCK_USERS = [
-                { email: 'admin@renutech.com', password: 'admin123', role: 'admin', name: 'Admin' },
-                { email: 'user@renutech.com',  password: 'user123',  role: 'user',  name: 'Alex'  }
-            ];
-
-            // 3. Check for Match (Admin goes to admin.html)
-            const match = MOCK_USERS.find(u => u.email === emailValue && u.password === passwordValue);
-
-            if (match) {
-                sessionStorage.setItem('renutech_user', JSON.stringify(match));
-                window.location.href = (match.role === 'admin') ? 'admin.html' : 'index.html';
+            if (!res.ok || !data.success) {
+                showAlert(data.message || 'Invalid email or password. Please try again.');
                 return;
             }
 
-            // 4. Check Local Storage (For users created via signup.html)
-            const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
-            const localMatch = users[emailValue];
+            const sessionUser = {
+                id: data.id,
+                name: data.name,
+                email: emailValue,
+                role: data.role
+            };
 
-            if (localMatch && localMatch.password === passwordValue) {
-                const session = { email: localMatch.email, firstName: localMatch.firstName };
-                if (document.getElementById('rememberMe').checked) {
-                    localStorage.setItem('renutech_user', JSON.stringify(session));
-                } else {
-                    sessionStorage.setItem('renutech_user', JSON.stringify(session));
-                }
-                window.location.href = 'index.html';
+            if (document.getElementById('rememberMe').checked) {
+                localStorage.setItem('renutech_user', JSON.stringify(sessionUser));
             } else {
-                showAlert('Invalid email or password. Please try again.');
+                sessionStorage.setItem('renutech_user', JSON.stringify(sessionUser));
             }
-            });
-        
-        function showAlert(msg) {
-            const el = document.getElementById('loginAlert');
-            document.getElementById('alertMsg').textContent = msg;
-            el.style.display = 'flex';
+
+            window.location.href = data.role === 'admin' || data.role === 'staff'
+                ? 'admin.html'
+                : 'index.html';
+
+        } catch (err) {
+            showAlert('Server error. Please try again.');
+            console.error(err);
         }
-    </script>
+    });
+
+    function showAlert(msg) {
+        const el = document.getElementById('loginAlert');
+        document.getElementById('alertMsg').textContent = msg;
+        el.style.display = 'flex';
+    }
+</script>
 </body>
 </html>
