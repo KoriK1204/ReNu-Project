@@ -531,7 +531,8 @@
 <script>
 // ── Auth guard ─────────────────────────────────────────────────────────────
 (function() {
-    const user = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
+    // Check both sessionStorage (default) and localStorage ("remember me")
+    const user = JSON.parse(sessionStorage.getItem('renutech_user') || localStorage.getItem('renutech_user') || 'null');
     if (!user || user.role !== 'admin') {
         window.location.href = 'login.html';
     } else {
@@ -542,6 +543,7 @@
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
     sessionStorage.removeItem('renutech_user');
+    localStorage.removeItem('renutech_user');
     window.location.href = 'login.html';
 });
 
