@@ -146,6 +146,27 @@
 
         if (!valid) return;
 
+        // --- PRESENTATION FIX START ---
+        // 1. Check if the user exists in our local "mock database"
+        const mockUsers = JSON.parse(localStorage.getItem('renutech_mock_db')) || [];
+        const foundUser = mockUsers.find(u => u.email === emailValue && u.password === passwordValue);
+
+        // 2. Hardcoded Admin Bypass
+        if (emailValue === 'admin@renutech.com' && passwordValue === 'admin123') {
+            const adminUser = { id: 999, name: 'Admin User', email: emailValue, role: 'admin' };
+            sessionStorage.setItem('renutech_user', JSON.stringify(adminUser));
+            window.location.href = 'admin.html';
+            return;
+        }
+
+        // 3. Login with the account you just created in Signup.html
+        if (foundUser) {
+            sessionStorage.setItem('renutech_user', JSON.stringify(foundUser));
+            window.location.href = 'index.html';
+            return;
+        }
+        // --- PRESENTATION FIX END ---
+
         try {
             const res = await fetch('/api/login', {
                 method: 'POST',
