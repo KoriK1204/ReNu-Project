@@ -209,15 +209,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             if (!userBtn.contains(e.target)) dropdown.style.display = 'none';
         });
-
-        // Logout
+      const logoutBtn = document.getElementById('logoutLink');
+      if (logoutBtn) {
+          logoutBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              sessionStorage.removeItem('renutech_user');
+              window.location.href = 'login.html';
+          });
+      }
+        /* Logout
         document.getElementById('logoutLink').addEventListener('click', (e) => {
             e.preventDefault();
             sessionStorage.removeItem('renutech_user');
             window.location.href = 'login.html';
-        });
+        }); */
 
-    } else {
+     else {
         // Not logged in — plain link to login
         userBtn.href = 'login.html';
     }
