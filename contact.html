@@ -326,54 +326,44 @@
         });
 
         // ── Contact Form ───────────────────────────────────────────
-        async function submitForm() {
+        function submitForm() {
             const firstName = document.getElementById('firstName').value.trim();
             const lastName  = document.getElementById('lastName').value.trim();
             const email     = document.getElementById('email').value.trim();
             const subject   = document.getElementById('subject').value;
             const message   = document.getElementById('message').value.trim();
-        
+
             // validation
             if (!firstName || !email || !subject || !message) {
                 alert('Please fill in all required fields.');
                 return;
             }
-        
+
             if (!email.includes('@')) {
                 alert('Please enter a valid email address.');
                 return;
             }
-        
-            try {
-                const res = await fetch('/api/contact', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        firstName,
-                        lastName,
-                        email,
-                        subject,
-                        message
-                    })
-                });
-        
-                const data = await res.json();
-        
-                if (!data.success) {
-                    alert('Failed to send message.');
-                    return;
-                }
-        
-                // success UI
-                document.getElementById('contactFormInner').style.display = 'none';
-                document.getElementById('formSuccess').style.display = 'block';
-        
-            } catch (err) {
-                console.error(err);
-                alert('Server error. Try again.');
-            }
+
+            // Build message object matching the shape admin.html expects
+            const newMsg = {
+                id:           Date.now(),
+                first_name:   firstName,
+                last_name:    lastName,
+                email:        email,
+                subject:      subject,
+                message:      message,
+                is_read:      0,
+                submitted_at: new Date().toISOString()
+            };
+
+            // Save to localStorage so admin panel can read it
+            const all = JSON.parse(localStorage.getItem('renutech_contact_messages') || '[]');
+            all.unshift(newMsg); // newest first
+            localStorage.setItem('renutech_contact_messages', JSON.stringify(all));
+
+            // success UI
+            document.getElementById('contactFormInner').style.display = 'none';
+            document.getElementById('formSuccess').style.display = 'block';
         }
 
         // ── Mobile Nav (keep if script.js doesn't cover it) ───────
