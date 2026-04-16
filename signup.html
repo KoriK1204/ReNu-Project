@@ -251,10 +251,10 @@ async function handleSignup() {
     }
     // --- UPDATED BYPASS FOR PRESENTATION ---
     const newUser = {
-        id: Math.floor(Math.random() * 1000),
+        id: Math.floor(Math.random() * 9000) + 1000, // Generates a 4-digit ID like 4382
         name: `${firstName} ${lastName}`,
         email: email,
-        password: password, // We save this so you can log in with it!
+        password: password,
         role: 'customer'
     };
 
