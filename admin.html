@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1610,20 +1611,9 @@ function subjectClass(s) {
     return 'subject-other';
 }
 
-async function loadContactMessages() {
-    try {
-        const res  = await fetch('/api/contact-messages');
-        contactMessages = await res.json();
-    } catch (e) {
-        // Fallback demo data when backend isn't running
-        contactMessages = [
-            { id:1, first_name:'Karen', last_name:'Smith',  email:'karen@example.com', subject:'Product Inquiry',       message:'Hi, I was wondering if you have the iPhone 16 Pro in Black Titanium with 256GB in stock?', submitted_at:'2026-04-15T09:12:00', is_read:0 },
-            { id:2, first_name:'James', last_name:'Brown',  email:'james@example.com', subject:'Order Support',          message:'My order #ORD-042 has not arrived yet. The tracking says "in transit" for five days now.', submitted_at:'2026-04-14T14:30:00', is_read:0 },
-            { id:3, first_name:'Aisha', last_name:'Patel',  email:'aisha@example.com', subject:'Returns & Warranty',     message:'I received my MacBook Pro M4 but the battery health shows 78%, not the 85%+ advertised. I would like a replacement or refund please.', submitted_at:'2026-04-13T11:05:00', is_read:1 },
-            { id:4, first_name:'Tyler', last_name:'Moore',  email:'tyler@example.com', subject:'Technical Support',      message:'After setting up my Watch Ultra 3 it keeps dropping the Bluetooth connection with my iPhone. Already restarted both devices.', submitted_at:'2026-04-12T17:22:00', is_read:1 },
-            { id:5, first_name:'Mei',   last_name:'Zhang',  email:'mei@example.com',   subject:'Other',                  message:'Just wanted to say I love my refurbished iPhone 15 Pro. Absolutely perfect condition. Will definitely be shopping here again!', submitted_at:'2026-04-11T08:45:00', is_read:1 },
-        ];
-    }
+function loadContactMessages() {
+    // Load from localStorage — saved by contact.html when a message is submitted
+    contactMessages = JSON.parse(localStorage.getItem('renutech_contact_messages') || '[]');
     updateCmStats();
     renderContactMessages();
 }
@@ -1729,23 +1719,22 @@ function toggleMessageRead() {
     selectMessage(currentMsgId);
 }
 
-async function markReadOnServer(id, isRead = 1) {
-    try {
-        await fetch(`/api/contact-messages?id=${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ is_read: isRead })
-        });
-    } catch (e) { /* ignore if backend not running */ }
+function markReadOnServer(id, isRead = 1) {
+    // Persist read/unread state to localStorage
+    const all = JSON.parse(localStorage.getItem('renutech_contact_messages') || '[]');
+    const msg = all.find(m => m.id === id);
+    if (msg) {
+        msg.is_read = isRead;
+        localStorage.setItem('renutech_contact_messages', JSON.stringify(all));
+    }
 }
 
-async function deleteCurrentMessage() {
+function deleteCurrentMessage() {
     if (!currentMsgId) return;
     if (!confirm('Delete this message? This cannot be undone.')) return;
-    try {
-        await fetch(`/api/contact-messages?id=${currentMsgId}`, { method: 'DELETE' });
-    } catch (e) { /* ignore */ }
+    // Remove from in-memory array and persist to localStorage
     contactMessages = contactMessages.filter(x => x.id !== currentMsgId);
+    localStorage.setItem('renutech_contact_messages', JSON.stringify(contactMessages));
     currentMsgId = null;
     document.getElementById('cmDetailEmpty').style.display   = '';
     document.getElementById('cmDetailContent').style.display = 'none';
@@ -1754,9 +1743,9 @@ async function deleteCurrentMessage() {
     showToast('Message deleted.');
 }
 
-// Load messages when panel is opened
+// Load messages whenever the panel is opened so new submissions always appear
 document.querySelector('[data-panel="contact-messages"]').addEventListener('click', () => {
-    if (!contactMessages.length) loadContactMessages();
+    loadContactMessages();
 });
 </script>
 </body>
