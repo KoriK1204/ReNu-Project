@@ -181,6 +181,19 @@ document.addEventListener('DOMContentLoaded', () => {
             z-index:9999; font-family:'Montserrat',sans-serif;
         `;
         userBtn.appendChild(dropdown);
+      // 1. Stop the menu from closing when you click inside it
+      dropdown.addEventListener('click', (e) => {
+          e.stopPropagation();
+      });
+
+      // 2. Ensure the "View Account" link specifically works
+      const viewAccountLink = dropdown.querySelector('a[href="account.html"]');
+      if (viewAccountLink) {
+          viewAccountLink.addEventListener('click', (e) => {
+        // Force navigation to account.html
+            window.location.href = 'account.html';
+        });
+      }
 
         // Inject dropdown styles
         if (!document.getElementById('userDropStyles')) {
