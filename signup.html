@@ -249,19 +249,27 @@ async function handleSignup() {
         showAlert('Please accept the Terms of Service to continue.');
         return;
     }
-    // --- ADD THIS BYPASS HERE ---
-    console.log("Performing local signup bypass for testing...");
-    const mockUser = {
+    // --- UPDATED BYPASS FOR PRESENTATION ---
+    const newUser = {
         id: Math.floor(Math.random() * 1000),
         name: `${firstName} ${lastName}`,
         email: email,
+        password: password, // We save this so you can log in with it!
         role: 'customer'
     };
+
+    // Save to a "Mock Database" so the Login page can see it
+    let mockUsers = JSON.parse(localStorage.getItem('renutech_mock_db')) || [];
+    mockUsers.push(newUser);
+    localStorage.setItem('renutech_mock_db', JSON.stringify(mockUsers));
+
+    // Log them in for the current session
+    sessionStorage.setItem('renutech_user', JSON.stringify(newUser));
     
-    sessionStorage.setItem('renutech_user', JSON.stringify(mockUser));
+    console.log("Account created locally for demo!");
     window.location.href = 'index.html';
-    return; // This stops the code from even trying to hit the broken server
-    // ----------------------------
+    return; 
+    // ---------------------------------------
 
     try {
         const res = await fetch('http://localhost:8080/api/users', {
