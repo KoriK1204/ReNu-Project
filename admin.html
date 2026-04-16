@@ -1,198 +1,1763 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — ReNu Tech.</title>
+    <title>Admin — ReNu Tech.</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="login-style.css">
+    <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
-    <div id="searchOverlay" class="search-overlay"></div>
-    <div class="transition_div"></div>
-    <header>
-        <div class="container header-container">
-            <a href="/index.html" class="logo">
-                <i class="fa-solid fa-recycle logo-icon"></i>
-                <div class="logo-text">ReNu <span>Tech.</span></div>
-            </a>
-            <nav><ul>
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="about.html">ABOUT</a></li>
-                <li><a href="products.html">PRODUCTS</a></li>
-                <li><a href="blog.html">BLOG</a></li>
-                <li><a href="contact.html">CONTACT</a></li>
-            </ul></nav>
-            <div class="nav-buttons">
-                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
-                <a href="login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
-                <a href="cart.html" class="btn btn-primary">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count-badge" id="cartCount">0</span>
-                </a>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+    <a href="/index.html" class="sidebar-logo">
+        <i class="fa-solid fa-recycle"></i>
+        <div class="logo-text">ReNu <span>Tech.</span></div>
+        <span class="sidebar-badge">Admin</span>
+    </a>
+
+    <span class="sidebar-section-label">Overview</span>
+    <a class="nav-item active" data-panel="dashboard" href="#">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+
+    <span class="sidebar-section-label">Operations</span>
+    <a class="nav-item" data-panel="products" href="#">
+        <i class="fas fa-mobile-alt"></i> Product Management
+    </a>
+    <a class="nav-item" data-panel="order-mgmt" href="#">
+        <i class="fas fa-clipboard-list"></i> Order Management
+    </a>
+    <a class="nav-item" data-panel="accounts" href="#">
+        <i class="fas fa-users-cog"></i> Account Management
+    </a>
+    <a class="nav-item" data-panel="blog" href="#">
+        <i class="fas fa-rss"></i> Blog Management
+    </a>
+    <a class="nav-item" data-panel="contact-messages" href="#">
+        <i class="fas fa-envelope-open-text"></i> Contact Messages
+        <span class="msg-badge" id="msgBadge" style="display:none;margin-left:auto;background:#ef4444;color:#fff;border-radius:20px;padding:1px 7px;font-size:10px;font-weight:700;"></span>
+    </a>
+
+    <span class="sidebar-section-label">Insights</span>
+    <a class="nav-item" data-panel="analytics" href="#">
+        <i class="fas fa-chart-bar"></i> Analytics
+    </a>
+
+    <div class="sidebar-footer">
+        <div class="admin-user">
+            <div class="admin-avatar" id="adminAvatar">A</div>
+            <div class="admin-info">
+                <div class="admin-name" id="adminName">Admin</div>
+                <div class="admin-role">Administrator</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn" title="Sign out">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+    <div class="topbar">
+        <div class="topbar-title" id="topbarTitle">Dashboard <span>Overview</span></div>
+        <div class="topbar-right">
+            <button class="topbar-btn primary" id="topbarAction" onclick="openAddProduct()" style="display:none"><i class="fas fa-plus"></i> Add Product</button>
+            <button class="topbar-btn primary" id="topbarBlogAction" onclick="openBlogModal()" style="display:none"><i class="fas fa-plus"></i> New Post</button>
+            <a href="/index.html" class="topbar-btn"><i class="fas fa-store"></i> View Store</a>
+        </div>
+    </div>
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-label">Revenue (Month)</div>
+                <div class="stat-value" id="statRevenue">—</div>
+                <div class="stat-change up" id="statRevenueChange"><i class="fas fa-arrow-up"></i> Loading…</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon"><i class="fas fa-box"></i></div>
+                <div class="stat-label">Pending Orders</div>
+                <div class="stat-value" id="statPending">—</div>
+                <div class="stat-change down" id="statPendingChange"><i class="fas fa-arrow-up"></i> Loading…</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon"><i class="fas fa-shipping-fast"></i></div>
+                <div class="stat-label">Shipped (Month)</div>
+                <div class="stat-value" id="statShipped">—</div>
+                <div class="stat-change up" id="statShippedChange"><i class="fas fa-arrow-up"></i> Loading…</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="stat-label">Low Stock Items</div>
+                <div class="stat-value" id="statLowStock">—</div>
+                <div class="stat-change down" id="statLowStockChange"><i class="fas fa-arrow-down"></i> Loading…</div>
             </div>
         </div>
-    </header>
 
-    <div class="login-page">
-        <div class="login-left">
-            <div class="login-left-inner">
-                <div class="page-label"><i class="fas fa-user-circle"></i> Your Account</div>
-                <h2>Welcome Back to<br><span>ReNu Tech.</span></h2>
-                <p>Sign in to track your orders, manage your wishlist, and access exclusive member pricing on renewed Apple devices.</p>
-                <div class="trust-items">
-                    <div class="trust-item"><i class="fas fa-shield-alt"></i><span>12-Month Warranty on Every Device</span></div>
-                    <div class="trust-item"><i class="fas fa-undo"></i><span>30-Day No-Questions Returns</span></div>
-                    <div class="trust-item"><i class="fas fa-leaf"></i><span>Responsibly Renewed Apple Tech</span></div>
-                    <div class="trust-item"><i class="fas fa-tag"></i><span>Up to 40% Off Retail Price</span></div>
+        <div class="charts-row">
+            <div class="chart-card">
+                <div class="chart-title">Monthly Revenue <span>2026</span></div>
+                <div class="bar-chart" id="revenueChart"></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">Sales by <span>Category</span></div>
+                <div class="donut-wrap">
+                    <div class="donut-row">
+                        <div class="donut-color" style="background:var(--teal)"></div>
+                        <span class="donut-key">iPhone</span>
+                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:52%;background:var(--teal)"></div></div>
+                        <span class="donut-pct">52%</span>
+                    </div>
+                    <div class="donut-row">
+                        <div class="donut-color" style="background:var(--dark)"></div>
+                        <span class="donut-key">MacBook</span>
+                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:34%;background:var(--dark)"></div></div>
+                        <span class="donut-pct">34%</span>
+                    </div>
+                    <div class="donut-row">
+                        <div class="donut-color" style="background:var(--green)"></div>
+                        <span class="donut-key">Apple Watch</span>
+                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:14%;background:var(--green)"></div></div>
+                        <span class="donut-pct">14%</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="login-right">
-            <div class="login-card">
-                <div class="login-card-header">
-                    <h1>Sign <span>In</span></h1>
-                    <p>Don't have an account? <a href="signup.html">Create one free</a></p>
+        <div class="section-hd">
+            <h2>Recent <span>Orders</span></h2>
+            <button class="topbar-btn" onclick="switchPanel('order-mgmt')">View All <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div class="table-card">
+            <table id="dashRecentTable">
+                <thead><tr>
+                    <th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th>
+                </tr></thead>
+                <tbody id="dashRecentBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ══ ORDER MANAGEMENT ══ -->
+    <div class="panel" id="panel-order-mgmt">
+        <div class="subtab-nav">
+            <button class="subtab active" data-subtab="customer-orders"><i class="fas fa-users"></i> Customer Orders</button>
+            <button class="subtab" data-subtab="product-orders"><i class="fas fa-truck-loading"></i> Product Orders</button>
+            <button class="subtab" data-subtab="place-order"><i class="fas fa-plus-circle"></i> Place Order</button>
+        </div>
+
+        <div class="subtab-panel active" id="subtab-customer-orders">
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="orderSearch" placeholder="Search by order ID or customer…" oninput="renderOrders()">
+                    </div>
+                    <select class="filter-select" id="orderStatusFilter" onchange="renderOrders()">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
                 </div>
+                <table>
+                    <thead><tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Date</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="ordersBody"></tbody>
+                </table>
+            </div>
+        </div>
 
-                <div class="alert error" id="loginAlert" style="display:none;">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span id="alertMsg">Invalid email or password.</span>
+        <div class="subtab-panel" id="subtab-product-orders">
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="poSearch" placeholder="Search by PO ID, supplier or product…" oninput="renderRestockOrders()">
+                    </div>
+                    <select class="filter-select" id="poStatusFilter" onchange="renderRestockOrders()">
+                        <option value="">All Statuses</option>
+                        <option value="ordered">Ordered</option>
+                        <option value="received">Received</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
                 </div>
+                <table>
+                    <thead><tr><th>PO ID</th><th>Supplier</th><th>Product</th><th>Qty</th><th>Unit Cost</th><th>Total</th><th>Expected</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="restockBody"></tbody>
+                </table>
+            </div>
+        </div>
 
-                <form id="loginForm" novalidate>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <div class="input-wrap">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+        <div class="subtab-panel" id="subtab-place-order">
+            <div style="max-width:560px;">
+                <div class="table-card" style="padding:28px;">
+                    <div class="section-hd" style="margin-bottom:20px;"><h2>Place a <span>Restock Order</span></h2></div>
+                    <div class="modal-form" style="display:block;">
+                        <div class="form-group"><label>Supplier Name</label><input type="text" id="poSupplier" placeholder="e.g. Apple Resellers Inc."></div>
+                        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">
+                            <div class="form-group"><label>Product</label><select id="poProduct" onchange="updatePoTotal()"></select></div>
+                            <div class="form-group"><label>Quantity</label><input type="number" id="poQty" placeholder="10" min="1" oninput="updatePoTotal()"></div>
                         </div>
-                        <div class="error-msg" id="emailError">Please enter a valid email address.</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <div class="input-wrap">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
-                            <button type="button" class="toggle-password" id="togglePassword">
-                                <i class="fas fa-eye" id="eyeIcon"></i>
-                            </button>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div class="form-group"><label>Unit Cost ($)</label><input type="number" id="poUnitCost" placeholder="550" oninput="updatePoTotal()"></div>
+                            <div class="form-group"><label>Expected Delivery</label><input type="date" id="poExpected"></div>
                         </div>
-                        <div class="error-msg" id="passwordError">Password must be at least 6 characters.</div>
+                        <div class="form-group"><label>Notes (optional)</label><textarea id="poNotes" placeholder="Any notes about this order…"></textarea></div>
+                        <div id="poTotalDisplay" style="font-size:13px;font-weight:700;color:var(--darker);margin-bottom:16px;display:none;">Order Total: <span id="poTotal" style="color:var(--teal);font-family:'Jost',sans-serif;font-size:16px;font-weight:800;"></span></div>
+                        <button class="btn-modal confirm" onclick="placeRestockOrder()" style="width:100%;justify-content:center;display:flex;align-items:center;gap:8px;padding:12px 22px;"><i class="fas fa-paper-plane"></i> Place Order</button>
                     </div>
-                    <div class="form-row">
-                        <label class="remember-me">
-                            <input type="checkbox" id="rememberMe">
-                            <span>Remember me</span>
-                        </label>
-                        <a href="#" class="forgot-link">Forgot password?</a>
-                    </div>
-                    <button type="submit" class="btn-login">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
-                    </button>
-                </form>
-
-                <div class="divider"><span>or continue with</span></div>
-                <div class="social-login">
-                    <a href="#" class="btn-social google"><i class="fab fa-google"></i> Google</a>
-                    <a href="#" class="btn-social apple"><i class="fab fa-apple"></i> Apple</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-    document.getElementById('togglePassword').addEventListener('click', () => {
-        const pw = document.getElementById('password');
-        const icon = document.getElementById('eyeIcon');
-        const hidden = pw.type === 'password';
-        pw.type = hidden ? 'text' : 'password';
-        icon.className = hidden ? 'fas fa-eye-slash' : 'fas fa-eye';
-    });
+    <!-- ══ PRODUCTS ══ -->
+    <div class="panel" id="panel-products">
+        <div class="table-card">
+            <div class="table-toolbar">
+                <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="productSearch" placeholder="Search products…" oninput="renderProducts()"></div>
+                <select class="filter-select" id="productCatFilter" onchange="renderProducts()">
+                    <option value="">All Categories</option>
+                    <option value="iPhone">iPhone</option>
+                    <option value="MacBook">MacBook</option>
+                    <option value="Apple Watch">Apple Watch</option>
+                </select>
+            </div>
+            <table>
+                <thead><tr><th>Product</th><th>Category</th><th>Condition</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="productsBody"></tbody>
+            </table>
+        </div>
+    </div>
 
-    ['email', 'password'].forEach(id => {
-        document.getElementById(id).addEventListener('input', () => {
-            document.getElementById(id).classList.remove('error');
-            document.getElementById(id + 'Error').classList.remove('visible');
-            document.getElementById('loginAlert').style.display = 'none';
-        });
-    });
+    <!-- ══ ANALYTICS ══ -->
+    <div class="panel" id="panel-analytics">
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-label">Total Revenue</div><div class="stat-value">$84,290</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> All time</div></div>
+            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-shopping-cart"></i></div><div class="stat-label">Total Orders</div><div class="stat-value">247</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> All time</div></div>
+            <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-label">Customers</div><div class="stat-value">189</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> +14 this month</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-undo"></i></div><div class="stat-label">Return Rate</div><div class="stat-value">2.1%</div><div class="stat-change up"><i class="fas fa-arrow-down"></i> Below average</div></div>
+        </div>
+        <div class="charts-row">
+            <div class="chart-card"><div class="chart-title">Orders Per Month <span>2026</span></div><div class="bar-chart" id="ordersChart"></div></div>
+            <div class="chart-card">
+                <div class="chart-title">Top <span>Products</span></div>
+                <div class="donut-wrap">
+                    <div class="donut-row"><div class="donut-color" style="background:var(--teal)"></div><span class="donut-key">iPhone 16 Pro</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:68%;background:var(--teal)"></div></div><span class="donut-pct">68 sold</span></div>
+                    <div class="donut-row"><div class="donut-color" style="background:var(--dark)"></div><span class="donut-key">MacBook Pro M4</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:42%;background:var(--dark)"></div></div><span class="donut-pct">42 sold</span></div>
+                    <div class="donut-row"><div class="donut-color" style="background:var(--orange)"></div><span class="donut-key">iPhone 15 Pro</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:38%;background:var(--orange)"></div></div><span class="donut-pct">38 sold</span></div>
+                    <div class="donut-row"><div class="donut-color" style="background:var(--green)"></div><span class="donut-key">Watch Ultra 3</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:22%;background:var(--green)"></div></div><span class="donut-pct">22 sold</span></div>
+                    <div class="donut-row"><div class="donut-color" style="background:var(--muted)"></div><span class="donut-key">MacBook Air M2</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:18%;background:var(--muted)"></div></div><span class="donut-pct">18 sold</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    <!-- ══ ACCOUNT MANAGEMENT ══ -->
+    <div class="panel" id="panel-accounts">
+        <div class="subtab-nav">
+            <button class="subtab active" data-subtab="customer-accs"><i class="fas fa-user"></i> Customer Accounts</button>
+            <button class="subtab" data-subtab="staff-accs"><i class="fas fa-user-shield"></i> Staff Accounts</button>
+        </div>
+        <div class="subtab-panel active" id="subtab-customer-accs">
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="custSearch" placeholder="Search by name or email…" oninput="renderCustomerAccounts()"></div>
+                    <select class="filter-select" id="custStatusFilter" onchange="renderCustomerAccounts()"><option value="">All Statuses</option><option value="active">Active</option><option value="suspended">Suspended</option></select>
+                </div>
+                <table><thead><tr><th>Customer</th><th>Email</th><th>Joined</th><th>Orders</th><th>Status</th><th>Actions</th></tr></thead><tbody id="custBody"></tbody></table>
+            </div>
+        </div>
+        <div class="subtab-panel" id="subtab-staff-accs">
+            <div class="section-hd" style="margin-bottom:16px;"><h2>Staff <span>Accounts</span></h2><button class="topbar-btn primary" onclick="openCreateStaffModal()"><i class="fas fa-plus"></i> Create Staff Account</button></div>
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="staffSearch" placeholder="Search by name or email…" oninput="renderStaffAccounts()"></div>
+                    <select class="filter-select" id="staffRoleFilter" onchange="renderStaffAccounts()"><option value="">All Roles</option><option value="staff">Staff</option><option value="admin">Admin</option></select>
+                    <select class="filter-select" id="staffStatusFilter" onchange="renderStaffAccounts()"><option value="">All Statuses</option><option value="active">Active</option><option value="suspended">Suspended</option></select>
+                </div>
+                <table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead><tbody id="staffBody"></tbody></table>
+            </div>
+        </div>
+    </div>
 
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const emailValue = emailInput.value.trim().toLowerCase();
-        const passwordValue = passwordInput.value;
+    <!-- ══ CONTACT MESSAGES ══ -->
+    <div class="panel" id="panel-contact-messages">
 
-        let valid = true;
+        <!-- Stats row -->
+        <div class="blog-stats-row" style="grid-template-columns:repeat(3,1fr);">
+            <div class="blog-stat-mini">
+                <div class="bsm-icon"><i class="fas fa-inbox"></i></div>
+                <div class="bsm-info">
+                    <div class="bsm-val" id="cmTotal">—</div>
+                    <div class="bsm-lbl">Total Messages</div>
+                </div>
+            </div>
+            <div class="blog-stat-mini">
+                <div class="bsm-icon orange"><i class="fas fa-envelope"></i></div>
+                <div class="bsm-info">
+                    <div class="bsm-val" id="cmUnread">—</div>
+                    <div class="bsm-lbl">Unread</div>
+                </div>
+            </div>
+            <div class="blog-stat-mini">
+                <div class="bsm-icon green"><i class="fas fa-check-double"></i></div>
+                <div class="bsm-info">
+                    <div class="bsm-val" id="cmRead">—</div>
+                    <div class="bsm-lbl">Read</div>
+                </div>
+            </div>
+        </div>
 
-        if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-            emailInput.classList.add('error');
-            document.getElementById('emailError').classList.add('visible');
-            valid = false;
-        }
+        <!-- Two-pane layout: list + detail -->
+        <div class="cm-layout">
+            <!-- Left: message list -->
+            <div class="cm-list-pane">
+                <div class="cm-list-toolbar">
+                    <div class="search-input-wrap" style="flex:1;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="cmSearch" placeholder="Search messages…" oninput="renderContactMessages()">
+                    </div>
+                    <select class="filter-select" id="cmSubjectFilter" onchange="renderContactMessages()">
+                        <option value="">All Topics</option>
+                        <option value="Product Inquiry">Product Inquiry</option>
+                        <option value="Order Support">Order Support</option>
+                        <option value="Returns &amp; Warranty">Returns &amp; Warranty</option>
+                        <option value="Technical Support">Technical Support</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <select class="filter-select" id="cmReadFilter" onchange="renderContactMessages()">
+                        <option value="">All</option>
+                        <option value="unread">Unread</option>
+                        <option value="read">Read</option>
+                    </select>
+                </div>
+                <div id="cmListBody" class="cm-list-body">
+                    <div class="cm-empty"><i class="fas fa-inbox"></i><br>Loading messages…</div>
+                </div>
+            </div>
 
-        if (!passwordValue || passwordValue.length < 6) {
-            passwordInput.classList.add('error');
-            document.getElementById('passwordError').classList.add('visible');
-            valid = false;
-        }
+            <!-- Right: message detail -->
+            <div class="cm-detail-pane" id="cmDetailPane">
+                <div class="cm-detail-empty" id="cmDetailEmpty">
+                    <i class="fas fa-envelope-open-text"></i>
+                    <p>Select a message to read it</p>
+                </div>
+                <div class="cm-detail-content" id="cmDetailContent" style="display:none;">
+                    <div class="cm-detail-header">
+                        <div class="cm-detail-avatar" id="cdAvatar">?</div>
+                        <div class="cm-detail-info">
+                            <div class="cm-detail-name" id="cdName">—</div>
+                            <div class="cm-detail-email" id="cdEmail">—</div>
+                        </div>
+                        <div class="cm-detail-actions">
+                            <button class="topbar-btn" id="cdToggleReadBtn" onclick="toggleMessageRead()"><i class="fas fa-envelope-open"></i> Mark Read</button>
+                            <button class="topbar-btn" style="background:#fee2e2;color:#ef4444;border-color:#fca5a5;" onclick="deleteCurrentMessage()"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="cm-detail-meta">
+                        <span class="badge" id="cdSubjectBadge"></span>
+                        <span id="cdDate" style="font-size:11px;color:#8a9aa5;margin-left:8px;"></span>
+                    </div>
+                    <div class="cm-detail-body" id="cdBody"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        if (!valid) return;
+    <!-- ══ BLOG MANAGEMENT ══ -->
+    <div class="panel" id="panel-blog">
 
-        try {
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: emailValue,
-                    password: passwordValue
-                })
-            });
+        <!-- Mini stat row -->
+        <div class="blog-stats-row">
+            <div class="blog-stat-mini">
+                <div class="bsm-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="bsm-info">
+                    <div class="bsm-val" id="bsmTotal">9</div>
+                    <div class="bsm-lbl">Total Posts</div>
+                </div>
+            </div>
+            <div class="blog-stat-mini">
+                <div class="bsm-icon green"><i class="fas fa-globe"></i></div>
+                <div class="bsm-info">
+                    <div class="bsm-val" id="bsmPublished">9</div>
+                    <div class="bsm-lbl">Published</div>
+                </div>
+            </div>
+            <div class="blog-stat-mini">
+                <div class="bsm-icon orange"><i class="fas fa-pencil-alt"></i></div>
+                <div class="bsm-info">
+                    <div class="bsm-val" id="bsmDrafts">0</div>
+                    <div class="bsm-lbl">Drafts</div>
+                </div>
+            </div>
+            <div class="blog-stat-mini">
+                <div class="bsm-icon purple"><i class="fas fa-eye"></i></div>
+                <div class="bsm-info">
+                    <div class="bsm-val">3.2K</div>
+                    <div class="bsm-lbl">Views (Month)</div>
+                </div>
+            </div>
+        </div>
 
-            const data = await res.json();
+        <!-- Toolbar -->
+        <div class="blog-panel-toolbar">
+            <div class="table-toolbar" style="margin-bottom:0;flex:1;max-width:500px;">
+                <div class="search-input-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="blogSearch" placeholder="Search posts by title or category…" oninput="renderBlogPosts()">
+                </div>
+                <select class="filter-select" id="blogCatFilter" onchange="renderBlogPosts()">
+                    <option value="">All Categories</option>
+                    <option value="iPhone">iPhone</option>
+                    <option value="MacBook">MacBook</option>
+                    <option value="Apple Watch">Apple Watch</option>
+                    <option value="Sustainability">Sustainability</option>
+                </select>
+                <select class="filter-select" id="blogStatusFilter" onchange="renderBlogPosts()">
+                    <option value="">All Statuses</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                    <option value="archived">Archived</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <span id="blogViewToggle" style="display:flex;gap:4px;">
+                    <button class="topbar-btn active" id="viewGrid" onclick="setBlogView('grid')" title="Grid view"><i class="fas fa-th-large"></i></button>
+                    <button class="topbar-btn" id="viewList" onclick="setBlogView('list')" title="List view"><i class="fas fa-list"></i></button>
+                </span>
+            </div>
+        </div>
 
-            if (!res.ok || !data.success) {
-                showAlert(data.message || 'Invalid email or password. Please try again.');
-                return;
-            }
+        <!-- Posts Grid -->
+        <div class="blog-posts-grid" id="blogPostsGrid"></div>
 
-            const sessionUser = {
-                id: data.id,
-                name: data.name,
-                email: emailValue,
-                role: data.role
-            };
+        <!-- List View (hidden by default) -->
+        <div class="table-card" id="blogPostsTable" style="display:none;">
+            <table>
+                <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="blogPostsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
 
-            if (document.getElementById('rememberMe').checked) {
-                localStorage.setItem('renutech_user', JSON.stringify(sessionUser));
-            } else {
-                sessionStorage.setItem('renutech_user', JSON.stringify(sessionUser));
-            }
+</div><!-- end .main -->
 
-            window.location.href = data.role === 'admin' || data.role === 'staff'
-                ? 'admin.html'
-                : 'index.html';
+<!-- ── Ship Modal ── -->
+<div class="modal-overlay" id="shipModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('shipModal')">&times;</button>
+        <h3>Mark as <span>Shipped</span></h3>
+        <p>Enter the tracking details for this order.</p>
+        <div class="modal-form">
+            <div class="form-group"><label>Carrier</label><select id="shipCarrier"><option>UPS</option><option>FedEx</option><option>USPS</option><option>DHL</option></select></div>
+            <div class="form-group"><label>Tracking Number</label><input type="text" id="shipTracking" placeholder="e.g. 1Z999AA10123456784"></div>
+            <div class="form-group"><label>Notes (optional)</label><textarea id="shipNotes" placeholder="Any notes for the customer…"></textarea></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('shipModal')">Cancel</button>
+            <button class="btn-modal confirm" onclick="confirmShip()"><i class="fas fa-shipping-fast"></i> Confirm Shipment</button>
+        </div>
+    </div>
+</div>
 
-        } catch (err) {
-            showAlert('Server error. Please try again.');
-            console.error(err);
-        }
-    });
+<!-- ── Add/Edit Product Modal ── -->
+<div class="modal-overlay" id="productModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('productModal')">&times;</button>
+        <h3 id="productModalTitle">Add <span>Product</span></h3>
+        <p>Fill in the product details below.</p>
+        <div class="modal-form">
+            <div class="form-group"><label>Product Name</label><input type="text" id="pName" placeholder="e.g. iPhone 16 Pro — Neutral Titanium"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group"><label>Category</label><select id="pCat"><option>iPhone</option><option>MacBook</option><option>Apple Watch</option></select></div>
+                <div class="form-group"><label>Condition</label><select id="pCond"><option>Like New</option><option>Good Condition</option><option>Fair Condition</option></select></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group"><label>Price ($)</label><input type="number" id="pPrice" placeholder="699"></div>
+                <div class="form-group"><label>Stock Qty</label><input type="number" id="pStock" placeholder="5"></div>
+            </div>
+            <div class="form-group"><label>Description</label><textarea id="pDesc" placeholder="Describe the product's condition, specs, included accessories, etc."></textarea></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('productModal')">Cancel</button>
+            <button class="btn-modal confirm" onclick="confirmProduct()"><i class="fas fa-check"></i> Save Product</button>
+        </div>
+    </div>
+</div>
 
-    function showAlert(msg) {
-        const el = document.getElementById('loginAlert');
-        document.getElementById('alertMsg').textContent = msg;
-        el.style.display = 'flex';
+<!-- ── Create Staff Modal ── -->
+<div class="modal-overlay" id="createStaffModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('createStaffModal')">&times;</button>
+        <h3>Create <span>Staff Account</span></h3>
+        <p>Add a staff member directly.</p>
+        <div class="modal-form">
+            <div class="form-group"><label>Full Name</label><input type="text" id="newStaffName" placeholder="e.g. Jordan Lee"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="newStaffEmail" placeholder="e.g. jordan@renutech.com"></div>
+            <div class="form-group"><label>Role</label><select id="newStaffRole"><option value="staff">Staff</option><option value="admin">Admin</option></select></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('createStaffModal')">Cancel</button>
+            <button class="btn-modal confirm" onclick="confirmCreateStaff()"><i class="fas fa-check"></i> Create Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── View Order Modal ── -->
+<div class="modal-overlay" id="viewOrderModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('viewOrderModal')">&times;</button>
+        <h3>Order <span id="viewOrderRef"></span></h3>
+        <p id="viewOrderStatus"></p>
+        <div class="modal-form" style="display:block;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group"><label>Customer</label><div id="viewOrderCustomer" style="font-size:13px;font-weight:600;padding:8px 0;"></div></div>
+                <div class="form-group"><label>Email</label><div id="viewOrderEmail" style="font-size:13px;padding:8px 0;"></div></div>
+                <div class="form-group"><label>Product</label><div id="viewOrderProduct" style="font-size:13px;padding:8px 0;"></div></div>
+                <div class="form-group"><label>Total</label><div id="viewOrderTotal" style="font-size:13px;font-weight:700;color:var(--teal);padding:8px 0;"></div></div>
+                <div class="form-group"><label>Date</label><div id="viewOrderDate" style="font-size:13px;padding:8px 0;"></div></div>
+                <div class="form-group"><label>Tracking</label><div id="viewOrderTracking" style="font-size:13px;padding:8px 0;"></div></div>
+            </div>
+            <div class="form-group"><label>Shipping Address</label><div id="viewOrderAddress" style="font-size:13px;padding:8px 0;"></div></div>
+        </div>
+        <div class="modal-actions"><button class="btn-modal cancel" onclick="closeModal('viewOrderModal')">Close</button></div>
+    </div>
+</div>
+
+<!-- ══ BLOG POST EDITOR MODAL ══ -->
+<div class="modal-overlay" id="blogModal">
+    <div class="modal" style="max-width:720px;width:95vw;">
+        <button class="modal-close" onclick="closeModal('blogModal')">&times;</button>
+        <h3 id="blogModalTitle">New <span>Blog Post</span></h3>
+        <p>Write, preview, and publish your post below.</p>
+
+        <!-- Editor tabs -->
+        <div class="editor-tabs">
+            <button class="editor-tab active" onclick="switchEditorTab('write', this)"><i class="fas fa-pen"></i> Write</button>
+            <button class="editor-tab" onclick="switchEditorTab('preview', this)"><i class="fas fa-eye"></i> Preview</button>
+            <button class="editor-tab" onclick="switchEditorTab('seo', this)"><i class="fas fa-search"></i> SEO</button>
+        </div>
+
+        <!-- Write tab -->
+        <div class="editor-pane active" id="epane-write">
+            <div class="modal-form" style="display:block;">
+                <div class="form-group">
+                    <label>Post Title</label>
+                    <input type="text" id="bTitle" placeholder="e.g. Top 5 Refurbished iPhones of 2026" oninput="updateBlogSEO()">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="bCat">
+                            <option value="iPhone">iPhone</option>
+                            <option value="MacBook">MacBook</option>
+                            <option value="Apple Watch">Apple Watch</option>
+                            <option value="Sustainability">Sustainability</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input type="text" id="bAuthor" placeholder="e.g. ReNu Team">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="bStatus">
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Cover Image URL</label>
+                    <div class="img-url-wrap">
+                        <div class="img-url-preview" id="bImgPreviewBox">
+                            <i class="fas fa-image"></i>
+                            <img id="bImgPreviewImg" src="" alt="">
+                        </div>
+                        <input type="text" id="bImageUrl" placeholder="https://images.unsplash.com/…" oninput="previewBlogImage()" style="flex:1;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Excerpt <small style="font-weight:400;color:#8a9aa5;">(shown on blog index)</small></label>
+                    <textarea class="rich-textarea" id="bExcerpt" placeholder="A brief summary of this post…" rows="2" oninput="updateBlogSEO()"></textarea>
+                    <div class="char-count"><span id="excerptCount">0</span> / 160 chars</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Body Content</label>
+                    <textarea class="rich-textarea" id="bBody" placeholder="Write your full post here…" rows="8" oninput="updateBlogSEO()"></textarea>
+                    <div class="char-count"><span id="bodyCount">0</span> words</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tags <small style="font-weight:400;color:#8a9aa5;">(comma-separated)</small></label>
+                    <input type="text" id="bTags" placeholder="e.g. Refurbished, Apple, Eco-Friendly">
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview tab -->
+        <div class="editor-pane" id="epane-preview">
+            <div class="preview-box">
+                <img class="prev-img" id="prevThumb" src="" style="display:none;">
+                <p class="prev-meta" id="prevMeta">Category · Date · Author</p>
+                <h1 id="prevTitle">Your title will appear here</h1>
+                <div class="prev-excerpt" id="prevExcerpt">Your excerpt will appear here…</div>
+                <div class="prev-body" id="prevBody">Your body content will appear here…</div>
+            </div>
+        </div>
+
+        <!-- SEO tab -->
+        <div class="editor-pane" id="epane-seo">
+            <div class="modal-form" style="display:block;">
+                <div class="form-group">
+                    <label>Meta Title <small style="font-weight:400;color:#8a9aa5;">(auto-filled from title)</small></label>
+                    <input type="text" id="bMetaTitle" placeholder="SEO title…" oninput="updateBlogSEO()">
+                    <div class="char-count"><span id="metaTitleCount">0</span> / 60 chars</div>
+                </div>
+                <div class="form-group">
+                    <label>Meta Description</label>
+                    <textarea class="rich-textarea" id="bMetaDesc" placeholder="Describe this page for search engines…" rows="3" oninput="updateBlogSEO()"></textarea>
+                    <div class="char-count"><span id="metaDescCount">0</span> / 160 chars</div>
+                </div>
+
+                <!-- SEO score widget -->
+                <div class="seo-score" id="seoScoreBox">
+                    <div class="score-ring" id="seoRing" style="--pct:0%">0</div>
+                    <div class="seo-tips" id="seoTips">Fill in your title and excerpt to get an SEO score.</div>
+                </div>
+
+                <!-- SERP preview -->
+                <div style="margin-top:16px;">
+                    <label style="font-size:11px;font-weight:700;color:#8a9aa5;text-transform:uppercase;letter-spacing:0.4px;display:block;margin-bottom:8px;">Search Result Preview</label>
+                    <div style="background:#fff;border:1px solid #e5edf0;border-radius:10px;padding:16px 18px;">
+                        <div style="font-size:11px;color:#3c4043;margin-bottom:3px;">renutech.com › blog</div>
+                        <div id="serpTitle" style="font-size:15px;color:#1a0dab;font-weight:600;margin-bottom:4px;line-height:1.3;">Your post title here</div>
+                        <div id="serpDesc" style="font-size:12px;color:#4d5156;line-height:1.5;">Your meta description will appear here — make it compelling to improve click-through rates.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-actions" style="margin-top:20px;">
+            <button class="btn-modal cancel" onclick="closeModal('blogModal')">Cancel</button>
+            <button class="btn-modal" onclick="saveBlogPost('draft')" style="background:#fef9c3;color:#92400e;border:1px solid #fde68a;"><i class="fas fa-save"></i> Save Draft</button>
+            <button class="btn-modal confirm" onclick="saveBlogPost('published')"><i class="fas fa-globe"></i> Publish</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Delete Blog Post Confirm ── -->
+<div class="modal-overlay" id="confirmDeleteBlogModal">
+    <div class="modal" style="max-width:400px;">
+        <button class="modal-close" onclick="closeModal('confirmDeleteBlogModal')">&times;</button>
+        <h3>Delete <span>Post</span></h3>
+        <p>Are you sure you want to delete "<strong id="deletePostTitle"></strong>"? This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('confirmDeleteBlogModal')">Cancel</button>
+            <button class="btn-modal confirm" style="background:#ef4444;" onclick="confirmDeleteBlogPost()"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done!</span></div>
+
+<!-- ── Contact Message View Modal (mobile) ── -->
+<div class="modal-overlay" id="cmMsgModal">
+    <div class="modal" style="max-width:560px;">
+        <button class="modal-close" onclick="closeModal('cmMsgModal')">&times;</button>
+        <h3><span id="cmModalName">—</span></h3>
+        <p id="cmModalEmail" style="font-size:12px;color:#8a9aa5;margin:-6px 0 14px;"></p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+            <span class="badge" id="cmModalSubject"></span>
+            <span id="cmModalDate" style="font-size:11px;color:#8a9aa5;"></span>
+        </div>
+        <div id="cmModalBody" style="font-size:13px;color:#374151;line-height:1.7;white-space:pre-wrap;background:#f8fafc;border-radius:8px;padding:14px;border:1px solid #e5edf0;"></div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeModal('cmMsgModal')">Close</button>
+            <button class="btn-modal confirm" id="cmModalToggleBtn" onclick="toggleMessageRead();closeModal('cmMsgModal')"><i class="fas fa-envelope-open"></i> Mark Read</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── Auth guard ─────────────────────────────────────────────────────────────
+(function() {
+    const user = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
+    if (!user || user.role !== 'admin') {
+        // For demo purposes, don't redirect
+        document.getElementById('adminName').textContent = 'Admin';
+        document.getElementById('adminAvatar').textContent = 'A';
+    } else {
+        document.getElementById('adminName').textContent = user.name || 'Admin';
+        document.getElementById('adminAvatar').textContent = (user.name || 'A')[0].toUpperCase();
     }
+})();
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    sessionStorage.removeItem('renutech_user');
+    window.location.href = 'login.html';
+});
+
+// ── API helper ─────────────────────────────────────────────────────────────
+async function api(method, path, body) {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    try {
+        const res = await fetch('http://localhost:8080' + path, opts);
+        return await res.json();
+    } catch(e) { return {}; }
+}
+
+// ── State ──────────────────────────────────────────────────────────────────
+let productsCache       = [];
+let ordersCache         = [];
+let currentShipOrderId  = null;
+let currentShipOrderRef = null;
+let editingProductId    = null;
+let currentBlogView     = 'grid';
+let editingBlogId       = null;
+let deletingBlogId      = null;
+
+// ── Simulated Blog Posts (mirrors blog.html) ───────────────────────────────
+let blogPosts = [
+    { id: 1, title: 'Top 5 Refurbished iPhones of 2026',            category: 'iPhone',       author: 'ReNu Team', date: '2026-04-05', status: 'published', excerpt: 'Looking for a great deal on an iPhone? We break down the best refurbished models available right now.', body: '',     imageUrl: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=600&q=80', tags: 'Refurbished, iPhone, Deals' },
+    { id: 2, title: 'MacBook M4 vs M3: Is the Upgrade Worth It?',   category: 'MacBook',      author: 'ReNu Team', date: '2026-03-28', status: 'published', excerpt: 'We compare Apple\'s latest chips side by side — performance, battery life, and value.', body: '',              imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80', tags: 'MacBook, Apple, Tips' },
+    { id: 3, title: 'How Buying Refurbished Helps the Planet',       category: 'Sustainability', author: 'ReNu Team', date: '2026-03-15', status: 'published', excerpt: 'Every refurbished device keeps e-waste out of landfills. Learn the real environmental impact.', body: '', imageUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=600&q=80', tags: 'Eco-Friendly, Refurbished' },
+    { id: 4, title: 'iPhone 15 Pro vs iPhone 16: Full Breakdown',    category: 'iPhone',       author: 'ReNu Team', date: '2026-03-10', status: 'published', excerpt: 'Still debating between the 15 Pro and the 16? We lay out every difference so you can shop smarter.', body: '', imageUrl: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=600&q=80', tags: 'iPhone, Apple' },
+    { id: 5, title: 'Apple Watch Series 9: Still a Great Buy?',     category: 'Apple Watch',  author: 'ReNu Team', date: '2026-02-27', status: 'published', excerpt: 'The Series 9 is still one of the most capable smartwatches. We review it from a refurbished buyer\'s perspective.', body: '', imageUrl: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&q=80', tags: 'Apple Watch, Refurbished' },
+    { id: 6, title: 'Best Refurbished MacBooks Under $800',          category: 'MacBook',      author: 'ReNu Team', date: '2026-02-18', status: 'published', excerpt: 'You don\'t need to spend over a grand to get a powerful Mac. These are our top picks at the $800 mark.', body: '', imageUrl: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80', tags: 'MacBook, Budget, Deals' },
+    { id: 7, title: 'What Does "Certified Refurbished" Actually Mean?', category: 'iPhone',   author: 'ReNu Team', date: '2026-02-05', status: 'published', excerpt: 'We explain exactly what goes into our refurbishment process, grading system, and warranty coverage.', body: '', imageUrl: 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=600&q=80', tags: 'Refurbished, Tips' },
+    { id: 8, title: 'Apple Watch Ultra vs Series 9: Which to Buy?', category: 'Apple Watch',  author: 'ReNu Team', date: '2026-01-22', status: 'published', excerpt: 'The Ultra is powerful but pricey. We help you figure out which Apple Watch fits your lifestyle and budget.', body: '', imageUrl: 'https://images.unsplash.com/photo-1551816230-ef5deaed4a26?w=600&q=80', tags: 'Apple Watch, Budget' },
+    { id: 9, title: 'MacBook Air M2 in 2026: Still Worth Buying?',  category: 'MacBook',      author: 'ReNu Team', date: '2026-01-10', status: 'published', excerpt: 'Even with M4 out, the M2 MacBook Air remains one of the best values in the entire laptop market.', body: '', imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80', tags: 'MacBook, Budget' },
+];
+let nextBlogId = 10;
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function categoryEmoji(cat) {
+    return { 'iPhone': '📱', 'MacBook': '💻', 'Apple Watch': '⌚', 'Sustainability': '🌱' }[cat] || '📦';
+}
+
+function fmtDate(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+}
+
+function badge(status) {
+    return `<span class="badge ${status.toLowerCase().replace(' ','-')}">${status}</span>`;
+}
+
+function stockBadge(qty) {
+    if (qty === 0) return `<span class="badge out-stock">Out of Stock</span>`;
+    if (qty <= 2)  return `<span class="badge low-stock">Low (${qty})</span>`;
+    return `<span class="badge in-stock">In Stock (${qty})</span>`;
+}
+
+function accStatusBadge(status) {
+    return `<span class="badge ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
+}
+
+function roleBadge(role) {
+    return `<span class="badge ${role}">${role.charAt(0).toUpperCase() + role.slice(1)}</span>`;
+}
+
+function restockBadge(status) {
+    const labels = { ordered: 'Ordered', received: 'Received', cancelled: 'Cancelled' };
+    return `<span class="badge ${status}">${labels[status] || status}</span>`;
+}
+
+// ── Navigation ─────────────────────────────────────────────────────────────
+const panelTitles = {
+    dashboard:    'Dashboard <span>Overview</span>',
+    'order-mgmt': 'Order <span>Management</span>',
+    products:     'Product <span>Management</span>',
+    analytics:    'Analytics <span>& Insights</span>',
+    accounts:     'Account <span>Management</span>',
+    blog:             'Blog <span>Management</span>',
+    'contact-messages': 'Contact <span>Messages</span>',
+};
+
+document.querySelectorAll('.nav-item[data-panel]').forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchPanel(item.dataset.panel);
+    });
+});
+
+function switchPanel(name) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    const navEl = document.querySelector(`.nav-item[data-panel="${name}"]`);
+    if (navEl) navEl.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    document.getElementById('topbarTitle').innerHTML = panelTitles[name] || name;
+    document.getElementById('topbarAction').style.display     = name === 'products' ? '' : 'none';
+    document.getElementById('topbarBlogAction').style.display = name === 'blog'     ? '' : 'none';
+    if (name === 'order-mgmt') renderActiveOrderSubtab();
+    if (name === 'products')   renderProducts();
+    if (name === 'accounts')   renderActiveAccountSubtab();
+    if (name === 'blog')       renderBlogPosts();
+}
+
+// ── Subtab system ──────────────────────────────────────────────────────────
+document.querySelectorAll('.subtab[data-subtab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const panelEl = btn.closest('.panel');
+        panelEl.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        panelEl.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('subtab-' + btn.dataset.subtab).classList.add('active');
+        dispatchSubtab(btn.dataset.subtab);
+    });
+});
+
+function dispatchSubtab(name) {
+    if (name === 'customer-orders') renderOrders();
+    if (name === 'product-orders')  renderRestockOrders();
+    if (name === 'place-order')     populatePlaceOrderProducts();
+    if (name === 'customer-accs')   renderCustomerAccounts();
+    if (name === 'staff-accs')      renderStaffAccounts();
+}
+
+function renderActiveOrderSubtab() {
+    const btn = document.querySelector('#panel-order-mgmt .subtab.active');
+    if (btn) dispatchSubtab(btn.dataset.subtab);
+}
+
+function renderActiveAccountSubtab() {
+    const btn = document.querySelector('#panel-accounts .subtab.active');
+    if (btn) dispatchSubtab(btn.dataset.subtab);
+}
+
+// ── Dashboard ──────────────────────────────────────────────────────────────
+async function renderDashStats() {
+    const [orders, products] = await Promise.all([
+        api('GET', '/api/orders'),
+        api('GET', '/api/products')
+    ]);
+    const orderList   = Array.isArray(orders)   ? orders   : [];
+    const productList = Array.isArray(products) ? products : [];
+    const now = new Date();
+    const monthOrders = orderList.filter(o => {
+        if (!o.date) return false;
+        const d = new Date(o.date);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    const revenue  = monthOrders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+    const pending  = orderList.filter(o => o.status === 'pending').length;
+    const shipped  = monthOrders.filter(o => o.status === 'shipped' || o.status === 'delivered').length;
+    const lowStock = productList.filter(p => p.stock > 0 && p.stock <= 2).length;
+    document.getElementById('statRevenue').textContent  = '$' + revenue.toLocaleString();
+    document.getElementById('statPending').textContent  = pending;
+    document.getElementById('statShipped').textContent  = shipped;
+    document.getElementById('statLowStock').textContent = lowStock;
+    document.getElementById('statPendingChange').innerHTML  = `<i class="fas fa-arrow-up"></i> ${pending} need attention`;
+    document.getElementById('statShippedChange').innerHTML  = `<i class="fas fa-arrow-up"></i> ${shipped} this month`;
+    document.getElementById('statLowStockChange').innerHTML = lowStock > 0 ? `<i class="fas fa-exclamation-triangle"></i> Restock needed` : `<i class="fas fa-check"></i> All stocked up`;
+}
+
+async function renderDashRecent() {
+    const tbody = document.getElementById('dashRecentBody');
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
+    const orders = await api('GET', '/api/orders');
+    if (!Array.isArray(orders) || !orders.length) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-box-open"></i><p>No orders yet.</p></div></td></tr>`;
+        return;
+    }
+    tbody.innerHTML = orders.slice(0, 5).map(o => `
+        <tr>
+            <td><span class="order-id">${o.ref}</span></td>
+            <td><div class="customer-cell"><span class="customer-name">${o.customer}</span><span class="customer-email">${o.email}</span></div></td>
+            <td>${o.products || '—'}</td>
+            <td><span class="amount">$${parseFloat(o.total).toLocaleString()}</span></td>
+            <td>${badge(o.status)}</td>
+        </tr>`).join('');
+}
+
+// ── Orders ─────────────────────────────────────────────────────────────────
+async function renderOrders() {
+    const q      = (document.getElementById('orderSearch')?.value || '').toLowerCase();
+    const filter = document.getElementById('orderStatusFilter')?.value || '';
+    const tbody  = document.getElementById('ordersBody');
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
+    let url = '/api/orders';
+    const p = [];
+    if (filter) p.push(`status=${filter}`);
+    if (q)      p.push(`search=${encodeURIComponent(q)}`);
+    if (p.length) url += '?' + p.join('&');
+    const orders = await api('GET', url);
+    ordersCache = Array.isArray(orders) ? orders : [];
+    if (!ordersCache.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-box-open"></i><p>No orders match your filters.</p></div></td></tr>`;
+        return;
+    }
+    tbody.innerHTML = ordersCache.map(o => `
+        <tr>
+            <td><span class="order-id">${o.ref}</span></td>
+            <td><div class="customer-cell"><span class="customer-name">${o.customer}</span><span class="customer-email">${o.email}</span></div></td>
+            <td>${o.products || '—'}</td>
+            <td>${fmtDate(o.date)}</td>
+            <td><span class="amount">$${parseFloat(o.total).toLocaleString()}</span></td>
+            <td>${badge(o.status)}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${o.status === 'pending'   ? `<button class="action-btn ship" onclick="openShipModal(${o.id},'${o.ref}')"><i class="fas fa-shipping-fast"></i> Ship</button>` : ''}
+                ${o.status === 'shipped'   ? `<button class="action-btn success" onclick="markDelivered(${o.id},'${o.ref}')"><i class="fas fa-check"></i> Delivered</button>` : ''}
+                ${o.status === 'pending'   ? `<button class="action-btn danger" onclick="cancelOrder(${o.id},'${o.ref}')"><i class="fas fa-times"></i> Cancel</button>` : ''}
+                ${['delivered','cancelled','shipped'].includes(o.status) ? `<button class="action-btn" onclick="viewOrder(${o.id})"><i class="fas fa-eye"></i> View</button>` : ''}
+            </td>
+        </tr>`).join('');
+}
+
+// ── Products ───────────────────────────────────────────────────────────────
+async function renderProducts() {
+    const q   = (document.getElementById('productSearch')?.value || '').toLowerCase();
+    const cat = document.getElementById('productCatFilter')?.value || '';
+    const tbody = document.getElementById('productsBody');
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
+    let url = '/api/products';
+    const p = [];
+    if (cat) p.push(`category=${encodeURIComponent(cat)}`);
+    if (q)   p.push(`search=${encodeURIComponent(q)}`);
+    if (p.length) url += '?' + p.join('&');
+    const products = await api('GET', url);
+    productsCache = Array.isArray(products) ? products : [];
+    if (!productsCache.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-search"></i><p>No products found.</p></div></td></tr>`;
+        return;
+    }
+    tbody.innerHTML = productsCache.map(p => `
+        <tr>
+            <td><div class="product-cell">
+                <div class="product-thumb">${categoryEmoji(p.category)}</div>
+                <div><div class="product-name">${p.name}</div><div class="product-sku">ID-${String(p.id).padStart(4,'0')}</div></div>
+            </div></td>
+            <td>${p.category}</td>
+            <td>${p.condition}</td>
+            <td><span class="amount">$${parseFloat(p.price).toLocaleString()}</span></td>
+            <td>${p.stock}</td>
+            <td>${stockBadge(p.stock)}</td>
+            <td style="display:flex;gap:6px;">
+                <button class="action-btn" onclick="openEditProduct(${p.id})"><i class="fas fa-pen"></i> Edit</button>
+                <button class="action-btn danger" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>`).join('');
+}
+
+// ── Restock Orders ─────────────────────────────────────────────────────────
+async function renderRestockOrders() {
+    const q      = (document.getElementById('poSearch')?.value || '').toLowerCase();
+    const filter = document.getElementById('poStatusFilter')?.value || '';
+    const tbody  = document.getElementById('restockBody');
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
+    let url = '/api/restock-orders';
+    if (filter) url += `?status=${filter}`;
+    let orders = await api('GET', url);
+    if (!Array.isArray(orders)) orders = [];
+    if (q) orders = orders.filter(o =>
+        o.ref.toLowerCase().includes(q) || o.supplier.toLowerCase().includes(q) || o.product.toLowerCase().includes(q));
+    if (!orders.length) { tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><i class="fas fa-truck"></i><p>No restock orders found.</p></div></td></tr>`; return; }
+    tbody.innerHTML = orders.map(o => `
+        <tr>
+            <td><span class="order-id">${o.ref}</span></td>
+            <td style="font-size:12px;font-weight:600;">${o.supplier}</td>
+            <td style="font-size:12px;">${o.product}</td>
+            <td style="font-family:'Jost',sans-serif;font-weight:700;">${o.qty}</td>
+            <td><span class="amount">$${parseFloat(o.unitCost).toLocaleString()}</span></td>
+            <td><span class="amount">$${(o.qty * parseFloat(o.unitCost)).toLocaleString()}</span></td>
+            <td style="font-size:11px;color:#6a7580;">${o.expected || '—'}</td>
+            <td>${restockBadge(o.status)}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${o.status === 'ordered' ? `<button class="action-btn success" onclick="markRestockReceived(${o.id},'${o.ref}')"><i class="fas fa-check"></i> Received</button>` : ''}
+                ${o.status === 'ordered' ? `<button class="action-btn danger"  onclick="cancelRestockOrder(${o.id},'${o.ref}')"><i class="fas fa-times"></i> Cancel</button>` : ''}
+                ${o.status !== 'ordered' ? `<span style="font-size:11px;color:#b0bec5;font-weight:600;">—</span>` : ''}
+            </td>
+        </tr>`).join('');
+}
+
+async function markRestockReceived(id, ref) {
+    await api('PUT', `/api/restock-orders?id=${id}`, { status: 'received' });
+    showToast(`${ref} marked as received!`);
+    renderRestockOrders(); renderDashStats(); renderProducts();
+}
+
+async function cancelRestockOrder(id, ref) {
+    if (!confirm(`Cancel restock order ${ref}?`)) return;
+    await api('PUT', `/api/restock-orders?id=${id}`, { status: 'cancelled' });
+    showToast(`Restock order ${ref} cancelled.`, true);
+    renderRestockOrders();
+}
+
+async function populatePlaceOrderProducts() {
+    const sel = document.getElementById('poProduct');
+    if (!sel) return;
+    const products = await api('GET', '/api/products');
+    sel.innerHTML = (Array.isArray(products) ? products : [])
+        .map(p => `<option value="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}">${p.name}</option>`).join('');
+    updatePoTotal();
+}
+
+function updatePoTotal() {
+    const qty  = parseFloat(document.getElementById('poQty')?.value) || 0;
+    const cost = parseFloat(document.getElementById('poUnitCost')?.value) || 0;
+    const display = document.getElementById('poTotalDisplay');
+    const span    = document.getElementById('poTotal');
+    if (display && span) {
+        const show = qty > 0 && cost > 0;
+        display.style.display = show ? 'block' : 'none';
+        if (show) span.textContent = '$' + (qty * cost).toLocaleString();
+    }
+}
+
+async function placeRestockOrder() {
+    const supplier   = document.getElementById('poSupplier').value.trim();
+    const productSel = document.getElementById('poProduct');
+    const productId  = parseInt(productSel.value);
+    const product    = productSel.options[productSel.selectedIndex].getAttribute('data-name');
+    const qty        = parseInt(document.getElementById('poQty').value);
+    const unitCost   = parseFloat(document.getElementById('poUnitCost').value);
+    const expected   = document.getElementById('poExpected').value;
+    const notes      = document.getElementById('poNotes').value.trim();
+    if (!supplier || !product || isNaN(qty) || qty < 1 || isNaN(unitCost) || !expected) {
+        alert('Please fill in all required fields.'); return;
+    }
+    const result = await api('POST', '/api/restock-orders', { supplier, product, productId, qty, unitCost, expected, notes });
+    if (!result.success) { alert('Failed to place order.'); return; }
+    document.getElementById('poSupplier').value = '';
+    document.getElementById('poQty').value      = '';
+    document.getElementById('poUnitCost').value = '';
+    document.getElementById('poExpected').value = '';
+    document.getElementById('poNotes').value    = '';
+    document.getElementById('poTotalDisplay').style.display = 'none';
+    showToast(`Restock order placed!`);
+}
+
+// ── Account Management ─────────────────────────────────────────────────────
+async function renderCustomerAccounts() {
+    const q      = (document.getElementById('custSearch')?.value || '').toLowerCase();
+    const filter = document.getElementById('custStatusFilter')?.value || '';
+    const tbody  = document.getElementById('custBody');
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
+    let url = '/api/users?role=customer';
+    if (filter) url += `&status=${filter}`;
+    if (q)      url += `&search=${encodeURIComponent(q)}`;
+    const users = await api('GET', url);
+    const list  = Array.isArray(users) ? users : [];
+    if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-user-slash"></i><p>No customers found.</p></div></td></tr>`; return; }
+    tbody.innerHTML = list.map(c => `
+        <tr>
+            <td><div class="customer-cell"><span class="customer-name">${c.name}</span><span class="customer-email">${c.email}</span></div></td>
+            <td style="font-size:12px;">${c.email}</td>
+            <td style="font-size:11px;color:#6a7580;">${fmtDate(c.joined)}</td>
+            <td style="font-family:'Jost',sans-serif;font-weight:700;">—</td>
+            <td>${accStatusBadge(c.status)}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${c.status === 'active'
+                    ? `<button class="action-btn danger" onclick="toggleUserStatus(${c.id},'${c.name}','suspended',true)"><i class="fas fa-ban"></i> Suspend</button>`
+                    : `<button class="action-btn success" onclick="toggleUserStatus(${c.id},'${c.name}','active',true)"><i class="fas fa-check-circle"></i> Activate</button>`}
+                <button class="action-btn" onclick="promoteToStaff(${c.id},'${c.name}')"><i class="fas fa-user-shield"></i> Promote</button>
+            </td>
+        </tr>`).join('');
+}
+
+async function renderStaffAccounts() {
+    const q            = (document.getElementById('staffSearch')?.value || '').toLowerCase();
+    const roleFilter   = document.getElementById('staffRoleFilter')?.value || '';
+    const statusFilter = document.getElementById('staffStatusFilter')?.value || '';
+    const tbody        = document.getElementById('staffBody');
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
+    let url = '/api/users';
+    const p = [];
+    if (roleFilter)   p.push(`role=${roleFilter}`);
+    if (statusFilter) p.push(`status=${statusFilter}`);
+    if (q)            p.push(`search=${encodeURIComponent(q)}`);
+    if (p.length) url += '?' + p.join('&');
+    let users = await api('GET', url);
+    if (!Array.isArray(users)) users = [];
+    const list = users.filter(u => u.role === 'staff' || u.role === 'admin');
+    if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users-slash"></i><p>No staff found.</p></div></td></tr>`; return; }
+    tbody.innerHTML = list.map(s => `
+        <tr>
+            <td><div class="customer-cell"><span class="customer-name">${s.name}</span><span class="customer-email">${s.email}</span></div></td>
+            <td style="font-size:12px;">${s.email}</td>
+            <td>${roleBadge(s.role)}</td>
+            <td style="font-size:11px;color:#6a7580;">${fmtDate(s.joined)}</td>
+            <td>${accStatusBadge(s.status)}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${s.status === 'active'
+                    ? `<button class="action-btn danger" onclick="toggleUserStatus(${s.id},'${s.name}','suspended',false)"><i class="fas fa-ban"></i> Suspend</button>`
+                    : `<button class="action-btn success" onclick="toggleUserStatus(${s.id},'${s.name}','active',false)"><i class="fas fa-check-circle"></i> Activate</button>`}
+                ${s.role !== 'admin'
+                    ? `<button class="action-btn" onclick="demoteToCustomer(${s.id},'${s.name}')"><i class="fas fa-user-minus"></i> Demote</button>`
+                    : `<span style="font-size:10px;color:#8a9aa5;font-weight:700;padding:5px 4px;">Protected</span>`}
+            </td>
+        </tr>`).join('');
+}
+
+async function toggleUserStatus(id, name, newStatus, isCustomer) {
+    await api('PUT', `/api/users?id=${id}`, { status: newStatus });
+    showToast(`${name} ${newStatus === 'active' ? 'activated' : 'suspended'}.`, newStatus === 'suspended');
+    isCustomer ? renderCustomerAccounts() : renderStaffAccounts();
+}
+
+async function promoteToStaff(id, name) {
+    if (!confirm(`Promote ${name} to staff?`)) return;
+    await api('PUT', `/api/users?id=${id}`, { role: 'staff' });
+    showToast(`${name} promoted to staff!`);
+    renderCustomerAccounts();
+}
+
+async function demoteToCustomer(id, name) {
+    if (!confirm(`Demote ${name} to customer?`)) return;
+    await api('PUT', `/api/users?id=${id}`, { role: 'customer' });
+    showToast(`${name} moved to customer accounts.`, true);
+    renderStaffAccounts();
+}
+
+function openCreateStaffModal() {
+    document.getElementById('newStaffName').value  = '';
+    document.getElementById('newStaffEmail').value = '';
+    document.getElementById('newStaffRole').value  = 'staff';
+    document.getElementById('createStaffModal').classList.add('open');
+}
+
+async function confirmCreateStaff() {
+    const name  = document.getElementById('newStaffName').value.trim();
+    const email = document.getElementById('newStaffEmail').value.trim();
+    const role  = document.getElementById('newStaffRole').value;
+    if (!name || !email) { alert('Please fill in name and email.'); return; }
+    const result = await api('POST', '/api/users', { name, email, role });
+    if (!result.success) { alert('Failed to create account.'); return; }
+    closeModal('createStaffModal');
+    renderStaffAccounts();
+    showToast(`Staff account created for ${name}!`);
+}
+
+// ── Ship modal ─────────────────────────────────────────────────────────────
+function openShipModal(orderId, orderRef) {
+    currentShipOrderId  = orderId;
+    currentShipOrderRef = orderRef;
+    document.getElementById('shipTracking').value = '';
+    document.getElementById('shipNotes').value    = '';
+    document.getElementById('shipModal').classList.add('open');
+}
+
+async function confirmShip() {
+    const tracking = document.getElementById('shipTracking').value.trim();
+    if (!tracking) { alert('Please enter a tracking number.'); return; }
+    const fullTracking = document.getElementById('shipCarrier').value + '-' + tracking;
+    await api('PUT', `/api/orders?id=${currentShipOrderId}`, { status: 'shipped', tracking: fullTracking });
+    closeModal('shipModal');
+    renderDashStats(); renderDashRecent(); renderOrders();
+    showToast(`Order ${currentShipOrderRef} marked as shipped!`);
+}
+
+async function markDelivered(orderId, orderRef) {
+    await api('PUT', `/api/orders?id=${orderId}`, { status: 'delivered', tracking: '' });
+    renderDashStats(); renderDashRecent(); renderOrders();
+    showToast(`Order ${orderRef} marked as delivered!`);
+}
+
+async function cancelOrder(orderId, orderRef) {
+    if (!confirm(`Cancel order ${orderRef}?`)) return;
+    await api('PUT', `/api/orders?id=${orderId}`, { status: 'cancelled', tracking: '' });
+    renderDashStats(); renderDashRecent(); renderOrders();
+    showToast(`Order ${orderRef} cancelled.`, true);
+}
+
+// ── Product modal ──────────────────────────────────────────────────────────
+function openAddProduct() {
+    editingProductId = null;
+    document.getElementById('productModalTitle').innerHTML = 'Add <span>Product</span>';
+    document.getElementById('pName').value  = '';
+    document.getElementById('pPrice').value = '';
+    document.getElementById('pStock').value = '';
+    document.getElementById('pDesc').value  = '';
+    document.getElementById('productModal').classList.add('open');
+}
+
+function openEditProduct(id) {
+    editingProductId = id;
+    const p = productsCache.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('productModalTitle').innerHTML = 'Edit <span>Product</span>';
+    document.getElementById('pName').value  = p.name;
+    document.getElementById('pCat').value   = p.category;
+    document.getElementById('pCond').value  = p.condition;
+    document.getElementById('pPrice').value = p.price;
+    document.getElementById('pStock').value = p.stock;
+    document.getElementById('pDesc').value  = p.description || '';
+    document.getElementById('productModal').classList.add('open');
+}
+
+async function confirmProduct() {
+    const name  = document.getElementById('pName').value.trim();
+    const cat   = document.getElementById('pCat').value;
+    const cond  = document.getElementById('pCond').value;
+    const price = parseFloat(document.getElementById('pPrice').value);
+    const stock = parseInt(document.getElementById('pStock').value);
+    const description = document.getElementById('pDesc').value.trim();
+    if (!name || isNaN(price) || isNaN(stock)) { alert('Please fill in all fields.'); return; }
+    const body = { name, category: cat, condition: cond, price, stock, description };
+    if (editingProductId) {
+        await api('PUT', `/api/products?id=${editingProductId}`, body);
+        showToast('Product updated!');
+    } else {
+        await api('POST', '/api/products', body);
+        showToast('Product added!');
+    }
+    closeModal('productModal');
+    renderProducts();
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Delete this product?')) return;
+    await api('DELETE', `/api/products?id=${id}`);
+    renderProducts();
+    showToast('Product deleted.', true);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── BLOG MANAGEMENT ───────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+
+function setBlogView(mode) {
+    currentBlogView = mode;
+    document.getElementById('viewGrid').classList.toggle('active', mode === 'grid');
+    document.getElementById('viewList').classList.toggle('active', mode === 'list');
+    document.getElementById('blogPostsGrid').style.display  = mode === 'grid' ? '' : 'none';
+    document.getElementById('blogPostsTable').style.display = mode === 'list' ? '' : 'none';
+    renderBlogPosts();
+}
+
+function getFilteredBlogPosts() {
+    const q          = (document.getElementById('blogSearch')?.value || '').toLowerCase();
+    const catFilter  = document.getElementById('blogCatFilter')?.value  || '';
+    const statFilter = document.getElementById('blogStatusFilter')?.value || '';
+    return blogPosts.filter(p => {
+        const matchQ   = !q   || p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || (p.tags||'').toLowerCase().includes(q);
+        const matchCat = !catFilter  || p.category === catFilter;
+        const matchSt  = !statFilter || p.status   === statFilter;
+        return matchQ && matchCat && matchSt;
+    });
+}
+
+function renderBlogPosts() {
+    updateBlogStats();
+    const posts = getFilteredBlogPosts();
+
+    // Grid view
+    const grid = document.getElementById('blogPostsGrid');
+    if (posts.length === 0) {
+        grid.innerHTML = `<div class="blog-empty"><i class="fas fa-newspaper"></i><p>No posts match your filters.</p></div>`;
+    } else {
+        grid.innerHTML = posts.map(p => `
+            <article class="admin-blog-card">
+                ${p.imageUrl
+                    ? `<img class="abc-thumb" src="${p.imageUrl}" alt="${p.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+                    : ''}
+                <div class="abc-thumb-placeholder" style="${p.imageUrl ? 'display:none' : ''}">
+                    ${categoryEmoji(p.category)}
+                </div>
+                <div class="abc-body">
+                    <div class="abc-meta">
+                        <span class="abc-cat">${p.category}</span>
+                        <span class="abc-date">${fmtDate(p.date)}</span>
+                    </div>
+                    <div class="abc-title">${p.title}</div>
+                    <div class="abc-excerpt">${p.excerpt || 'No excerpt provided.'}</div>
+                    <div class="abc-footer">
+                        <span class="badge ${p.status}">${p.status.charAt(0).toUpperCase() + p.status.slice(1)}</span>
+                        <div class="abc-actions">
+                            <button class="action-btn" onclick="openEditBlogPost(${p.id})" title="Edit"><i class="fas fa-pen"></i></button>
+                            <button class="action-btn" onclick="toggleBlogStatus(${p.id})" title="${p.status === 'published' ? 'Unpublish' : 'Publish'}">
+                                <i class="fas fa-${p.status === 'published' ? 'eye-slash' : 'globe'}"></i>
+                            </button>
+                            <button class="action-btn danger" onclick="promptDeleteBlog(${p.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>`).join('');
+    }
+
+    // List view
+    const tbody = document.getElementById('blogPostsTableBody');
+    if (posts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-newspaper"></i><p>No posts match your filters.</p></div></td></tr>`;
+    } else {
+        tbody.innerHTML = posts.map(p => `
+            <tr>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:36px;height:36px;border-radius:8px;background:#f0f4f6;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${categoryEmoji(p.category)}</div>
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:var(--darker);max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title}</div>
+                            <div style="font-size:11px;color:#8a9aa5;">${(p.tags || '').split(',').slice(0,3).map(t => t.trim()).join(' · ')}</div>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="abc-cat">${p.category}</span></td>
+                <td style="font-size:12px;font-weight:600;">${p.author}</td>
+                <td style="font-size:12px;color:#6a7580;">${fmtDate(p.date)}</td>
+                <td><span class="badge ${p.status}">${p.status.charAt(0).toUpperCase() + p.status.slice(1)}</span></td>
+                <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <button class="action-btn" onclick="openEditBlogPost(${p.id})"><i class="fas fa-pen"></i> Edit</button>
+                    <button class="action-btn" onclick="toggleBlogStatus(${p.id})"><i class="fas fa-${p.status === 'published' ? 'eye-slash' : 'globe'}"></i> ${p.status === 'published' ? 'Unpublish' : 'Publish'}</button>
+                    <button class="action-btn danger" onclick="promptDeleteBlog(${p.id})"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`).join('');
+    }
+}
+
+function updateBlogStats() {
+    const total     = blogPosts.length;
+    const published = blogPosts.filter(p => p.status === 'published').length;
+    const drafts    = blogPosts.filter(p => p.status === 'draft').length;
+    document.getElementById('bsmTotal').textContent     = total;
+    document.getElementById('bsmPublished').textContent = published;
+    document.getElementById('bsmDrafts').textContent    = drafts;
+}
+
+function toggleBlogStatus(id) {
+    const post = blogPosts.find(p => p.id === id);
+    if (!post) return;
+    if (post.status === 'published') {
+        post.status = 'draft';
+        showToast(`"${post.title}" unpublished.`, true);
+    } else {
+        post.status = 'published';
+        showToast(`"${post.title}" published!`);
+    }
+    renderBlogPosts();
+}
+
+function promptDeleteBlog(id) {
+    deletingBlogId = id;
+    const post = blogPosts.find(p => p.id === id);
+    document.getElementById('deletePostTitle').textContent = post ? post.title : '';
+    document.getElementById('confirmDeleteBlogModal').classList.add('open');
+}
+
+function confirmDeleteBlogPost() {
+    blogPosts = blogPosts.filter(p => p.id !== deletingBlogId);
+    closeModal('confirmDeleteBlogModal');
+    renderBlogPosts();
+    showToast('Post deleted.', true);
+}
+
+// ── Blog Editor Modal ─────────────────────────────────────────────────────
+function openBlogModal(existingPost = null) {
+    editingBlogId = existingPost ? existingPost.id : null;
+    document.getElementById('blogModalTitle').innerHTML = existingPost ? 'Edit <span>Blog Post</span>' : 'New <span>Blog Post</span>';
+
+    // Reset form
+    document.getElementById('bTitle').value    = existingPost?.title    || '';
+    document.getElementById('bCat').value      = existingPost?.category || 'iPhone';
+    document.getElementById('bAuthor').value   = existingPost?.author   || 'ReNu Team';
+    document.getElementById('bStatus').value   = existingPost?.status   || 'published';
+    document.getElementById('bImageUrl').value = existingPost?.imageUrl || '';
+    document.getElementById('bExcerpt').value  = existingPost?.excerpt  || '';
+    document.getElementById('bBody').value     = existingPost?.body     || '';
+    document.getElementById('bTags').value     = existingPost?.tags     || '';
+    document.getElementById('bMetaTitle').value = existingPost?.title   || '';
+    document.getElementById('bMetaDesc').value  = existingPost?.excerpt || '';
+
+    // Reset to write tab
+    switchEditorTab('write', document.querySelector('.editor-tab'));
+
+    previewBlogImage();
+    updateBlogSEO();
+    document.getElementById('blogModal').classList.add('open');
+}
+
+function openEditBlogPost(id) {
+    const post = blogPosts.find(p => p.id === id);
+    if (post) openBlogModal(post);
+}
+
+function switchEditorTab(name, btn) {
+    // Update button states
+    document.querySelectorAll('.editor-tab').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    else {
+        const tabs = document.querySelectorAll('.editor-tab');
+        if (name === 'write')   tabs[0].classList.add('active');
+        if (name === 'preview') tabs[1].classList.add('active');
+        if (name === 'seo')     tabs[2].classList.add('active');
+    }
+
+    // Update panes
+    document.querySelectorAll('.editor-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('epane-' + name).classList.add('active');
+
+    // If switching to preview, update preview content
+    if (name === 'preview') updatePreview();
+}
+
+function previewBlogImage() {
+    const url = document.getElementById('bImageUrl').value.trim();
+    const img = document.getElementById('bImgPreviewImg');
+    const box = document.getElementById('bImgPreviewBox');
+    if (url) {
+        img.src = url;
+        img.style.display = 'block';
+        box.querySelector('i').style.display = 'none';
+    } else {
+        img.style.display = 'none';
+        img.src = '';
+        box.querySelector('i').style.display = '';
+    }
+}
+
+function updatePreview() {
+    const title    = document.getElementById('bTitle').value    || 'Your title will appear here';
+    const cat      = document.getElementById('bCat').value;
+    const author   = document.getElementById('bAuthor').value   || 'ReNu Team';
+    const excerpt  = document.getElementById('bExcerpt').value  || 'Your excerpt will appear here…';
+    const body     = document.getElementById('bBody').value     || 'Your body content will appear here…';
+    const imageUrl = document.getElementById('bImageUrl').value.trim();
+    const today    = new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+
+    document.getElementById('prevTitle').textContent   = title;
+    document.getElementById('prevMeta').textContent    = `${cat} · ${today} · ${author}`;
+    document.getElementById('prevExcerpt').textContent = excerpt;
+    document.getElementById('prevBody').textContent    = body;
+
+    const thumb = document.getElementById('prevThumb');
+    if (imageUrl) {
+        thumb.src = imageUrl;
+        thumb.style.display = 'block';
+    } else {
+        thumb.style.display = 'none';
+    }
+}
+
+function updateBlogSEO() {
+    const title   = document.getElementById('bTitle').value;
+    const excerpt = document.getElementById('bExcerpt').value;
+    const body    = document.getElementById('bBody').value;
+
+    // char counts
+    document.getElementById('excerptCount').textContent = excerpt.length;
+    document.getElementById('bodyCount').textContent    = body.trim() ? body.trim().split(/\s+/).length : 0;
+
+    // Meta title auto-fill
+    const metaTitle = document.getElementById('bMetaTitle');
+    if (!metaTitle.dataset.userEdited) metaTitle.value = title;
+    document.getElementById('metaTitleCount').textContent = metaTitle.value.length;
+
+    const metaDesc = document.getElementById('bMetaDesc');
+    if (!metaDesc.dataset.userEdited) metaDesc.value = excerpt;
+    document.getElementById('metaDescCount').textContent = metaDesc.value.length;
+
+    // SERP preview
+    document.getElementById('serpTitle').textContent = metaTitle.value || 'Your post title here';
+    document.getElementById('serpDesc').textContent  = metaDesc.value  || 'Your meta description will appear here.';
+
+    // SEO score calculation
+    let score = 0;
+    const tips = [];
+    if (title.length >= 30 && title.length <= 60)       { score += 25; } else { tips.push('Title should be 30–60 characters'); }
+    if (excerpt.length >= 80 && excerpt.length <= 160)   { score += 25; } else { tips.push('Excerpt should be 80–160 characters'); }
+    if (body.trim().split(/\s+/).length >= 200)          { score += 25; } else { tips.push('Body should have at least 200 words'); }
+    if (document.getElementById('bImageUrl').value.trim()) { score += 15; } else { tips.push('Add a cover image'); }
+    if (document.getElementById('bTags').value.trim())    { score += 10; } else { tips.push('Add tags for discoverability'); }
+
+    const ring = document.getElementById('seoRing');
+    ring.style.setProperty('--pct', score + '%');
+    ring.textContent = score;
+    ring.style.background = `conic-gradient(${score >= 75 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444'} ${score}%, #e5edf0 0%)`;
+
+    const tipsEl = document.getElementById('seoTips');
+    if (tips.length === 0) {
+        tipsEl.innerHTML = `<strong>Great job!</strong> This post is fully optimized.`;
+    } else {
+        tipsEl.innerHTML = `<strong>Tips:</strong> ${tips.slice(0,2).join(' · ')}`;
+    }
+}
+
+// Mark meta fields as user-edited
+document.getElementById('bMetaTitle').addEventListener('input', function() {
+    this.dataset.userEdited = '1';
+    document.getElementById('metaTitleCount').textContent = this.value.length;
+    document.getElementById('serpTitle').textContent = this.value;
+    updateBlogSEO();
+});
+document.getElementById('bMetaDesc').addEventListener('input', function() {
+    this.dataset.userEdited = '1';
+    document.getElementById('metaDescCount').textContent = this.value.length;
+    document.getElementById('serpDesc').textContent = this.value;
+});
+
+function saveBlogPost(forceStatus) {
+    const title    = document.getElementById('bTitle').value.trim();
+    const cat      = document.getElementById('bCat').value;
+    const author   = document.getElementById('bAuthor').value.trim() || 'ReNu Team';
+    const status   = forceStatus || document.getElementById('bStatus').value;
+    const imageUrl = document.getElementById('bImageUrl').value.trim();
+    const excerpt  = document.getElementById('bExcerpt').value.trim();
+    const body     = document.getElementById('bBody').value.trim();
+    const tags     = document.getElementById('bTags').value.trim();
+
+    if (!title) { alert('Please enter a post title.'); return; }
+
+    const today = new Date().toISOString().split('T')[0];
+
+    if (editingBlogId) {
+        const idx = blogPosts.findIndex(p => p.id === editingBlogId);
+        if (idx !== -1) {
+            blogPosts[idx] = { ...blogPosts[idx], title, category: cat, author, status, imageUrl, excerpt, body, tags };
+        }
+        showToast(status === 'published' ? 'Post updated and published!' : 'Draft saved!');
+    } else {
+        blogPosts.unshift({ id: nextBlogId++, title, category: cat, author, date: today, status, imageUrl, excerpt, body, tags });
+        showToast(status === 'published' ? `"${title}" published!` : 'Draft saved!');
+    }
+
+    closeModal('blogModal');
+    renderBlogPosts();
+}
+
+// ── View Order ─────────────────────────────────────────────────────────────
+function viewOrder(id) {
+    const o = ordersCache.find(x => x.id === id);
+    if (!o) return;
+    document.getElementById('viewOrderRef').textContent      = o.ref;
+    document.getElementById('viewOrderStatus').innerHTML     = badge(o.status);
+    document.getElementById('viewOrderCustomer').textContent = o.customer;
+    document.getElementById('viewOrderEmail').textContent    = o.email;
+    document.getElementById('viewOrderProduct').textContent  = o.products || '—';
+    document.getElementById('viewOrderTotal').textContent    = '$' + parseFloat(o.total).toLocaleString();
+    document.getElementById('viewOrderDate').textContent     = fmtDate(o.date);
+    document.getElementById('viewOrderTracking').textContent = o.tracking || '—';
+    document.getElementById('viewOrderAddress').textContent  = o.address || '—';
+    document.getElementById('viewOrderModal').classList.add('open');
+}
+
+// ── Toast / Utils ──────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg, warn = false) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.className = 'toast' + (warn ? ' warning' : '');
+    t.querySelector('i').className = warn ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Bar charts ─────────────────────────────────────────────────────────────
+function buildBarChart(containerId, data) {
+    const max = Math.max(...data.map(d => d.v));
+    document.getElementById(containerId).innerHTML = data.map(d => `
+        <div class="bar-col">
+            <div class="bar" style="height:${max > 0 ? Math.round((d.v/max)*100) : 0}px" title="${d.v}"></div>
+            <span class="bar-label">${d.l}</span>
+        </div>`).join('');
+}
+
+const months      = [{l:'Jan',v:9200},{l:'Feb',v:11400},{l:'Mar',v:10800},{l:'Apr',v:18420},{l:'May',v:0},{l:'Jun',v:0},{l:'Jul',v:0},{l:'Aug',v:0}];
+const orderMonths = [{l:'Jan',v:28},{l:'Feb',v:34},{l:'Mar',v:31},{l:'Apr',v:41},{l:'May',v:0},{l:'Jun',v:0}];
+
+// ── Init ───────────────────────────────────────────────────────────────────
+renderDashStats();
+renderDashRecent();
+setTimeout(() => {
+    buildBarChart('revenueChart', months);
+    buildBarChart('ordersChart', orderMonths);
+}, 100);
+
+// Close modals on overlay click
+['shipModal','productModal','createStaffModal','viewOrderModal','blogModal','confirmDeleteBlogModal','cmMsgModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', (e) => {
+        if (e.target === document.getElementById(id)) closeModal(id);
+    });
+});
+
+// ── Contact Messages ──────────────────────────────────────────────────────
+
+let contactMessages = [];
+let currentMsgId    = null;
+
+const CM_COLORS = ['#0e8a7a','#3b82f6','#8b5cf6','#f59e0b','#ef4444','#10b981','#ec4899'];
+function avatarColor(name) {
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+    return CM_COLORS[Math.abs(h) % CM_COLORS.length];
+}
+
+function subjectClass(s) {
+    if (!s) return 'subject-other';
+    const l = s.toLowerCase();
+    if (l.includes('product'))  return 'subject-product';
+    if (l.includes('order'))    return 'subject-order';
+    if (l.includes('return') || l.includes('warranty')) return 'subject-returns';
+    if (l.includes('tech'))     return 'subject-tech';
+    return 'subject-other';
+}
+
+async function loadContactMessages() {
+    try {
+        const res  = await fetch('/api/contact-messages');
+        contactMessages = await res.json();
+    } catch (e) {
+        // Fallback demo data when backend isn't running
+        contactMessages = [
+            { id:1, first_name:'Karen', last_name:'Smith',  email:'karen@example.com', subject:'Product Inquiry',       message:'Hi, I was wondering if you have the iPhone 16 Pro in Black Titanium with 256GB in stock?', submitted_at:'2026-04-15T09:12:00', is_read:0 },
+            { id:2, first_name:'James', last_name:'Brown',  email:'james@example.com', subject:'Order Support',          message:'My order #ORD-042 has not arrived yet. The tracking says "in transit" for five days now.', submitted_at:'2026-04-14T14:30:00', is_read:0 },
+            { id:3, first_name:'Aisha', last_name:'Patel',  email:'aisha@example.com', subject:'Returns & Warranty',     message:'I received my MacBook Pro M4 but the battery health shows 78%, not the 85%+ advertised. I would like a replacement or refund please.', submitted_at:'2026-04-13T11:05:00', is_read:1 },
+            { id:4, first_name:'Tyler', last_name:'Moore',  email:'tyler@example.com', subject:'Technical Support',      message:'After setting up my Watch Ultra 3 it keeps dropping the Bluetooth connection with my iPhone. Already restarted both devices.', submitted_at:'2026-04-12T17:22:00', is_read:1 },
+            { id:5, first_name:'Mei',   last_name:'Zhang',  email:'mei@example.com',   subject:'Other',                  message:'Just wanted to say I love my refurbished iPhone 15 Pro. Absolutely perfect condition. Will definitely be shopping here again!', submitted_at:'2026-04-11T08:45:00', is_read:1 },
+        ];
+    }
+    updateCmStats();
+    renderContactMessages();
+}
+
+function updateCmStats() {
+    const total  = contactMessages.length;
+    const unread = contactMessages.filter(m => !m.is_read).length;
+    document.getElementById('cmTotal').textContent  = total;
+    document.getElementById('cmUnread').textContent = unread;
+    document.getElementById('cmRead').textContent   = total - unread;
+
+    const badge = document.getElementById('msgBadge');
+    if (unread > 0) { badge.textContent = unread; badge.style.display = ''; }
+    else badge.style.display = 'none';
+}
+
+function renderContactMessages() {
+    const search  = (document.getElementById('cmSearch')?.value || '').toLowerCase();
+    const subF    = document.getElementById('cmSubjectFilter')?.value || '';
+    const readF   = document.getElementById('cmReadFilter')?.value || '';
+
+    let msgs = contactMessages.filter(m => {
+        const name = `${m.first_name} ${m.last_name} ${m.email} ${m.message}`.toLowerCase();
+        if (search && !name.includes(search)) return false;
+        if (subF && m.subject !== subF) return false;
+        if (readF === 'unread' && m.is_read) return false;
+        if (readF === 'read'   && !m.is_read) return false;
+        return true;
+    });
+
+    const body = document.getElementById('cmListBody');
+    if (!msgs.length) {
+        body.innerHTML = '<div class="cm-empty"><i class="fas fa-inbox"></i><br>No messages found</div>';
+        return;
+    }
+
+    body.innerHTML = msgs.map(m => {
+        const initials = `${m.first_name[0]}${m.last_name[0]}`.toUpperCase();
+        const color    = avatarColor(m.first_name + m.last_name);
+        const date     = new Date(m.submitted_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+        const preview  = m.message.substring(0, 60) + (m.message.length > 60 ? '…' : '');
+        const isActive = currentMsgId === m.id ? 'active' : '';
+        const isUnread = !m.is_read ? 'unread' : '';
+        return `<div class="cm-item ${isActive} ${isUnread}" onclick="selectMessage(${m.id})">
+            <div class="cm-item-avatar" style="background:${color}">${initials}</div>
+            <div class="cm-item-body">
+                <div class="cm-item-name">${m.first_name} ${m.last_name}</div>
+                <div class="cm-item-sub">${m.subject}</div>
+                <div class="cm-item-preview">${preview}</div>
+            </div>
+            <div class="cm-item-date">${date}</div>
+        </div>`;
+    }).join('');
+}
+
+function selectMessage(id) {
+    currentMsgId = id;
+    const m = contactMessages.find(x => x.id === id);
+    if (!m) return;
+
+    // Mark as read locally and on server
+    if (!m.is_read) {
+        m.is_read = 1;
+        markReadOnServer(id);
+        updateCmStats();
+    }
+
+    // Update list highlight
+    renderContactMessages();
+
+    // Fill detail pane
+    const initials = `${m.first_name[0]}${m.last_name[0]}`.toUpperCase();
+    const color    = avatarColor(m.first_name + m.last_name);
+    const date     = new Date(m.submitted_at).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' });
+
+    document.getElementById('cdAvatar').textContent = initials;
+    document.getElementById('cdAvatar').style.background = color;
+    document.getElementById('cdName').textContent   = `${m.first_name} ${m.last_name}`;
+    document.getElementById('cdEmail').textContent  = m.email;
+    document.getElementById('cdDate').textContent   = date;
+    document.getElementById('cdBody').textContent   = m.message;
+
+    const subBadge = document.getElementById('cdSubjectBadge');
+    subBadge.textContent  = m.subject;
+    subBadge.className    = `badge ${subjectClass(m.subject)}`;
+
+    const toggleBtn = document.getElementById('cdToggleReadBtn');
+    toggleBtn.innerHTML = m.is_read
+        ? '<i class="fas fa-envelope"></i> Mark Unread'
+        : '<i class="fas fa-envelope-open"></i> Mark Read';
+
+    document.getElementById('cmDetailEmpty').style.display   = 'none';
+    document.getElementById('cmDetailContent').style.display = 'flex';
+}
+
+function toggleMessageRead() {
+    const m = contactMessages.find(x => x.id === currentMsgId);
+    if (!m) return;
+    m.is_read = m.is_read ? 0 : 1;
+    markReadOnServer(currentMsgId, m.is_read);
+    updateCmStats();
+    renderContactMessages();
+    selectMessage(currentMsgId);
+}
+
+async function markReadOnServer(id, isRead = 1) {
+    try {
+        await fetch(`/api/contact-messages?id=${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_read: isRead })
+        });
+    } catch (e) { /* ignore if backend not running */ }
+}
+
+async function deleteCurrentMessage() {
+    if (!currentMsgId) return;
+    if (!confirm('Delete this message? This cannot be undone.')) return;
+    try {
+        await fetch(`/api/contact-messages?id=${currentMsgId}`, { method: 'DELETE' });
+    } catch (e) { /* ignore */ }
+    contactMessages = contactMessages.filter(x => x.id !== currentMsgId);
+    currentMsgId = null;
+    document.getElementById('cmDetailEmpty').style.display   = '';
+    document.getElementById('cmDetailContent').style.display = 'none';
+    updateCmStats();
+    renderContactMessages();
+    showToast('Message deleted.');
+}
+
+// Load messages when panel is opened
+document.querySelector('[data-panel="contact-messages"]').addEventListener('click', () => {
+    if (!contactMessages.length) loadContactMessages();
+});
 </script>
 </body>
 </html>
