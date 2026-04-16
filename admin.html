@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1051,24 +1054,16 @@ async function renderCustomerAccounts() {
     const q      = (document.getElementById('custSearch')?.value || '').toLowerCase();
     const filter = document.getElementById('custStatusFilter')?.value || '';
     const tbody  = document.getElementById('custBody');
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#8a9aa5;">Loading…</td></tr>`;
-    let url = '/api/users?role=customer';
-    if (filter) url += `&status=${filter}`;
-    if (q)      url += `&search=${encodeURIComponent(q)}`;
-    const users = await api('GET', url);
-    // Merge in any users registered via the signup page (stored in localStorage)
-    const localUsers = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]')
-        .filter(u => u.role === 'customer');
-    const apiList = Array.isArray(users) ? users : [];
-    // Deduplicate: prefer API record if same email exists in both
-    const apiEmails = new Set(apiList.map(u => u.email));
-    const merged = [...apiList, ...localUsers.filter(u => !apiEmails.has(u.email))];
-    // Apply search and status filter to merged list
-    let list = merged.filter(c => {
-        const matchQ = !q || `${c.name} ${c.email}`.toLowerCase().includes(q);
-        const matchF = !filter || (c.status || 'active') === filter;
-        return matchQ && matchF;
-    });
+
+    // Read directly from localStorage — populated by signup.html
+    let list = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]')
+        .filter(u => u.role === 'customer')
+        .filter(c => {
+            const matchQ = !q || `${c.name} ${c.email}`.toLowerCase().includes(q);
+            const matchF = !filter || (c.status || 'active') === filter;
+            return matchQ && matchF;
+        });
+
     if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-user-slash"></i><p>No customers found.</p></div></td></tr>`; return; }
     tbody.innerHTML = list.map(c => `
         <tr>
@@ -1076,11 +1071,11 @@ async function renderCustomerAccounts() {
             <td style="font-size:12px;">${c.email}</td>
             <td style="font-size:11px;color:#6a7580;">${fmtDate(c.joined)}</td>
             <td style="font-family:'Jost',sans-serif;font-weight:700;">—</td>
-            <td>${accStatusBadge(c.status)}</td>
+            <td>${accStatusBadge(c.status || 'active')}</td>
             <td style="display:flex;gap:6px;flex-wrap:wrap;">
-                ${c.status === 'active'
-                    ? `<button class="action-btn danger" onclick="toggleUserStatus(${c.id},'${c.name}','suspended',true)"><i class="fas fa-ban"></i> Suspend</button>`
-                    : `<button class="action-btn success" onclick="toggleUserStatus(${c.id},'${c.name}','active',true)"><i class="fas fa-check-circle"></i> Activate</button>`}
+                ${(c.status || 'active') === 'active'
+                    ? `<button class="action-btn danger" onclick="toggleLocalUserStatus(${c.id},'${c.name}','suspended')"><i class="fas fa-ban"></i> Suspend</button>`
+                    : `<button class="action-btn success" onclick="toggleLocalUserStatus(${c.id},'${c.name}','active')"><i class="fas fa-check-circle"></i> Activate</button>`}
                 <button class="action-btn" onclick="promoteToStaff(${c.id},'${c.name}')"><i class="fas fa-user-shield"></i> Promote</button>
             </td>
         </tr>`).join('');
@@ -1120,6 +1115,14 @@ async function renderStaffAccounts() {
         </tr>`).join('');
 }
 
+function toggleLocalUserStatus(id, name, newStatus) {
+    const users = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]');
+    const u = users.find(x => x.id === id);
+    if (u) { u.status = newStatus; localStorage.setItem('renutech_mock_db', JSON.stringify(users)); }
+    showToast(`${name} ${newStatus === 'active' ? 'activated' : 'suspended'}.`, newStatus === 'suspended');
+    renderCustomerAccounts();
+}
+
 async function toggleUserStatus(id, name, newStatus, isCustomer) {
     await api('PUT', `/api/users?id=${id}`, { status: newStatus });
     showToast(`${name} ${newStatus === 'active' ? 'activated' : 'suspended'}.`, newStatus === 'suspended');
@@ -1128,7 +1131,9 @@ async function toggleUserStatus(id, name, newStatus, isCustomer) {
 
 async function promoteToStaff(id, name) {
     if (!confirm(`Promote ${name} to staff?`)) return;
-    await api('PUT', `/api/users?id=${id}`, { role: 'staff' });
+    const users = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]');
+    const u = users.find(x => x.id === id);
+    if (u) { u.role = 'staff'; localStorage.setItem('renutech_mock_db', JSON.stringify(users)); }
     showToast(`${name} promoted to staff!`);
     renderCustomerAccounts();
 }
@@ -1757,11 +1762,6 @@ function deleteCurrentMessage() {
 // Load messages whenever the panel is opened so new submissions always appear
 document.querySelector('[data-panel="contact-messages"]').addEventListener('click', () => {
     loadContactMessages();
-});
-
-// Reload customer accounts whenever the accounts panel is opened so new signups appear
-document.querySelector('[data-panel="accounts"]').addEventListener('click', () => {
-    renderCustomerAccounts();
 });
 </script>
 </body>
