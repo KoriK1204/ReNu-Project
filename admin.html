@@ -1760,6 +1760,42 @@ function deleteCurrentMessage() {
 document.querySelector('[data-panel="contact-messages"]').addEventListener('click', () => {
     loadContactMessages();
 });
+    
+    function loadAdminOrders() {
+        // Retrieve orders from the same key used in account.html
+        const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
+        const tableBody = document.getElementById('adminOrderTable');
+
+        if (!tableBody) return;
+
+        if (allOrders.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">No orders found in the system.</td></tr>';
+            return;
+        }
+
+        // Render each order into a row
+        tableBody.innerHTML = allOrders.map(o => `
+            <tr>
+                <td>#${o.orderId}</td>
+                <td>
+                    <strong>${o.customerName || 'Guest'}</strong><br>
+                    <small>${o.email || ''}</small>
+                </td>
+                <td>${o.items.map(item => item.name).join(', ')}</td>
+                <td>${o.datePurchased}</td>
+                <td>$${o.total}</td>
+                <td><span class="status-pill ${o.status.toLowerCase()}">${o.status}</span></td>
+                <td>
+                    <button class="btn-action" onclick="alert('Viewing order ${o.orderId}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // Call the function when the page finishes loading
+    document.addEventListener('DOMContentLoaded', loadAdminOrders);
 </script>
 </body>
 </html>
