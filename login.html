@@ -174,6 +174,25 @@
                 sessionStorage.setItem('renutech_session', JSON.stringify(session));
             }
 
+            // Check if this user is an admin and set the admin session key accordingly.
+            // Admin emails are stored in localStorage under 'renutech_admin_emails'.
+            // Default: ['admin@renutech.com']. Add teammate emails there to grant access.
+            const adminEmails = JSON.parse(localStorage.getItem('renutech_admin_emails') || '["admin@renutech.com"]');
+            if (adminEmails.includes(email)) {
+                const adminSession = {
+                    role: 'admin',
+                    name: (match.firstName + ' ' + match.lastName).trim() || 'Admin',
+                    email: match.email
+                };
+                if (document.getElementById('rememberMe').checked) {
+                    localStorage.setItem('renutech_user', JSON.stringify(adminSession));
+                } else {
+                    sessionStorage.setItem('renutech_user', JSON.stringify(adminSession));
+                }
+                window.location.href = 'admin.html';
+                return;
+            }
+
             window.location.href = 'index.html';
         });
 
