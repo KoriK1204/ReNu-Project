@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation — ReNu Tech.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cart-style.css">
+    <link rel="stylesheet" href="confirmation-style.css">
+</head>
+<body>
+    <div class="transition_div"></div>
+
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+            <nav><ul>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="about.html">ABOUT</a></li>
+                <li><a href="products.html">PRODUCTS</a></li>
+                <li><a href="blog.html">BLOG</a></li>
+                <li><a href="contact.html">CONTACT</a></li>
+            </ul></nav>
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
+                <a href="login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="cart.html" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="transition_div"></div>
+
+    <!-- Progress Steps -->
+    <div class="checkout-steps">
+        <div class="container">
+            <div class="steps-row">
+                <div class="step done"><div class="step-circle"><i class="fas fa-shopping-cart"></i></div><span>Cart</span></div>
+                <div class="step-line done"></div>
+                <div class="step done"><div class="step-circle"><i class="fas fa-credit-card"></i></div><span>Checkout</span></div>
+                <div class="step-line done"></div>
+                <div class="step active"><div class="step-circle"><i class="fas fa-check"></i></div><span>Confirmation</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Body -->
+    <section class="confirmation-section">
+        <div class="container">
+
+            <!-- Thank You Banner -->
+            <div class="thankyou-banner">
+                <div class="thankyou-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="thankyou-text">
+                    <h1>Thank You for Your Purchase!</h1>
+                    <p>Your order has been placed successfully. A confirmation email will be sent to <strong id="confirmEmail">your email</strong>.</p>
+                </div>
+            </div>
+
+            <div class="confirmation-layout">
+
+                <!-- Left: Order Details -->
+                <div class="confirmation-main">
+
+                    <!-- Order Info Card -->
+                    <div class="conf-block">
+                        <h3 class="conf-block-title"><i class="fas fa-receipt"></i> Order Details</h3>
+                        <div class="order-meta-grid">
+                            <div class="order-meta-item">
+                                <span class="meta-label">Order ID</span>
+                                <span class="meta-value order-id-badge" id="confOrderId">—</span>
+                            </div>
+                            <div class="order-meta-item">
+                                <span class="meta-label">Customer ID</span>
+                                <span class="meta-value" id="confCustomerId">—</span>
+                            </div>
+                            <div class="order-meta-item">
+                                <span class="meta-label">Date Purchased</span>
+                                <span class="meta-value" id="confDate">—</span>
+                            </div>
+                            <div class="order-meta-item">
+                                <span class="meta-label">Order Status</span>
+                                <span class="meta-value status-badge" id="confStatus">Processing</span>
+                            </div>
+                            <div class="order-meta-item wide">
+                                <span class="meta-label">Shipping Address</span>
+                                <span class="meta-value" id="confAddress">—</span>
+                            </div>
+                            <div class="order-meta-item">
+                                <span class="meta-label">Payment Method</span>
+                                <span class="meta-value" id="confPayment">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Purchased -->
+                    <div class="conf-block">
+                        <h3 class="conf-block-title"><i class="fas fa-box-open"></i> Items Purchased</h3>
+                        <div id="confItemsList"></div>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="conf-block totals-block">
+                        <div class="summary-row">
+                            <span class="label">Subtotal</span>
+                            <span class="value" id="confSubtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Shipping</span>
+                            <span class="value" style="color:#4caf82;">FREE</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Tax (8%)</span>
+                            <span class="value" id="confTax">$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span class="label">Total Charged</span>
+                            <span class="value" id="confTotal">$0.00</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right: What's Next -->
+                <div class="confirmation-sidebar">
+                    <div class="conf-block">
+                        <h3 class="conf-block-title"><i class="fas fa-truck"></i> What Happens Next?</h3>
+                        <div class="next-steps">
+                            <div class="next-step">
+                                <div class="next-step-num">1</div>
+                                <div>
+                                    <strong>Order Confirmed</strong>
+                                    <p>We've received your order and are preparing it for shipment.</p>
+                                </div>
+                            </div>
+                            <div class="next-step">
+                                <div class="next-step-num">2</div>
+                                <div>
+                                    <strong>Quality Check</strong>
+                                    <p>Your device goes through a final inspection before shipping.</p>
+                                </div>
+                            </div>
+                            <div class="next-step">
+                                <div class="next-step-num">3</div>
+                                <div>
+                                    <strong>Shipped to You</strong>
+                                    <p>Expect delivery within 3–5 business days. Free shipping included.</p>
+                                </div>
+                            </div>
+                            <div class="next-step">
+                                <div class="next-step-num">4</div>
+                                <div>
+                                    <strong>Enjoy Your Device</strong>
+                                    <p>Your renewed Apple device arrives ready to use, backed by a 12-month warranty.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="conf-action-btns">
+                        <a href="products.html" class="checkout-btn" style="display:flex; text-decoration:none; justify-content:center; align-items:center; gap:8px;">
+                            <i class="fas fa-shopping-bag"></i> Continue Shopping
+                        </a>
+                        <a href="index.html" class="continue-link" style="text-align:center; display:block;">
+                            <i class="fas fa-home"></i> Back to Home
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ReNu Tech</h3>
+                    <p style="color:#4682b4; margin-bottom:18px; font-size:13px;">ReNu Tech is dedicated to providing high-quality refurbished Apple products that are reliable, sustainable, and affordable.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 ReNu Street, Tech City, USA</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@renutech.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">&copy; 2026 ReNu Tech. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        const order = JSON.parse(sessionStorage.getItem('renutech_last_order') || 'null');
+
+        if (!order) {
+            // No order found — redirect home
+            window.location.href = '/index.html';
+        } else {
+            document.getElementById('confOrderId').textContent    = order.orderId;
+            document.getElementById('confCustomerId').textContent = order.customerId;
+            document.getElementById('confDate').textContent       = order.datePurchased;
+            document.getElementById('confStatus').textContent     = order.status;
+            document.getElementById('confAddress').textContent    = order.shippingAddress;
+            document.getElementById('confirmEmail').textContent   = order.email;
+            document.getElementById('confSubtotal').textContent   = '$' + order.subtotal;
+            document.getElementById('confTax').textContent        = '$' + order.tax;
+            document.getElementById('confTotal').textContent      = '$' + order.total;
+
+            const paymentLabels = { card: 'Credit / Debit Card', paypal: 'PayPal', applepay: 'Apple Pay' };
+            document.getElementById('confPayment').textContent = paymentLabels[order.paymentType] || order.paymentType;
+
+            document.getElementById('confItemsList').innerHTML = order.items.map(item => `
+                <div class="conf-item-row">
+                    <div class="conf-item-img">
+                        <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">
+                        <div class="conf-item-fallback"><i class="fas fa-box"></i></div>
+                    </div>
+                    <div class="conf-item-info">
+                        <div class="conf-item-name">${item.name}</div>
+                        <div class="conf-item-sub">${item.color || ''} ${item.storage && item.storage !== 'N/A (Watch)' ? '· ' + item.storage : ''} · Qty: ${item.qty}</div>
+                    </div>
+                    <div class="conf-item-price">$${(item.priceNum * item.qty).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

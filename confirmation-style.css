@@ -1,0 +1,281 @@
+/* confirmation-style.css — extends cart-style.css */
+
+:root {
+    --Major-text-color: #272727;
+    --icons-prices-color: #72AEC8;
+    --secondary-text-color: #3A3A3A;
+    --arrows-color: #D7DDDF;
+    --background-color: #FFFFFF;
+    --banner-color: #EDF1F3;
+}
+
+/* Progress steps — reused from checkout */
+.checkout-steps {
+    background: var(--banner-color);
+    border-bottom: 1px solid #dde4e8;
+    padding: 18px 0;
+}
+.steps-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b0bec5;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.step.active { color: var(--icons-prices-color); }
+.step.done   { color: #4caf82; }
+.step-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e0e7ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #b0bec5;
+}
+.step.active .step-circle {
+    background: var(--icons-prices-color);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(114,174,200,0.35);
+}
+.step.done .step-circle {
+    background: #4caf82;
+    color: #fff;
+}
+.step-line {
+    width: 80px;
+    height: 2px;
+    background: #e0e7ea;
+    margin: 0 4px;
+    margin-bottom: 20px;
+}
+.step-line.done { background: #4caf82; }
+
+/* Confirmation section */
+.confirmation-section {
+    padding: 50px 0 80px;
+    background: var(--banner-color);
+    min-height: 70vh;
+}
+
+/* Thank you banner */
+.thankyou-banner {
+    background: linear-gradient(135deg, #4caf82 0%, #3a9e72 100%);
+    border-radius: 18px;
+    padding: 36px 40px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 36px;
+    box-shadow: 0 8px 30px rgba(76,175,130,0.25);
+}
+.thankyou-icon {
+    font-size: 56px;
+    color: rgba(255,255,255,0.9);
+    flex-shrink: 0;
+    animation: popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes popIn {
+    0%   { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.thankyou-text h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 8px;
+}
+.thankyou-text p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+}
+.thankyou-text strong { color: #fff; }
+
+/* Confirmation layout */
+.confirmation-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Blocks */
+.conf-block {
+    background: #fff;
+    border: 1.5px solid #e8edf0;
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 20px;
+}
+.conf-block-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--secondary-text-color);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.conf-block-title i { color: var(--icons-prices-color); font-size: 15px; }
+.totals-block { padding: 20px 28px; }
+
+/* Order meta grid */
+.order-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.order-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.order-meta-item.wide {
+    grid-column: span 2;
+}
+.meta-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #b0bec5;
+}
+.meta-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--Major-text-color);
+}
+.order-id-badge {
+    color: var(--icons-prices-color);
+    font-size: 15px;
+    font-family: 'Jost', monospace;
+}
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(114,174,200,0.12);
+    color: var(--icons-prices-color);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    width: fit-content;
+}
+
+/* Purchased items */
+.conf-item-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f0f4f6;
+}
+.conf-item-row:last-child { border-bottom: none; }
+.conf-item-img {
+    width: 60px;
+    height: 60px;
+    background: var(--banner-color);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+}
+.conf-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.conf-item-fallback {
+    position: absolute;
+    font-size: 22px;
+    color: #b0bec5;
+}
+.conf-item-info { flex: 1; }
+.conf-item-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--Major-text-color);
+    margin-bottom: 4px;
+}
+.conf-item-sub {
+    font-size: 12px;
+    color: #8a9ba8;
+    font-weight: 600;
+}
+.conf-item-price {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--icons-prices-color);
+    white-space: nowrap;
+}
+
+/* What's next steps */
+.next-steps { display: flex; flex-direction: column; gap: 18px; }
+.next-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+.next-step-num {
+    width: 30px;
+    height: 30px;
+    background: rgba(114,174,200,0.12);
+    color: var(--icons-prices-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+.next-step strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--Major-text-color);
+    margin-bottom: 4px;
+}
+.next-step p {
+    font-size: 12px;
+    color: #8a9ba8;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Action buttons */
+.conf-action-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+@media (max-width: 900px) {
+    .confirmation-layout { grid-template-columns: 1fr; }
+    .order-meta-grid { grid-template-columns: 1fr 1fr; }
+    .order-meta-item.wide { grid-column: span 2; }
+    .thankyou-banner { flex-direction: column; text-align: center; padding: 28px 24px; }
+}
+@media (max-width: 500px) {
+    .order-meta-grid { grid-template-columns: 1fr; }
+    .order-meta-item.wide { grid-column: span 1; }
+    .step-line { width: 30px; }
+}

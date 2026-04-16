@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — ReNu Tech.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cart-style.css">
+    <link rel="stylesheet" href="checkout-style.css">
+</head>
+<body>
+    <div class="transition_div"></div>
+
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-recycle logo-icon"></i>
+                <div class="logo-text">ReNu <span>Tech.</span></div>
+            </a>
+            <nav><ul>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="about.html">ABOUT</a></li>
+                <li><a href="products.html">PRODUCTS</a></li>
+                <li><a href="blog.html">BLOG</a></li>
+                <li><a href="contact.html">CONTACT</a></li>
+            </ul></nav>
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-ghost"><i class="fas fa-search"></i></a>
+                <a href="/ReNu-Project/login.html" class="btn btn-ghost"><i class="fas fa-user"></i></a>
+                <a href="cart.html" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count-badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="transition_div"></div>
+
+    <!-- Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <div class="page-label"><i class="fas fa-lock"></i> Secure Checkout</div>
+            <h1>Almost <span>There</span></h1>
+            <p>Complete your order below. All transactions are secure and encrypted.</p>
+        </div>
+    </section>
+
+    <!-- Progress Steps -->
+    <div class="checkout-steps">
+        <div class="container">
+            <div class="steps-row">
+                <div class="step done"><div class="step-circle"><i class="fas fa-shopping-cart"></i></div><span>Cart</span></div>
+                <div class="step-line done"></div>
+                <div class="step active"><div class="step-circle"><i class="fas fa-credit-card"></i></div><span>Checkout</span></div>
+                <div class="step-line"></div>
+                <div class="step"><div class="step-circle"><i class="fas fa-check"></i></div><span>Confirmation</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Body -->
+    <section class="cart-section">
+        <div class="container">
+            <div class="cart-layout">
+
+                <!-- Left: Form -->
+                <div class="cart-items-col">
+
+                    <!-- Contact Info -->
+                    <div class="checkout-block">
+                        <h3 class="checkout-block-title"><i class="fas fa-user"></i> Contact Information</h3>
+                        <div class="form-row-two">
+                            <div class="co-form-group">
+                                <label for="fullName">Full Name <span class="req">*</span></label>
+                                <div class="co-input-wrap">
+                                    <i class="fas fa-user co-icon"></i>
+                                    <input type="text" id="fullName" placeholder="Jane Doe">
+                                </div>
+                                <div class="co-error" id="fullNameError">Full name is required.</div>
+                            </div>
+                            <div class="co-form-group">
+                                <label for="coEmail">Email Address <span class="req">*</span></label>
+                                <div class="co-input-wrap">
+                                    <i class="fas fa-envelope co-icon"></i>
+                                    <input type="email" id="coEmail" placeholder="you@example.com">
+                                </div>
+                                <div class="co-error" id="coEmailError">Valid email is required.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="checkout-block">
+                        <h3 class="checkout-block-title"><i class="fas fa-map-marker-alt"></i> Shipping Address</h3>
+                        <div class="co-form-group" style="margin-bottom:14px;">
+                            <label for="address1">Street Address <span class="req">*</span></label>
+                            <div class="co-input-wrap">
+                                <i class="fas fa-home co-icon"></i>
+                                <input type="text" id="address1" placeholder="123 Main St">
+                            </div>
+                            <div class="co-error" id="address1Error">Street address is required.</div>
+                        </div>
+                        <div class="co-form-group" style="margin-bottom:14px;">
+                            <label for="address2">Apt / Suite <span class="co-optional">(Optional)</span></label>
+                            <div class="co-input-wrap">
+                                <i class="fas fa-building co-icon"></i>
+                                <input type="text" id="address2" placeholder="Apt 4B">
+                            </div>
+                        </div>
+                        <div class="form-row-three">
+                            <div class="co-form-group">
+                                <label for="city">City <span class="req">*</span></label>
+                                <div class="co-input-wrap">
+                                    <input type="text" id="city" placeholder="Dallas" style="padding-left:14px;">
+                                </div>
+                                <div class="co-error" id="cityError">City is required.</div>
+                            </div>
+                            <div class="co-form-group">
+                                <label for="state">State <span class="req">*</span></label>
+                                <div class="co-input-wrap">
+                                    <input type="text" id="state" placeholder="TX" maxlength="2" style="padding-left:14px; text-transform:uppercase;">
+                                </div>
+                                <div class="co-error" id="stateError">State is required.</div>
+                            </div>
+                            <div class="co-form-group">
+                                <label for="zip">ZIP Code <span class="req">*</span></label>
+                                <div class="co-input-wrap">
+                                    <input type="text" id="zip" placeholder="75001" maxlength="10" style="padding-left:14px;">
+                                </div>
+                                <div class="co-error" id="zipError">ZIP is required.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment -->
+                    <div class="checkout-block">
+                        <h3 class="checkout-block-title"><i class="fas fa-credit-card"></i> Payment Method</h3>
+                        <div class="demo-note"><i class="fas fa-info-circle"></i> For demonstration purposes — no real payment is processed.</div>
+
+                        <div class="payment-type-row">
+                            <label class="payment-option active" id="opt-card">
+                                <input type="radio" name="paymentType" value="card" checked>
+                                <i class="fas fa-credit-card"></i> Credit / Debit Card
+                            </label>
+                            <label class="payment-option" id="opt-paypal">
+                                <input type="radio" name="paymentType" value="paypal">
+                                <i class="fab fa-paypal"></i> PayPal
+                            </label>
+                            <label class="payment-option" id="opt-applepay">
+                                <input type="radio" name="paymentType" value="applepay">
+                                <i class="fab fa-apple"></i> Apple Pay
+                            </label>
+                        </div>
+
+                        <!-- Card fields (shown for card payment) -->
+                        <div id="cardFields">
+                            <div class="co-form-group" style="margin-bottom:14px;">
+                                <label for="cardName">Name on Card <span class="req">*</span></label>
+                                <div class="co-input-wrap">
+                                    <i class="fas fa-user co-icon"></i>
+                                    <input type="text" id="cardName" placeholder="Jane Doe">
+                                </div>
+                                <div class="co-error" id="cardNameError">Name on card is required.</div>
+                            </div>
+                            <div class="co-form-group" style="margin-bottom:14px;">
+                                <label for="cardNumber">Card Number <span class="req">*</span></label>
+                                <div class="co-input-wrap card-icons-wrap">
+                                    <i class="fas fa-credit-card co-icon"></i>
+                                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                                    <div class="card-brands">
+                                        <i class="fab fa-cc-visa"></i>
+                                        <i class="fab fa-cc-mastercard"></i>
+                                        <i class="fab fa-cc-amex"></i>
+                                    </div>
+                                </div>
+                                <div class="co-error" id="cardNumberError">Card number is required.</div>
+                            </div>
+                            <div class="form-row-two">
+                                <div class="co-form-group">
+                                    <label for="expiry">Expiry Date <span class="req">*</span></label>
+                                    <div class="co-input-wrap">
+                                        <i class="fas fa-calendar co-icon"></i>
+                                        <input type="text" id="expiry" placeholder="MM / YY" maxlength="7">
+                                    </div>
+                                    <div class="co-error" id="expiryError">Expiry date is required.</div>
+                                </div>
+                                <div class="co-form-group">
+                                    <label for="cvv">CVV <span class="req">*</span></label>
+                                    <div class="co-input-wrap">
+                                        <i class="fas fa-lock co-icon"></i>
+                                        <input type="text" id="cvv" placeholder="123" maxlength="4">
+                                    </div>
+                                    <div class="co-error" id="cvvError">CVV is required.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PayPal / Apple Pay mock messages -->
+                        <div id="paypalMsg" class="alt-pay-msg" style="display:none;">
+                            <i class="fab fa-paypal"></i> You'll be redirected to PayPal to complete your payment. (Demo only)
+                        </div>
+                        <div id="applepayMsg" class="alt-pay-msg" style="display:none;">
+                            <i class="fab fa-apple"></i> Apple Pay will be used to complete your purchase. (Demo only)
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right: Order Summary -->
+                <div class="order-summary" id="orderSummary">
+                    <h3><i class="fas fa-receipt" style="color:var(--icons-prices-color); margin-right:8px;"></i>Order Summary</h3>
+
+                    <div id="checkoutItemsList" class="checkout-items-list"></div>
+
+                    <div class="summary-row">
+                        <span class="label">Subtotal</span>
+                        <span class="value" id="coSubtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Shipping</span>
+                        <span class="value" style="color:#4caf82;">FREE</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Estimated Tax (8.25%)</span>
+                        <span class="value" id="coTax">$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span class="label">Total</span>
+                        <span class="value" id="coTotal">$0.00</span>
+                    </div>
+
+                    <a href="orderconfirmation.html" class="checkout-btn" id="placeOrderBtn">
+                        <i class="fas fa-lock"></i> Place Order
+                    </button>
+
+                    <a href="cart.html" class="continue-link">
+                        <i class="fas fa-arrow-left"></i> Back to Cart
+                    </a>
+
+                    <div class="summary-badges">
+                        <div class="summary-badge"><i class="fas fa-lock"></i>Secure<br>Payment</div>
+                        <div class="summary-badge"><i class="fas fa-truck"></i>Free<br>Shipping</div>
+                        <div class="summary-badge"><i class="fas fa-undo"></i>30-Day<br>Returns</div>
+                        <div class="summary-badge"><i class="fas fa-shield-alt"></i>1-Year<br>Warranty</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ReNu Tech</h3>
+                    <p style="color:#4682b4; margin-bottom:18px; font-size:13px;">ReNu Tech is dedicated to providing high-quality refurbished Apple products that are reliable, sustainable, and affordable.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 ReNu Street, Tech City, USA</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@renutech.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM - 5PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">&copy; 2026 ReNu Tech. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        const TAX_RATE = 0.0825;
+
+        // Load cart into summary
+        function loadSummary() {
+            const cart = getCart();
+            const list = document.getElementById('checkoutItemsList');
+            const subtotal = cart.reduce((s, i) => s + i.priceNum * i.qty, 0);
+            const tax = subtotal * TAX_RATE;
+            const total = subtotal + tax;
+
+            list.innerHTML = cart.map(item => `
+                <div class="co-item-row">
+                    <span class="co-item-name">${item.name} <span class="co-qty">×${item.qty}</span></span>
+                    <span class="co-item-price">$${(item.priceNum * item.qty).toLocaleString()}</span>
+                </div>
+            `).join('') || '<p style="font-size:13px;color:#999;">No items in cart.</p>';
+
+            document.getElementById('coSubtotal').textContent = '$' + subtotal.toFixed(2);
+            document.getElementById('coTax').textContent = '$' + tax.toFixed(2);
+            document.getElementById('coTotal').textContent = '$' + total.toFixed(2);
+        }
+        loadSummary();
+
+        // Payment type toggle
+        document.querySelectorAll('input[name="paymentType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('active'));
+                this.closest('.payment-option').classList.add('active');
+                const val = this.value;
+                document.getElementById('cardFields').style.display   = val === 'card'     ? 'block' : 'none';
+                document.getElementById('paypalMsg').style.display    = val === 'paypal'   ? 'flex'  : 'none';
+                document.getElementById('applepayMsg').style.display  = val === 'applepay' ? 'flex'  : 'none';
+            });
+        });
+
+        // Card number formatting
+        document.getElementById('cardNumber').addEventListener('input', function() {
+            let v = this.value.replace(/\D/g, '').substring(0, 16);
+            this.value = v.replace(/(.{4})/g, '$1 ').trim();
+        });
+
+        // Expiry formatting
+        document.getElementById('expiry').addEventListener('input', function() {
+            let v = this.value.replace(/\D/g, '').substring(0, 4);
+            if (v.length >= 3) v = v.substring(0,2) + ' / ' + v.substring(2);
+            this.value = v;
+        });
+
+        // Place order
+        document.getElementById('placeOrderBtn').addEventListener('click', () => {
+            const cart = getCart();
+            if (cart.length === 0) { alert('Your cart is empty.'); return; }
+
+            let valid = true;
+            const required = [
+                ['fullName',  'fullNameError'],
+                ['coEmail',   'coEmailError'],
+                ['address1',  'address1Error'],
+                ['city',      'cityError'],
+                ['state',     'stateError'],
+                ['zip',       'zipError'],
+            ];
+            required.forEach(([id, errId]) => {
+                const el = document.getElementById(id);
+                if (!el.value.trim()) {
+                    el.classList.add('co-error-input');
+                    document.getElementById(errId).style.display = 'block';
+                    valid = false;
+                } else {
+                    el.classList.remove('co-error-input');
+                    document.getElementById(errId).style.display = 'none';
+                }
+            });
+
+            const payType = document.querySelector('input[name="paymentType"]:checked').value;
+            if (payType === 'card') {
+                ['cardName','cardNumber','expiry','cvv'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el.value.trim()) {
+                        el.classList.add('co-error-input');
+                        document.getElementById(id + 'Error').style.display = 'block';
+                        valid = false;
+                    } else {
+                        el.classList.remove('co-error-input');
+                        document.getElementById(id + 'Error').style.display = 'none';
+                    }
+                });
+            }
+            if (!valid) return;
+
+            // Build order object
+            const user = JSON.parse(sessionStorage.getItem('renutech_user') || '{}');
+            const subtotal = cart.reduce((s, i) => s + i.priceNum * i.qty, 0);
+            const tax = subtotal * TAX_RATE;
+            const total = subtotal + tax;
+            const shippingAddress = `${document.getElementById('address1').value}${document.getElementById('address2').value ? ', ' + document.getElementById('address2').value : ''}, ${document.getElementById('city').value}, ${document.getElementById('state').value} ${document.getElementById('zip').value}`;
+            const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+
+            const order = {
+                orderId,
+                customerId: user.customerId || 'GUEST',
+                customerName: document.getElementById('fullName').value,
+                email: document.getElementById('coEmail').value,
+                shippingAddress,
+                paymentType: payType,
+                items: cart,
+                subtotal: subtotal.toFixed(2),
+                tax: tax.toFixed(2),
+                total: total.toFixed(2),
+                status: 'Processing',
+                datePurchased: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
+            };
+
+            // Save to localStorage so admin page and order-confirmation can read it
+            sessionStorage.setItem('renutech_last_order', JSON.stringify(order));
+            const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
+            allOrders.push(order);
+            localStorage.setItem('renutech_orders', JSON.stringify(allOrders));
+
+            // ══════════════════════════════════════════════════════════════════
+            // BACKEND HOOK:
+            // await fetch('/api/orders', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(order) });
+            // ══════════════════════════════════════════════════════════════════
+
+            // Clear cart and redirect
+            localStorage.removeItem('renuCart');
+            window.location.href = '/orderconfirmation.html';
+        });
+    </script>
+</body>
+</html>

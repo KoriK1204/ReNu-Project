@@ -1,0 +1,4 @@
+backend/out/
+backend/lib/
+.DS_Store
+*.log
