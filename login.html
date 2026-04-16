@@ -183,9 +183,21 @@
                 : 'index.html';
 
         } catch (err) {
-            showAlert('Server error. Please try again.');
-            console.error(err);
-        }
+            // If the server is offline or returns a 404, check for these test credentials
+    if (emailValue === 'admin@renutech.com' && passwordValue === 'admin123') {
+        const adminUser = { 
+            name: 'Admin', 
+            role: 'admin', 
+            email: emailValue 
+        };
+        // Save to session so other pages know you are the Admin
+        sessionStorage.setItem('renutech_user', JSON.stringify(adminUser));
+        window.location.href = 'admin.html';
+    } else {
+        showAlert('Server is offline. Use admin@renutech.com / admin123 to test.');
+        console.error('Connection failed:', err);
+    }
+}
     });
 
     function showAlert(msg) {
