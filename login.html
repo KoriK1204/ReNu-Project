@@ -131,6 +131,13 @@
             });
         });
 
+        // ── Staff / admin accounts (hardcoded — work on any device) ──────────────
+        // Add or edit entries here to grant teammates admin or staff access.
+        const STAFF_ACCOUNTS = [
+            { email: 'admin@renutech.com', password: 'Admin@123', role: 'admin', name: 'Admin' },
+            { email: 'alex@renutech.com',  password: 'Staff@123', role: 'staff', name: 'Alex Nguyen' },
+        ];
+
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const emailInput    = document.getElementById('email');
@@ -149,48 +156,37 @@
             }
             if (!valid) return;
 
-            const email = emailInput.value.trim().toLowerCase();
+            const email    = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+            const remember = document.getElementById('rememberMe').checked;
 
-            // Look up user from the same store signup.html writes to
-            const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
-            const match = users[email];
-
-            if (!match || match.password !== passwordInput.value) {
-                showAlert('Invalid email or password. Please try again.');
-                return;
-            }
-
-            // Save session — same format signup uses
-            const session = {
-                email: match.email,
-                firstName: match.firstName,
-                lastName: match.lastName
-            };
-
-            // Honour "remember me" — session storage clears on tab close, local persists
-            if (document.getElementById('rememberMe').checked) {
-                localStorage.setItem('renutech_session', JSON.stringify(session));
-            } else {
-                sessionStorage.setItem('renutech_session', JSON.stringify(session));
-            }
-
-            // Check if this user is an admin and set the admin session key accordingly.
-            // Admin emails are stored in localStorage under 'renutech_admin_emails'.
-            // Default: ['admin@renutech.com']. Add teammate emails there to grant access.
-            const adminEmails = JSON.parse(localStorage.getItem('renutech_admin_emails') || '["admin@renutech.com"]');
-            if (adminEmails.includes(email)) {
-                const adminSession = {
-                    role: 'admin',
-                    name: (match.firstName + ' ' + match.lastName).trim() || 'Admin',
-                    email: match.email
-                };
-                if (document.getElementById('rememberMe').checked) {
+            // Check hardcoded staff/admin accounts first — these work on any device.
+            const staffMatch = STAFF_ACCOUNTS.find(a => a.email === email && a.password === password);
+            if (staffMatch) {
+                const adminSession = { role: staffMatch.role, name: staffMatch.name, email: staffMatch.email };
+                if (remember) {
                     localStorage.setItem('renutech_user', JSON.stringify(adminSession));
                 } else {
                     sessionStorage.setItem('renutech_user', JSON.stringify(adminSession));
                 }
                 window.location.href = 'admin.html';
                 return;
+            }
+
+            // Fall back to regular customer accounts stored in localStorage.
+            const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
+            const match = users[email];
+
+            if (!match || match.password !== password) {
+                showAlert('Invalid email or password. Please try again.');
+                return;
+            }
+
+            const session = { email: match.email, firstName: match.firstName, lastName: match.lastName };
+            if (remember) {
+                localStorage.setItem('renutech_session', JSON.stringify(session));
+            } else {
+                sessionStorage.setItem('renutech_session', JSON.stringify(session));
             }
 
             window.location.href = 'index.html';
