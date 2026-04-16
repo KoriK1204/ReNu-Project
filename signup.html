@@ -256,6 +256,8 @@ async function handleSignup() {
         email: email,
         password: password,
         role: 'customer'
+        status: 'active'.
+        joined: new Date().toISOString()
     };
 
     // Save to a "Mock Database" so the Login page can see it
