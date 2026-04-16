@@ -35,6 +35,7 @@ public class Main {
         server.createContext("/api/orders",         new OrdersHandler());
         server.createContext("/api/users",          new UsersHandler());
         server.createContext("/api/restock-orders", new RestockHandler());
+        server.createContext("/api/contact",        new ContactHandler());
         server.createContext("/",                   new StaticFileHandler(projectRoot));
         server.setExecutor(null);
         System.out.println("ReNu Tech server running at http://localhost:" + port);
@@ -604,6 +605,50 @@ public class Main {
             }
         }
     }
+
+    // ── /api/contact (POST) ──────────────────────────────────────
+static class ContactHandler implements HttpHandler {
+    public void handle(HttpExchange ex) throws IOException {
+        cors(ex.getResponseHeaders());
+
+        if (ex.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+            ex.sendResponseHeaders(204, -1);
+            return;
+        }
+
+        if (!ex.getRequestMethod().equalsIgnoreCase("POST")) {
+            ex.sendResponseHeaders(405, -1);
+            return;
+        }
+
+        Map<String, String> body = parseJson(readBody(ex));
+
+        String firstName = body.getOrDefault("firstName", "");
+        String lastName  = body.getOrDefault("lastName", "");
+        String email     = body.getOrDefault("email", "");
+        String subject   = body.getOrDefault("subject", "");
+        String message   = body.getOrDefault("message", "");
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                 "INSERT INTO contact_messages (first_name, last_name, email, subject, message) VALUES (?, ?, ?, ?, ?)"
+             )) {
+
+            ps.setString(1, firstName);
+            ps.setString(2, lastName);
+            ps.setString(3, email);
+            ps.setString(4, subject);
+            ps.setString(5, message);
+
+            ps.executeUpdate();
+
+            send(ex, 200, "{\"success\":true}");
+
+        } catch (SQLException e) {
+            send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
+        }
+    }
+}
 
     // ── Static file server ───────────────────────────────────────────────────
     static class StaticFileHandler implements HttpHandler {
