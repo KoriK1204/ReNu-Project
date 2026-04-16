@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1058,7 +1056,19 @@ async function renderCustomerAccounts() {
     if (filter) url += `&status=${filter}`;
     if (q)      url += `&search=${encodeURIComponent(q)}`;
     const users = await api('GET', url);
-    const list  = Array.isArray(users) ? users : [];
+    // Merge in any users registered via the signup page (stored in localStorage)
+    const localUsers = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]')
+        .filter(u => u.role === 'customer');
+    const apiList = Array.isArray(users) ? users : [];
+    // Deduplicate: prefer API record if same email exists in both
+    const apiEmails = new Set(apiList.map(u => u.email));
+    const merged = [...apiList, ...localUsers.filter(u => !apiEmails.has(u.email))];
+    // Apply search and status filter to merged list
+    let list = merged.filter(c => {
+        const matchQ = !q || `${c.name} ${c.email}`.toLowerCase().includes(q);
+        const matchF = !filter || (c.status || 'active') === filter;
+        return matchQ && matchF;
+    });
     if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-user-slash"></i><p>No customers found.</p></div></td></tr>`; return; }
     tbody.innerHTML = list.map(c => `
         <tr>
@@ -1747,6 +1757,11 @@ function deleteCurrentMessage() {
 // Load messages whenever the panel is opened so new submissions always appear
 document.querySelector('[data-panel="contact-messages"]').addEventListener('click', () => {
     loadContactMessages();
+});
+
+// Reload customer accounts whenever the accounts panel is opened so new signups appear
+document.querySelector('[data-panel="accounts"]').addEventListener('click', () => {
+    renderCustomerAccounts();
 });
 </script>
 </body>
