@@ -272,32 +272,36 @@
             document.getElementById('heroSubtext').textContent = `You have ${totalQty} item${totalQty !== 1 ? 's' : ''} in your cart.`;
 
             container.innerHTML = cart.map((item, idx) => `
-                <div class="cart-item" id="item-${idx}">
+            <div class="cart-item" id="item-${idx}">
+                <a href="product-detail.html?id=${getProductId(item)}" class="cart-item-link" style="display:flex; flex:1; gap:18px; text-decoration:none; color:inherit;">
                     <div class="cart-item-img">
                         <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">
                     </div>
+        
                     <div class="cart-item-meta">
-                        <a href="product-detail.html?id=${getProductId(item)}" class="cart-item-name" style="text-decoration:none; color:inherit; cursor:pointer;">${item.name}</a>
+                        <div class="cart-item-name">${item.name}</div>
                         <div class="cart-item-details">
                             <span class="detail-pill"><i class="fas fa-palette" style="margin-right:4px;"></i>${item.color}</span>
                             ${item.storage !== 'N/A (Watch)' ? `<span class="detail-pill"><i class="fas fa-hdd" style="margin-right:4px;"></i>${item.storage}</span>` : ''}
                         </div>
                         <span class="cart-item-condition ${item.condition === 'Like New' ? 'like-new' : item.condition === 'Good Condition' ? 'good' : 'fair'}">${item.condition}</span>
                     </div>
-                    <div class="cart-item-controls">
-                        <div class="item-price">$${(item.priceNum * item.qty).toLocaleString()}</div>
-                        <div class="item-market-price">$${Math.round(item.priceNum * item.qty * 1.4).toLocaleString()}</div>
-                        <div class="qty-control">
-                            <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
-                            <input class="qty-display" type="text" value="${item.qty}" readonly>
-                            <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
-                        </div>
-                        <button class="remove-btn" onclick="removeItem(${idx})">
-                            <i class="fas fa-times"></i> Remove
-                        </button>
+                </a>
+        
+                <div class="cart-item-controls">
+                    <div class="item-price">$${(item.priceNum * item.qty).toLocaleString()}</div>
+                    <div class="item-market-price">$${Math.round(item.priceNum * item.qty * 1.4).toLocaleString()}</div>
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="event.preventDefault(); event.stopPropagation(); changeQty(${idx}, -1)">−</button>
+                        <input class="qty-display" type="text" value="${item.qty}" readonly>
+                        <button class="qty-btn" onclick="event.preventDefault(); event.stopPropagation(); changeQty(${idx}, 1)">+</button>
                     </div>
+                    <button class="remove-btn" onclick="event.preventDefault(); event.stopPropagation(); removeItem(${idx})">
+                        <i class="fas fa-times"></i> Remove
+                    </button>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
 
             updateTotals(cart);
             updateCartBadge();
