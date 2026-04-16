@@ -212,17 +212,27 @@ document.addEventListener('DOMContentLoaded', () => {
             document.head.appendChild(s);
         }
 
-        // Toggle dropdown
+        // 1. Toggle dropdown visibility
         userBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const isOpen = dropdown.style.display === 'block';
-            dropdown.style.display = isOpen ? 'none' : 'block';
+            // If the user clicked the icon/button (not the dropdown content)
+            if (e.target.closest('#userDropdown') === null) {
+                e.preventDefault();
+                const isOpen = dropdown.style.display === 'block';
+                dropdown.style.display = isOpen ? 'none' : 'block';
+            }
         });
-
-        // Close when clicking outside
+        // 2. STOP PROPAGATION (The "Don't Close Me" Fix)
+        // This ensures clicking the link doesn't trigger the button toggle
+        dropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+        // 3. Close when clicking anywhere else on the page
         document.addEventListener('click', (e) => {
-            if (!userBtn.contains(e.target)) dropdown.style.display = 'none';
+            if (!userBtn.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
         });
+      
       const logoutBtn = document.getElementById('logoutLink');
       if (logoutBtn) {
           logoutBtn.addEventListener('click', (e) => {
