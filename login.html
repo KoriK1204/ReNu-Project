@@ -13,10 +13,9 @@
 <body>
     <div id="searchOverlay" class="search-overlay"></div>
     <div class="transition_div"></div>
-    
     <header>
         <div class="container header-container">
-            <a href="index.html" class="logo">
+            <a href="/index.html" class="logo">
                 <i class="fa-solid fa-recycle logo-icon"></i>
                 <div class="logo-text">ReNu <span>Tech.</span></div>
             </a>
@@ -105,98 +104,95 @@
             </div>
         </div>
     </div>
-    
-    <script src="script.js"></script>
+
     <script>
-        // Redirect if already logged in
-        if (localStorage.getItem('renutech_session')) {
-            window.location.href = 'index.html';
+    document.getElementById('togglePassword').addEventListener('click', () => {
+        const pw = document.getElementById('password');
+        const icon = document.getElementById('eyeIcon');
+        const hidden = pw.type === 'password';
+        pw.type = hidden ? 'text' : 'password';
+        icon.className = hidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
+
+    ['email', 'password'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+            document.getElementById(id).classList.remove('error');
+            document.getElementById(id + 'Error').classList.remove('visible');
+            document.getElementById('loginAlert').style.display = 'none';
+        });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailValue = emailInput.value.trim().toLowerCase();
+        const passwordValue = passwordInput.value;
+
+        let valid = true;
+
+        if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+            emailInput.classList.add('error');
+            document.getElementById('emailError').classList.add('visible');
+            valid = false;
         }
 
-        // Password toggle
-        document.getElementById('togglePassword').addEventListener('click', () => {
-            const pw = document.getElementById('password');
-            const icon = document.getElementById('eyeIcon');
-            const hidden = pw.type === 'password';
-            pw.type = hidden ? 'text' : 'password';
-            icon.className = hidden ? 'fas fa-eye-slash' : 'fas fa-eye';
-        });
+        if (!passwordValue || passwordValue.length < 6) {
+            passwordInput.classList.add('error');
+            document.getElementById('passwordError').classList.add('visible');
+            valid = false;
+        }
 
-        // Clear errors on type
-        ['email', 'password'].forEach(id => {
-            document.getElementById(id).addEventListener('input', () => {
-                document.getElementById(id).classList.remove('error');
-                document.getElementById(id + 'Error').classList.remove('visible');
-                document.getElementById('loginAlert').style.display = 'none';
+        if (!valid) return;
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: emailValue,
+                    password: passwordValue
+                })
             });
-        });
 
-        // ── Staff / admin accounts (hardcoded — work on any device) ──────────────
-        // Add or edit entries here to grant teammates admin or staff access.
-        const STAFF_ACCOUNTS = [
-            { email: 'admin@renutech.com', password: 'Admin@123', role: 'admin', name: 'Admin' },
-            { email: 'alex@renutech.com',  password: 'Staff@123', role: 'staff', name: 'Alex Nguyen' },
-        ];
+            const data = await res.json();
 
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const emailInput    = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            let valid = true;
-
-            if (!emailInput.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-                emailInput.classList.add('error');
-                document.getElementById('emailError').classList.add('visible');
-                valid = false;
-            }
-            if (!passwordInput.value || passwordInput.value.length < 6) {
-                passwordInput.classList.add('error');
-                document.getElementById('passwordError').classList.add('visible');
-                valid = false;
-            }
-            if (!valid) return;
-
-            const email    = emailInput.value.trim().toLowerCase();
-            const password = passwordInput.value;
-            const remember = document.getElementById('rememberMe').checked;
-
-            // Check hardcoded staff/admin accounts first — these work on any device.
-            const staffMatch = STAFF_ACCOUNTS.find(a => a.email === email && a.password === password);
-            if (staffMatch) {
-                const adminSession = { role: staffMatch.role, name: staffMatch.name, email: staffMatch.email };
-                if (remember) {
-                    localStorage.setItem('renutech_user', JSON.stringify(adminSession));
-                } else {
-                    sessionStorage.setItem('renutech_user', JSON.stringify(adminSession));
-                }
-                window.location.href = 'admin.html';
+            if (!res.ok || !data.success) {
+                showAlert(data.message || 'Invalid email or password. Please try again.');
                 return;
             }
 
-            // Fall back to regular customer accounts stored in localStorage.
-            const users = JSON.parse(localStorage.getItem('renutech_users') || '{}');
-            const match = users[email];
+            const sessionUser = {
+                id: data.id,
+                name: data.name,
+                email: emailValue,
+                role: data.role
+            };
 
-            if (!match || match.password !== password) {
-                showAlert('Invalid email or password. Please try again.');
-                return;
-            }
-
-            const session = { email: match.email, firstName: match.firstName, lastName: match.lastName };
-            if (remember) {
-                localStorage.setItem('renutech_session', JSON.stringify(session));
+            if (document.getElementById('rememberMe').checked) {
+                localStorage.setItem('renutech_user', JSON.stringify(sessionUser));
             } else {
-                sessionStorage.setItem('renutech_session', JSON.stringify(session));
+                sessionStorage.setItem('renutech_user', JSON.stringify(sessionUser));
             }
 
-            window.location.href = 'index.html';
-        });
+            window.location.href = data.role === 'admin' || data.role === 'staff'
+                ? 'admin.html'
+                : 'index.html';
 
-        function showAlert(msg) {
-            const el = document.getElementById('loginAlert');
-            document.getElementById('alertMsg').textContent = msg;
-            el.style.display = 'flex';
+        } catch (err) {
+            showAlert('Server error. Please try again.');
+            console.error(err);
         }
-    </script>
+    });
+
+    function showAlert(msg) {
+        const el = document.getElementById('loginAlert');
+        document.getElementById('alertMsg').textContent = msg;
+        el.style.display = 'flex';
+    }
+</script>
 </body>
 </html>
