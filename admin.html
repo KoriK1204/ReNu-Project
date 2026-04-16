@@ -1840,6 +1840,23 @@ document.addEventListener('DOMContentLoaded', renderOrders);
 }
     function deleteAccount(email) {
     if (confirm(`Are you sure you want to delete the account for ${email}?`)) {
+        // 1. Pull from your specific mock database
+        let allAccounts = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]');
+        
+        // 2. Filter out the account that matches the email
+        const updatedAccounts = allAccounts.filter(acc => acc.email !== email);
+        
+        // 3. Save the new list back to 'renutech_mock_db'
+        localStorage.setItem('renutech_mock_db', JSON.stringify(updatedAccounts));
+        
+        // 4. Immediately refresh the table so the row vanishes
+        renderCustomerAccounts();
+        
+        console.log("Account deleted from renutech_mock_db");
+    }
+}
+   /* function deleteAccount(email) {
+    if (confirm(`Are you sure you want to delete the account for ${email}?`)) {
         // 1. Get current accounts from the same key used in your login/signup
         let allAccounts = JSON.parse(localStorage.getItem('renutech_users') || '[]');
 
@@ -1854,7 +1871,7 @@ document.addEventListener('DOMContentLoaded', renderOrders);
         
         showToast('Account deleted successfully.');
     }
-}
+}*/
 </script>
 </body>
 </html>
