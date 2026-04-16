@@ -166,13 +166,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dropdown = document.createElement('div');
         dropdown.id = 'userDropdown';
-        dropdown.innerHTML = `
-            <div class="user-drop-name">${user.firstName || ''} ${user.lastName || ''}</div>
-            <div class="user-drop-id">${user.customerId || 'GUEST'}</div>
+      dropdown.innerHTML = `
+            <div class="user-drop-name">${user.name || 'User'}</div>
+            <div class="user-drop-id">${user.id || 'GUEST'}</div>
             <a href="account.html" class="user-drop-item"><i class="fas fa-user"></i> View Account</a>
             <div class="user-drop-divider"></div>
             <a href="#" class="user-drop-item danger" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
         `;
+      
         dropdown.style.cssText = `
             display:none; position:absolute; top:calc(100% + 10px); right:0;
             background:#fff; border:1.5px solid #e0e7ea; border-radius:12px;
