@@ -1760,8 +1760,46 @@ function deleteCurrentMessage() {
 document.querySelector('[data-panel="contact-messages"]').addEventListener('click', () => {
     loadContactMessages();
 });
-    
-    function loadAdminOrders() {
+    function renderOrders() {
+    // 1. Get all orders and the search term
+    const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
+    const searchTerm = document.getElementById('orderSearch').value.toLowerCase();
+    const tableBody = document.getElementById('ordersBody');
+
+    if (!tableBody) return;
+
+    // 2. Filter orders based on search input
+    const filteredOrders = allOrders.filter(o => 
+        o.orderId.toLowerCase().includes(searchTerm) || 
+        o.customerName.toLowerCase().includes(searchTerm)
+    );
+
+    if (filteredOrders.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">No orders found.</td></tr>';
+        return;
+    }
+
+    // 3. Build the table rows
+    tableBody.innerHTML = filteredOrders.map(o => `
+        <tr>
+            <td>#${o.orderId}</td>
+            <td><strong>${o.customerName}</strong><br><small>${o.email}</small></td>
+            <td>${o.items ? o.items.map(i => i.name).join(', ') : (o.product || 'N/A')}</td>
+            <td>${o.datePurchased || 'Recent'}</td>
+            <td>$${o.total}</td>
+            <td><span class="status-pill ${o.status.toLowerCase()}">${o.status}</span></td>
+            <td>
+                <button class="btn-action" onclick="alert('Viewing Order #${o.orderId}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Load the orders immediately when the page opens
+document.addEventListener('DOMContentLoaded', renderOrders);
+    /*function loadAdminOrders() {
         // Retrieve orders from the same key used in account.html
         const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
         const tableBody = document.getElementById('adminOrderTable');
@@ -1795,7 +1833,7 @@ document.querySelector('[data-panel="contact-messages"]').addEventListener('clic
     }
 
     // Call the function when the page finishes loading
-    document.addEventListener('DOMContentLoaded', loadAdminOrders);
+    document.addEventListener('DOMContentLoaded', loadAdminOrders);*/
 </script>
 </body>
 </html>
