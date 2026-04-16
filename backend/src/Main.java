@@ -510,15 +510,18 @@ public class Main {
                     ref = String.format("#PO-%03d", (cr.next() ? cr.getInt(1) : 0) + 1);
                 }
                 try (PreparedStatement ps = conn.prepareStatement(
-                        "INSERT INTO restock_orders (po_ref, supplier, product_name, quantity, unit_cost, expected_date, notes) VALUES (?,?,?,?,?,?,?)",
+                        "INSERT INTO restock_orders (po_ref, supplier, product_name, product_id, quantity, unit_cost, expected_date, notes) VALUES (?,?,?,?,?,?,?,?)",
                         Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, ref);
                     ps.setString(2, b.getOrDefault("supplier", ""));
                     ps.setString(3, b.getOrDefault("product", ""));
-                    ps.setInt(4,    Integer.parseInt(b.getOrDefault("qty", "1")));
-                    ps.setDouble(5, Double.parseDouble(b.getOrDefault("unitCost", "0")));
-                    ps.setString(6, b.getOrDefault("expected", null));
-                    ps.setString(7, b.getOrDefault("notes", ""));
+                    String pid = b.get("productId");
+                    if (pid != null && !pid.isEmpty() && !pid.equals("0")) ps.setInt(4, Integer.parseInt(pid));
+                    else ps.setNull(4, Types.INTEGER);
+                    ps.setInt(5,    Integer.parseInt(b.getOrDefault("qty", "1")));
+                    ps.setDouble(6, Double.parseDouble(b.getOrDefault("unitCost", "0")));
+                    ps.setString(7, b.getOrDefault("expected", null));
+                    ps.setString(8, b.getOrDefault("notes", ""));
                     ps.executeUpdate();
                     ResultSet keys = ps.getGeneratedKeys();
                     send(ex, 201, "{\"success\":true,\"ref\":\"" + ref + "\",\"id\":" + (keys.next() ? keys.getInt(1) : -1) + "}");
@@ -542,11 +545,13 @@ public class Main {
                     ps.setInt(2, Integer.parseInt(id));
                     ps.executeUpdate();
                 }
-                // If marked received, add the restock quantity directly to the matching product's stock
-                // using a JOIN so there is no Java-side string comparison (avoids encoding mismatches)
+                // If marked received, add the restock quantity to the matching product's stock.
+                // Use product_id when available (reliable); fall back to name match for old orders.
                 if ("received".equals(newStatus)) {
                     try (PreparedStatement upd = conn.prepareStatement(
-                            "UPDATE products p JOIN restock_orders r ON p.name = r.product_name " +
+                            "UPDATE products p JOIN restock_orders r " +
+                            "ON (r.product_id IS NOT NULL AND p.id = r.product_id) " +
+                            "OR (r.product_id IS NULL AND p.name = r.product_name) " +
                             "SET p.stock = p.stock + r.quantity WHERE r.id = ?")) {
                         upd.setInt(1, Integer.parseInt(id));
                         upd.executeUpdate();
