@@ -196,22 +196,28 @@
         const user = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
         if (!user) window.location.href = 'login.html';
 
-        // Fill profile
-        document.getElementById('heroName').textContent         = user.firstName + ' ' + user.lastName;
-        document.getElementById('heroCustomerId').textContent   = user.customerId;
-        document.getElementById('avatarBig').textContent        = (user.firstName || '?')[0].toUpperCase();
-        document.getElementById('profileCustomerId').textContent = user.customerId;
-        document.getElementById('profileFirstName').textContent  = user.firstName || '—';
-        document.getElementById('profileLastName').textContent   = user.lastName  || '—';
-        document.getElementById('profileEmail').textContent      = user.email     || '—';
-        document.getElementById('profilePhone').textContent      = user.phone     || 'Not provided';
-        document.getElementById('profileDob').textContent        = user.dob       || 'Not provided';
-        document.getElementById('profileJoined').textContent     = user.joined    || 'Today';
+        // --- UPDATED PROFILE FILL LOGIC ---
+        // We use user.name and user.id to match our login bypass data
+        document.getElementById('heroName').textContent           = user.name || 'Valued Customer';
+        document.getElementById('heroCustomerId').textContent     = user.id   || 'GUEST';
+        document.getElementById('avatarBig').textContent          = (user.name || '?')[0].toUpperCase();
+        
+        document.getElementById('profileCustomerId').textContent  = user.id   || 'GUEST';
+        
+        // Since bypass saves "Name", we split it for the first/last fields
+        const nameParts = (user.name || '').split(' ');
+        document.getElementById('profileFirstName').textContent   = nameParts[0] || '—';
+        document.getElementById('profileLastName').textContent    = nameParts.slice(1).join(' ') || '—';
+        
+        document.getElementById('profileEmail').textContent       = user.email || '—';
+        document.getElementById('profilePhone').textContent       = user.phone || 'Not provided';
+        document.getElementById('profileDob').textContent         = user.dob   || 'Not provided';
+        document.getElementById('profileJoined').textContent      = user.joined || 'Today';
 
         // Load orders belonging to this customer
         function loadOrders() {
             const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
-            const myOrders  = allOrders.filter(o => o.customerId === user.customerId || o.email === user.email);
+            const myOrders  = allOrders.filter(o => o.customerId === user.Id || o.email === user.email);
             const container = document.getElementById('ordersContent');
 
             if (myOrders.length === 0) {
@@ -252,7 +258,7 @@
         // Load shipping address from last order
         function loadAddress() {
             const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
-            const myOrders  = allOrders.filter(o => o.customerId === user.customerId || o.email === user.email);
+            const myOrders  = allOrders.filter(o => o.customerId === user.Id || o.email === user.email);
             const addr      = user.shippingAddress || (myOrders.length ? myOrders[myOrders.length - 1].shippingAddress : '');
             if (addr) {
                 document.getElementById('addressEmpty').style.display = 'none';
