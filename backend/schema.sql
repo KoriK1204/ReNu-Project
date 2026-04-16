@@ -77,8 +77,8 @@ CREATE TABLE contact_messages (
     email VARCHAR(255),
     subject VARCHAR(255),
     message TEXT,
-    status VARCHAR(50) DEFAULT 'new',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    is_read TINYINT(1) DEFAULT 0,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================================
