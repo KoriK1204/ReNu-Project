@@ -836,6 +836,7 @@ async function markRestockReceived(id, ref) {
     showToast(`${ref} marked as received!`);
     renderRestockOrders();
     renderDashStats();
+    renderProducts();
 }
 
 async function cancelRestockOrder(id, ref) {
@@ -850,7 +851,7 @@ async function populatePlaceOrderProducts() {
     if (!sel) return;
     const products = await api('GET', '/api/products');
     sel.innerHTML = (Array.isArray(products) ? products : [])
-        .map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+        .map(p => `<option value="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}">${p.name}</option>`).join('');
     updatePoTotal();
 }
 
@@ -867,16 +868,18 @@ function updatePoTotal() {
 }
 
 async function placeRestockOrder() {
-    const supplier = document.getElementById('poSupplier').value.trim();
-    const product  = document.getElementById('poProduct').value;
-    const qty      = parseInt(document.getElementById('poQty').value);
-    const unitCost = parseFloat(document.getElementById('poUnitCost').value);
-    const expected = document.getElementById('poExpected').value;
-    const notes    = document.getElementById('poNotes').value.trim();
+    const supplier   = document.getElementById('poSupplier').value.trim();
+    const productSel = document.getElementById('poProduct');
+    const productId  = parseInt(productSel.value);
+    const product    = productSel.options[productSel.selectedIndex].getAttribute('data-name');
+    const qty        = parseInt(document.getElementById('poQty').value);
+    const unitCost   = parseFloat(document.getElementById('poUnitCost').value);
+    const expected   = document.getElementById('poExpected').value;
+    const notes      = document.getElementById('poNotes').value.trim();
     if (!supplier || !product || isNaN(qty) || qty < 1 || isNaN(unitCost) || !expected) {
         alert('Please fill in all required fields.'); return;
     }
-    const result = await api('POST', '/api/restock-orders', { supplier, product, qty, unitCost, expected, notes });
+    const result = await api('POST', '/api/restock-orders', { supplier, product, productId, qty, unitCost, expected, notes });
     if (!result.success) { alert('Failed to place order. Try again.'); return; }
     document.getElementById('poSupplier').value = '';
     document.getElementById('poQty').value      = '';
