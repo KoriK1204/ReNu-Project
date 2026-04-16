@@ -227,6 +227,13 @@
             // No order found — redirect home
             window.location.href = '/index.html';
         } else {
+            const currentUser = JSON.parse(sessionStorage.getItem('renutech_user'));
+        
+        // If the order says GUEST but we have a logged-in user, use their info instead
+        if (order.customerId === 'GUEST' && currentUser) {
+            order.customerId = currentUser.id || 'CUST-' + Math.floor(Math.random() * 1000);
+            order.email = currentUser.email;
+        }
             document.getElementById('confOrderId').textContent    = order.orderId;
             document.getElementById('confCustomerId').textContent = order.customerId;
             document.getElementById('confDate').textContent       = order.datePurchased;
