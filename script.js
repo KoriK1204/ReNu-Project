@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'login.html';
         }); */
 
-     else {
+    } else {
         // Not logged in — plain link to login
         userBtn.href = 'login.html';
     }
