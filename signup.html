@@ -209,84 +209,82 @@
         document.getElementById('alertBanner').className = 'auth-alert';
     }
 
-    async function handleSignup() {
-        hideAlert();
-        let valid = true;
+    <script>
+async function handleSignup() {
+    hideAlert();
+    let valid = true;
 
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName  = document.getElementById('lastName').value.trim();
-        const email     = document.getElementById('email').value.trim().toLowerCase();
-        const password  = document.getElementById('password').value;
-        const confirm   = document.getElementById('confirmPassword').value;
-        const terms     = document.getElementById('terms').checked;
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim().toLowerCase();
+    const password  = document.getElementById('password').value;
+    const confirm   = document.getElementById('confirmPassword').value;
+    const terms     = document.getElementById('terms').checked;
 
-        firstName ? hideError('firstName') : (showError('firstName'), valid = false);
-        lastName  ? hideError('lastName')  : (showError('lastName'), valid = false);
+    firstName ? hideError('firstName') : (showError('firstName'), valid = false);
+    lastName  ? hideError('lastName')  : (showError('lastName'), valid = false);
 
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            showError('email');
-            valid = false;
-        } else {
-            hideError('email');
-        }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('email');
+        valid = false;
+    } else {
+        hideError('email');
+    }
 
-        if (!password || password.length < 8) {
-            showError('password');
-            valid = false;
-        } else {
-            hideError('password');
-        }
+    if (!password || password.length < 8) {
+        showError('password');
+        valid = false;
+    } else {
+        hideError('password');
+    }
 
-        if (password !== confirm) {
-            showError('confirmPassword');
-            valid = false;
-        } else {
-            hideError('confirmPassword');
-        }
+    if (password !== confirm) {
+        showError('confirmPassword');
+        valid = false;
+    } else {
+        hideError('confirmPassword');
+    }
 
-        if (!valid) return;
+    if (!valid) return;
 
-        if (!terms) {
-            showAlert('Please accept the Terms of Service to continue.');
+    if (!terms) {
+        showAlert('Please accept the Terms of Service to continue.');
+        return;
+    }
+
+    try {
+        const res = await fetch('http://localhost:8080/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: `${firstName} ${lastName}`,
+                email: email,
+                password: password,
+                role: 'customer'
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            showAlert(data.error || 'Could not create account.');
+            console.log('Signup error:', data);
             return;
         }
 
-        const fullName = `${firstName} ${lastName}`;
+        sessionStorage.setItem('renutech_user', JSON.stringify({
+            id: data.id,
+            name: `${firstName} ${lastName}`,
+            email: email,
+            role: 'customer'
+        }));
 
-        try {
-            const res = await fetch('/api/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: `${firstName} ${lastName}`,
-                    email: email,
-                    password: password,
-                    role: 'customer'
-                })
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                showAlert(data.error || 'Could not create account.');
-                return;
-            }
-
-            sessionStorage.setItem('renutech_user', JSON.stringify({
-                id: data.id,
-                name: fullName,
-                email: email,
-                role: 'customer'
-            }));
-
-            window.location.href = 'index.html';
-        } catch (err) {
-            showAlert('Server error. Please try again.');
-            console.error(err);
-        }
+        window.location.href = 'index.html';
+    } catch (err) {
+        console.error('Signup failed:', err);
+        showAlert('Cannot connect to backend. Make sure Java server is running on localhost:8080.');
     }
+}
 </script>
 </body>
 </html>
