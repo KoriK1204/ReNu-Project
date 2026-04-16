@@ -326,24 +326,57 @@
         });
 
         // ── Contact Form ───────────────────────────────────────────
-        function submitForm() {
+        <script>
+        async function submitForm() {
             const firstName = document.getElementById('firstName').value.trim();
+            const lastName  = document.getElementById('lastName').value.trim();
             const email     = document.getElementById('email').value.trim();
             const subject   = document.getElementById('subject').value;
             const message   = document.getElementById('message').value.trim();
-
+        
+            // validation
             if (!firstName || !email || !subject || !message) {
                 alert('Please fill in all required fields.');
                 return;
             }
+        
             if (!email.includes('@')) {
                 alert('Please enter a valid email address.');
                 return;
             }
-
-            document.getElementById('contactFormInner').style.display = 'none';
-            document.getElementById('formSuccess').style.display = 'block';
+        
+            try {
+                const res = await fetch('http://localhost:8080/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        firstName,
+                        lastName,
+                        email,
+                        subject,
+                        message
+                    })
+                });
+        
+                const data = await res.json();
+        
+                if (!data.success) {
+                    alert('Failed to send message.');
+                    return;
+                }
+        
+                // success UI
+                document.getElementById('contactFormInner').style.display = 'none';
+                document.getElementById('formSuccess').style.display = 'block';
+        
+            } catch (err) {
+                console.error(err);
+                alert('Server error. Try again.');
+            }
         }
+        </script>
 
         // ── Mobile Nav (keep if script.js doesn't cover it) ───────
         const hamburgerBtn   = document.getElementById('hamburgerBtn');
