@@ -35,7 +35,6 @@ public class Main {
         server.createContext("/api/orders",         new OrdersHandler());
         server.createContext("/api/users",          new UsersHandler());
         server.createContext("/api/restock-orders", new RestockHandler());
-        server.createContext("/api/contact",        new ContactHandler());
         server.createContext("/",                   new StaticFileHandler(projectRoot));
         server.setExecutor(null);
         System.out.println("ReNu Tech server running at http://localhost:" + port);
@@ -71,20 +70,60 @@ public class Main {
         return map;
     }
 
-    // Simple flat JSON parser — handles string and numeric values without nesting
+    // Flat JSON parser — correctly handles escaped quotes and special characters in values
     static Map<String, String> parseJson(String json) {
         Map<String, String> map = new LinkedHashMap<>();
         if (json == null || json.isBlank()) return map;
         json = json.trim();
         if (!json.startsWith("{") || !json.endsWith("}")) return map;
-        json = json.substring(1, json.length() - 1);
-        for (String token : json.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")) {
-            String[] kv = token.split(":", 2);
-            if (kv.length != 2) continue;
-            String k = kv[0].trim().replaceAll("^\"|\"$", "");
-            String v = kv[1].trim().replaceAll("^\"|\"$", "");
-            v = v.replace("\\\"", "\"").replace("\\\\", "\\");
-            map.put(k, v);
+        json = json.substring(1, json.length() - 1).trim();
+
+        int i = 0, len = json.length();
+        while (i < len) {
+            // Skip commas and whitespace between pairs
+            while (i < len && (json.charAt(i) == ',' || Character.isWhitespace(json.charAt(i)))) i++;
+            if (i >= len || json.charAt(i) != '"') break;
+
+            // Read key
+            i++; // opening quote
+            StringBuilder key = new StringBuilder();
+            while (i < len && json.charAt(i) != '"') {
+                if (json.charAt(i) == '\\' && i + 1 < len) i++; // skip backslash
+                key.append(json.charAt(i++));
+            }
+            i++; // closing quote
+
+            // Skip colon
+            while (i < len && (json.charAt(i) == ':' || Character.isWhitespace(json.charAt(i)))) i++;
+
+            // Read value
+            String value;
+            if (i < len && json.charAt(i) == '"') {
+                i++; // opening quote
+                StringBuilder val = new StringBuilder();
+                while (i < len) {
+                    char c = json.charAt(i);
+                    if (c == '\\' && i + 1 < len) {
+                        char next = json.charAt(i + 1);
+                        if      (next == '"')  { val.append('"');  i += 2; }
+                        else if (next == '\\') { val.append('\\'); i += 2; }
+                        else if (next == 'n')  { val.append('\n'); i += 2; }
+                        else                   { val.append(next); i += 2; }
+                    } else if (c == '"') {
+                        i++; break; // closing quote
+                    } else {
+                        val.append(c); i++;
+                    }
+                }
+                value = val.toString();
+            } else {
+                // Number, boolean, or null
+                StringBuilder val = new StringBuilder();
+                while (i < len && json.charAt(i) != ',' && json.charAt(i) != '}')
+                    val.append(json.charAt(i++));
+                value = val.toString().trim();
+            }
+            map.put(key.toString(), value);
         }
         return map;
     }
@@ -565,120 +604,6 @@ public class Main {
             }
         }
     }
-
-    // ── /api/contact (GET / POST / PUT) ──────────────────────────────
-static class ContactHandler implements HttpHandler {
-    public void handle(HttpExchange ex) throws IOException {
-        cors(ex.getResponseHeaders());
-
-        if (ex.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
-            ex.sendResponseHeaders(204, -1);
-            return;
-        }
-
-        switch (ex.getRequestMethod().toUpperCase()) {
-            case "GET"  -> get(ex);
-            case "POST" -> post(ex);
-            case "PUT"  -> put(ex);
-            default     -> ex.sendResponseHeaders(405, -1);
-        }
-    }
-
-    // ── GET all messages ──
-    void get(HttpExchange ex) throws IOException {
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM contact_messages ORDER BY created_at DESC")) {
-
-            ResultSet rs = ps.executeQuery();
-            StringBuilder sb = new StringBuilder("[");
-            boolean first = true;
-
-            while (rs.next()) {
-                if (!first) sb.append(",");
-
-                sb.append(String.format(
-                    "{\"id\":%d,\"firstName\":\"%s\",\"lastName\":\"%s\",\"email\":\"%s\"," +
-                    "\"subject\":\"%s\",\"message\":\"%s\",\"status\":\"%s\",\"createdAt\":\"%s\"}",
-                    rs.getInt("id"),
-                    esc(rs.getString("first_name")),
-                    esc(rs.getString("last_name")),
-                    esc(rs.getString("email")),
-                    esc(rs.getString("subject")),
-                    esc(rs.getString("message")),
-                    esc(rs.getString("status")),
-                    esc(String.valueOf(rs.getTimestamp("created_at")))
-                ));
-
-                first = false;
-            }
-
-            send(ex, 200, sb.append("]").toString());
-
-        } catch (SQLException e) {
-            send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
-        }
-    }
-
-    // ── POST new message ──
-    void post(HttpExchange ex) throws IOException {
-        Map<String, String> b = parseJson(readBody(ex));
-
-        if (!b.containsKey("firstName") || !b.containsKey("email")
-            || !b.containsKey("subject") || !b.containsKey("message")) {
-            send(ex, 400, "{\"error\":\"Missing required fields\"}");
-            return;
-        }
-
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO contact_messages (first_name, last_name, email, subject, message, status) VALUES (?,?,?,?,?,?)",
-                Statement.RETURN_GENERATED_KEYS)) {
-
-            ps.setString(1, b.get("firstName"));
-            ps.setString(2, b.getOrDefault("lastName", ""));
-            ps.setString(3, b.get("email"));
-            ps.setString(4, b.get("subject"));
-            ps.setString(5, b.get("message"));
-            ps.setString(6, "new");
-
-            ps.executeUpdate();
-
-            ResultSet keys = ps.getGeneratedKeys();
-            int id = keys.next() ? keys.getInt(1) : -1;
-
-            send(ex, 201, "{\"success\":true,\"id\":" + id + "}");
-
-        } catch (SQLException e) {
-            send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
-        }
-    }
-
-    // ── PUT update status (mark read) ──
-    void put(HttpExchange ex) throws IOException {
-        String id = queryParams(ex).get("id");
-        if (id == null) {
-            send(ex, 400, "{\"error\":\"id is required\"}");
-            return;
-        }
-
-        Map<String, String> b = parseJson(readBody(ex));
-        String status = b.getOrDefault("status", "read");
-
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                "UPDATE contact_messages SET status=? WHERE id=?")) {
-
-            ps.setString(1, status);
-            ps.setInt(2, Integer.parseInt(id));
-
-            send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
-
-        } catch (SQLException e) {
-            send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
-        }
-    }
-}
 
     // ── Static file server ───────────────────────────────────────────────────
     static class StaticFileHandler implements HttpHandler {
