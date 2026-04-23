@@ -14,14 +14,12 @@ import java.util.*;
 
 public class Main {
 
-    // ── Database config — change password to match your MySQL setup ──────────
-    static final String DB_URL  = "jdbc:mysql://localhost:3306/renutech";
-    static final String DB_USER = "root";
-    static final String DB_PASS = "BPhi2309";
-
     static Connection getConnection() throws SQLException {
         try { Class.forName("com.mysql.cj.jdbc.Driver"); } catch (ClassNotFoundException e) { throw new SQLException("MySQL driver not found", e); }
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+        Properties cfg = new Properties();
+        try (InputStream in = new FileInputStream("config.properties")) { cfg.load(in); }
+        catch (IOException e) { throw new SQLException("config.properties not found — copy config.properties.example and fill in your credentials", e); }
+        return DriverManager.getConnection(cfg.getProperty("db.url"), cfg.getProperty("db.user"), cfg.getProperty("db.pass"));
     }
 
     // ── Server entry point ───────────────────────────────────────────────────

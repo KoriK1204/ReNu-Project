@@ -106,7 +106,7 @@ INSERT INTO products (name, category, condition_grade, price, stock, description
     ('iPhone 15 Pro — Black Titanium',      'iPhone',      'Good Condition', 489.00, 7,  'Minor surface scratches, battery at 92%.'),
     ('iPhone 17 — Blue',                    'iPhone',      'Fair Condition', 749.00, 2,  'Visible wear, fully functional.'),
     ('MacBook Pro M4 — Space Black 14"',    'MacBook',     'Like New',       1299.00, 3, 'Factory reset, no marks.'),
-    ('MacBook Air M2 — Midnight 13"',       'MacBook',     'Good Condition', 749.00, 1,  'Light use, keyboard in great shape.'),
+    ('MacBook Air M4 — Midnight 13"',       'MacBook',     'Good Condition', 749.00, 1,  'Light use, keyboard in great shape.'),
     ('MacBook Pro M3 — Silver 14"',         'MacBook',     'Like New',       999.00, 5,  'Excellent condition, includes charger.'),
     ('Apple Watch Ultra 3 — Natural',       'Apple Watch', 'Like New',       399.00, 0,  'Out of stock — restock expected soon.'),
     ('Apple Watch SE 2nd Gen — Midnight',   'Apple Watch', 'Good Condition', 169.00, 6,  'Minimal wear, band included.'),
@@ -126,7 +126,7 @@ INSERT INTO order_items (order_id, product_id, product_name, quantity, price) VA
     (1, 1, 'iPhone 16 Pro — Neutral Titanium',  1, 699.00),
     (2, 4, 'MacBook Pro M4 — Space Black 14"',  1, 1299.00),
     (3, 7, 'Apple Watch Ultra 3 — Natural',     1, 399.00),
-    (4, 5, 'MacBook Air M2 — Midnight 13"',     1, 749.00),
+    (4, 5, 'MacBook Air M4 — Midnight 13"',     1, 749.00),
     (5, 2, 'iPhone 15 Pro — Black Titanium',    1, 489.00),
     (6, 6, 'MacBook Pro M3 — Silver 14"',       1, 999.00);
 
