@@ -61,12 +61,14 @@ CREATE TABLE IF NOT EXISTS restock_orders (
     po_ref        VARCHAR(20)  NOT NULL UNIQUE,
     supplier      VARCHAR(200),
     product_name  VARCHAR(200),
+    product_id    INT,
     quantity      INT,
     unit_cost     DECIMAL(10,2),
     expected_date DATE,
     status        ENUM('ordered','received','cancelled') DEFAULT 'ordered',
     notes         TEXT,
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
 );
 
 -- ── Contact Messages ────────────────────────────────
