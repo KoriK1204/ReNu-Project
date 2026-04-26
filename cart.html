@@ -332,7 +332,9 @@
         // ── Actions ──────────────────────────────────────────────────
         function changeQty(idx, delta) {
             const cart = getCart();
-            cart[idx].qty = Math.max(1, Math.min(10, cart[idx].qty + delta));
+            const item = cart[idx];
+            const maxQty = item.stock || 10;
+            cart[idx].qty = Math.max(1, Math.min(maxQty, item.qty + delta));
             saveCart(cart);
             renderCart();
         }
