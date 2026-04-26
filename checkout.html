@@ -420,6 +420,32 @@
             localStorage.removeItem('renuCart');
             window.location.href = '/orderconfirmation.html';
         });
+        document.addEventListener("DOMContentLoaded", function() {
+        // 1. Try to get user from sessionStorage first, then localStorage
+        const userData = sessionStorage.getItem('renutech_user') || localStorage.getItem('renutech_user');
+
+        if (userData) {
+            // 2. Parse the string back into a JavaScript object
+            const user = JSON.parse(userData);
+
+            // 3. Find the inputs by their IDs in checkout.html
+            const nameInput = document.getElementById('fullName');
+            const emailInput = document.getElementById('coEmail');
+            const cardNameInput = document.getElementById('cardName');
+
+            // 4. Fill the values if the elements exist
+            if (nameInput && user.name) {
+                nameInput.value = user.name;
+            }
+            if (emailInput && user.email) {
+                emailInput.value = user.email;
+            }
+            // Optional: Auto-fill the "Name on Card" field too
+            if (cardNameInput && user.name) {
+                cardNameInput.value = user.name;
+            }
+        }
+    });
     </script>
 </body>
 </html>
