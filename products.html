@@ -572,65 +572,72 @@
                 }); */
         
         //--------------------Fetch live stock from backend, then set up buttons -----------------------//
+/ ── Add to Cart ───────────────────────────────────────────────
+function initButtons(stockMap) {
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        const card  = btn.closest('.product-card');
+        const dbId  = card ? parseInt(card.dataset.productId) : null;
+        const stock = (stockMap && dbId !== null) ? (stockMap[dbId] ?? 999) : 999;
+        btn.dataset.stock = stock;
+
+        if (stock === 0) {
+            btn.disabled = true;
+            btn.classList.add('out-of-stock');
+            btn.innerHTML = '<i class="fas fa-times-circle"></i> Out of Stock';
+            return; // skip adding click listener
+        }
+
+        btn.addEventListener('click', () => {
+            const d        = btn.dataset;
+            const cart     = getCart();
+            const inCart   = cart.find(x => x.id === d.id);
+            const qtyInCart = inCart ? inCart.qty : 0;
+
+            if (qtyInCart >= parseInt(d.stock)) {
+                showToast('Sorry, only ' + d.stock + ' in stock!');
+                return;
+            }
+
+            addToCart({
+                id:        d.id,
+                name:      d.name,
+                color:     d.color,
+                storage:   d.storage,
+                price:     '$' + Number(d.price).toLocaleString(),
+                priceNum:  parseFloat(d.price),
+                qty:       1,
+                img:       d.img,
+                condition: d.condition,
+                stock:     parseInt(d.stock)
+            });
+
+            const original = btn.innerHTML;
+            btn.classList.add('added');
+            btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+            setTimeout(() => {
+                btn.classList.remove('added');
+                btn.innerHTML = original;
+            }, 2000);
+
+            showToast(d.name + ' added to cart!');
+        });
+    });
+}
+
+// Try to get live stock — fall back gracefully if server is offline
 fetch('http://localhost:8080/api/products')
     .then(res => res.json())
     .then(products => {
         const stockMap = {};
         products.forEach(p => stockMap[p.id] = p.stock);
-
-        document.querySelectorAll('.add-to-cart').forEach(btn => {
-            const card = btn.closest('.product-card');
-            const dbId = card ? parseInt(card.dataset.productId) : null;
-            const stock = dbId !== null ? (stockMap[dbId] ?? 0) : 0;
-            btn.dataset.stock = stock;
-
-            if (stock === 0) {
-                btn.disabled = true;
-                btn.classList.add('out-of-stock');
-                btn.innerHTML = '<i class="fas fa-times-circle"></i> Out of Stock';
-            }
-
-            btn.addEventListener('click', () => {
-                const d = btn.dataset;
-                const cart = getCart();
-                const inCart = cart.find(x => x.id === d.id);
-                const qtyInCart = inCart ? inCart.qty : 0;
-
-                if (qtyInCart >= parseInt(d.stock)) {
-                    showToast('Sorry, only ' + d.stock + ' in stock!');
-                    return;
-                }
-
-                addToCart({
-                    id:        d.id,
-                    name:      d.name,
-                    color:     d.color,
-                    storage:   d.storage,
-                    price:     '$' + Number(d.price).toLocaleString(),
-                    priceNum:  parseFloat(d.price),
-                    qty:       1,
-                    img:       d.img,
-                    condition: d.condition,
-                    stock:     parseInt(d.stock)
-                });
-
-                const original = btn.innerHTML;
-                btn.classList.add('added');
-                btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-                setTimeout(() => {
-                    btn.classList.remove('added');
-                    btn.innerHTML = original;
-                }, 2000);
-
-                showToast(d.name + ' added to cart!');
-            });
-        });
+        initButtons(stockMap);
     })
     .catch(() => {
-        console.warn('Could not reach backend — stock checks skipped.');
+        console.warn('Server offline — buttons work without stock check.');
+        initButtons(null); // null = skip stock check, allow all adds
     });
 //--------------------------------------------------------------------------------------//
-                // Button feedback
+             /*   // Button feedback
                 const original = btn.innerHTML;
                 btn.classList.add('added');
                 btn.innerHTML = '<i class="fas fa-check"></i> Added!';
@@ -641,7 +648,7 @@ fetch('http://localhost:8080/api/products')
 
                 showToast(d.name + ' added to cart!');
             });
-        });
+        }); */
         // ── Make product cards clickable ──────────────────────────────
         document.querySelectorAll('.product-card').forEach(card => {
         card.style.cursor = 'pointer';
