@@ -862,4 +862,11 @@
   text-align: center;
   padding: 10px 0;
 }
-        
+
+.add-to-cart.out-of-stock {
+    background: #ccc !important;
+    color: #888 !important;
+    cursor: not-allowed !important;
+    border-color: #ccc !important;
+    pointer-events: none;
+}
