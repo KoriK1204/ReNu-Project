@@ -82,44 +82,8 @@ searchOverlay.querySelector('.search-form').addEventListener('submit', (e) => {
     `).join('');
   }
 });
-function addToCart(item) {
-    // 1. Get the current cart from localStorage
-    let cart = JSON.parse(localStorage.getItem('renuCart') || '[]');
 
-    // 2. Check if the item is already in the cart to get current quantity
-    const existingItem = cart.find(cartItem => cartItem.id === item.id);
-    const currentQtyInCart = existingItem ? existingItem.quantity : 0;
-
-    // 3. INVENTORY CHECK (The New Part)
-    // We check if adding 1 more exceeds the 'stock' from your MySQL database
-    if (currentQtyInCart + 1 > item.stock) {
-        alert(`Sorry! We only have ${item.stock} in stock. You already have ${currentQtyInCart} in your cart.`);
-        return; // Stop here so nothing is added
-    }
-
-    // 4. SURROUNDING CODE (Your original logic)
-    if (existingItem) {
-        // If it's already there, just bump the number
-        existingItem.quantity += 1;
-    } else {
-        // If it's new, add it to the list with quantity 1
-        // We use the spread operator (...) to keep all the product data
-        cart.push({ ...item, quantity: 1 });
-    }
-
-    // 5. UPDATE STORAGE & UI
-    localStorage.setItem('renuCart', JSON.stringify(cart));
-    
-    // Call your existing function to update the red bubble on the cart icon
-    if (typeof updateCartCount === "function") {
-        updateCartCount();
-    }
-
-    // Optional: Log to console so you can see it working in DevTools
-    console.log(`Added ${item.name} to cart. Total in cart: ${currentQtyInCart + 1}`);
-}
-//------------Old cart functions---------------------------
-/*function getCart() {
+function getCart() {
     return JSON.parse(localStorage.getItem('renuCart') || '[]');
 }
 function saveCart(cart) {
@@ -145,7 +109,7 @@ function addToCart(item) {
     updateCartBadge();
 }
 // Run on every page load to keep badge in sync
-document.addEventListener('DOMContentLoaded', updateCartBadge); */
+document.addEventListener('DOMContentLoaded', updateCartBadge);
 
 // ── Admin Preview Banner ──────────────────────────────────────
 if (sessionStorage.getItem('adminPreview') === 'true') {
