@@ -204,7 +204,7 @@
                     <div class="modal-form" style="display:block;">
                         <div class="form-group"><label>Supplier Name</label><input type="text" id="poSupplier" placeholder="e.g. Apple Resellers Inc."></div>
                         <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">
-                            <div class="form-group"><label>Product</label><select id="poProduct" onchange="updatePoTotal()"></select></div>
+                            <div class="form-group"><label>Product</label><select id="poProduct" onchange="onPoProductChange()"></select></div>
                             <div class="form-group"><label>Quantity</label><input type="number" id="poQty" placeholder="10" min="1" oninput="updatePoTotal()"></div>
                         </div>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -1007,7 +1007,14 @@ async function populatePlaceOrderProducts() {
     if (!sel) return;
     const products = await api('GET', '/api/products');
     sel.innerHTML = (Array.isArray(products) ? products : [])
-        .map(p => `<option value="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}">${p.name}</option>`).join('');
+        .map(p => `<option value="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}" data-price="${p.price}">${p.name}</option>`).join('');
+    onPoProductChange();
+}
+
+function onPoProductChange() {
+    const sel = document.getElementById('poProduct');
+    const price = sel?.options[sel.selectedIndex]?.getAttribute('data-price');
+    if (price) document.getElementById('poUnitCost').value = parseFloat(price).toFixed(2);
     updatePoTotal();
 }
 
