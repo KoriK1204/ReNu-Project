@@ -201,11 +201,12 @@ public class Main {
                 while (rs.next()) {
                     if (!first) sb.append(",");
                     sb.append(String.format(
-                            "{\"id\":%d,\"name\":\"%s\",\"category\":\"%s\",\"condition\":\"%s\",\"price\":%.2f,\"stock\":%d,\"description\":\"%s\"}",
+                            "{\"id\":%d,\"name\":\"%s\",\"category\":\"%s\",\"condition\":\"%s\",\"costPrice\":%.2f,\"price\":%.2f,\"stock\":%d,\"description\":\"%s\"}",
                             rs.getInt("id"),
                             esc(rs.getString("name")),
                             esc(rs.getString("category")),
                             esc(rs.getString("condition_grade")),
+                            rs.getDouble("cost_price"),
                             rs.getDouble("price"),
                             rs.getInt("stock"),
                             esc(rs.getString("description"))));
@@ -224,14 +225,15 @@ public class Main {
             }
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "INSERT INTO products (name, category, condition_grade, price, stock, description) VALUES (?,?,?,?,?,?)",
+                         "INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description) VALUES (?,?,?,?,?,?,?)",
                          Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, b.get("name"));
                 ps.setString(2, b.get("category"));
                 ps.setString(3, b.get("condition"));
-                ps.setDouble(4, Double.parseDouble(b.getOrDefault("price", "0")));
-                ps.setInt(5,    Integer.parseInt(b.getOrDefault("stock", "0")));
-                ps.setString(6, b.getOrDefault("description", ""));
+                ps.setDouble(4, Double.parseDouble(b.getOrDefault("costPrice", "0")));
+                ps.setDouble(5, Double.parseDouble(b.getOrDefault("price", "0")));
+                ps.setInt(6,    Integer.parseInt(b.getOrDefault("stock", "0")));
+                ps.setString(7, b.getOrDefault("description", ""));
                 ps.executeUpdate();
                 ResultSet keys = ps.getGeneratedKeys();
                 send(ex, 201, "{\"success\":true,\"id\":" + (keys.next() ? keys.getInt(1) : -1) + "}");
@@ -246,14 +248,15 @@ public class Main {
             Map<String, String> b = parseJson(readBody(ex));
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "UPDATE products SET name=?, category=?, condition_grade=?, price=?, stock=?, description=? WHERE id=?")) {
+                         "UPDATE products SET name=?, category=?, condition_grade=?, cost_price=?, price=?, stock=?, description=? WHERE id=?")) {
                 ps.setString(1, b.getOrDefault("name", ""));
                 ps.setString(2, b.getOrDefault("category", ""));
                 ps.setString(3, b.getOrDefault("condition", ""));
-                ps.setDouble(4, Double.parseDouble(b.getOrDefault("price", "0")));
-                ps.setInt(5,    Integer.parseInt(b.getOrDefault("stock", "0")));
-                ps.setString(6, b.getOrDefault("description", ""));
-                ps.setInt(7, Integer.parseInt(id));
+                ps.setDouble(4, Double.parseDouble(b.getOrDefault("costPrice", "0")));
+                ps.setDouble(5, Double.parseDouble(b.getOrDefault("price", "0")));
+                ps.setInt(6,    Integer.parseInt(b.getOrDefault("stock", "0")));
+                ps.setString(7, b.getOrDefault("description", ""));
+                ps.setInt(8, Integer.parseInt(id));
                 send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
             } catch (SQLException e) {
                 send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");

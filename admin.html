@@ -233,7 +233,7 @@
                 </select>
             </div>
             <table>
-                <thead><tr><th>Product</th><th>Category</th><th>Condition</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Product</th><th>Category</th><th>Condition</th><th>Cost Price</th><th>Sell Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
                 <tbody id="productsBody"></tbody>
             </table>
         </div>
@@ -483,8 +483,9 @@
                 <div class="form-group"><label>Category</label><select id="pCat"><option>iPhone</option><option>MacBook</option><option>Apple Watch</option></select></div>
                 <div class="form-group"><label>Condition</label><select id="pCond"><option>Like New</option><option>Good Condition</option><option>Fair Condition</option></select></div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                <div class="form-group"><label>Price ($)</label><input type="number" id="pPrice" placeholder="699"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                <div class="form-group"><label>Cost Price ($)</label><input type="number" id="pCostPrice" placeholder="500"></div>
+                <div class="form-group"><label>Sell Price ($)</label><input type="number" id="pPrice" placeholder="699"></div>
                 <div class="form-group"><label>Stock Qty</label><input type="number" id="pStock" placeholder="5"></div>
             </div>
             <div class="form-group"><label>Description</label><textarea id="pDesc" placeholder="Describe the product's condition, specs, included accessories, etc."></textarea></div>
@@ -937,7 +938,7 @@ async function renderProducts() {
     const products = await api('GET', url);
     productsCache = Array.isArray(products) ? products : [];
     if (!productsCache.length) {
-        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-search"></i><p>No products found.</p></div></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fas fa-search"></i><p>No products found.</p></div></td></tr>`;
         return;
     }
     tbody.innerHTML = productsCache.map(p => `
@@ -948,6 +949,7 @@ async function renderProducts() {
             </div></td>
             <td>${p.category}</td>
             <td>${p.condition}</td>
+            <td><span class="amount">$${parseFloat(p.costPrice).toLocaleString()}</span></td>
             <td><span class="amount">$${parseFloat(p.price).toLocaleString()}</span></td>
             <td>${p.stock}</td>
             <td>${stockBadge(p.stock)}</td>
@@ -1007,14 +1009,14 @@ async function populatePlaceOrderProducts() {
     if (!sel) return;
     const products = await api('GET', '/api/products');
     sel.innerHTML = (Array.isArray(products) ? products : [])
-        .map(p => `<option value="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}" data-price="${p.price}">${p.name}</option>`).join('');
+        .map(p => `<option value="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}" data-cost-price="${p.costPrice}">${p.name}</option>`).join('');
     onPoProductChange();
 }
 
 function onPoProductChange() {
     const sel = document.getElementById('poProduct');
-    const price = sel?.options[sel.selectedIndex]?.getAttribute('data-price');
-    if (price) document.getElementById('poUnitCost').value = parseFloat(price).toFixed(2);
+    const costPrice = sel?.options[sel.selectedIndex]?.getAttribute('data-cost-price');
+    if (costPrice) document.getElementById('poUnitCost').value = parseFloat(costPrice).toFixed(2);
     updatePoTotal();
 }
 
@@ -1212,10 +1214,11 @@ async function cancelOrder(orderId, orderRef) {
 function openAddProduct() {
     editingProductId = null;
     document.getElementById('productModalTitle').innerHTML = 'Add <span>Product</span>';
-    document.getElementById('pName').value  = '';
-    document.getElementById('pPrice').value = '';
-    document.getElementById('pStock').value = '';
-    document.getElementById('pDesc').value  = '';
+    document.getElementById('pName').value      = '';
+    document.getElementById('pCostPrice').value = '';
+    document.getElementById('pPrice').value     = '';
+    document.getElementById('pStock').value     = '';
+    document.getElementById('pDesc').value      = '';
     document.getElementById('productModal').classList.add('open');
 }
 
@@ -1224,24 +1227,26 @@ function openEditProduct(id) {
     const p = productsCache.find(x => x.id === id);
     if (!p) return;
     document.getElementById('productModalTitle').innerHTML = 'Edit <span>Product</span>';
-    document.getElementById('pName').value  = p.name;
-    document.getElementById('pCat').value   = p.category;
-    document.getElementById('pCond').value  = p.condition;
-    document.getElementById('pPrice').value = p.price;
-    document.getElementById('pStock').value = p.stock;
-    document.getElementById('pDesc').value  = p.description || '';
+    document.getElementById('pName').value      = p.name;
+    document.getElementById('pCat').value       = p.category;
+    document.getElementById('pCond').value      = p.condition;
+    document.getElementById('pCostPrice').value = p.costPrice;
+    document.getElementById('pPrice').value     = p.price;
+    document.getElementById('pStock').value     = p.stock;
+    document.getElementById('pDesc').value      = p.description || '';
     document.getElementById('productModal').classList.add('open');
 }
 
 async function confirmProduct() {
-    const name  = document.getElementById('pName').value.trim();
-    const cat   = document.getElementById('pCat').value;
-    const cond  = document.getElementById('pCond').value;
-    const price = parseFloat(document.getElementById('pPrice').value);
-    const stock = parseInt(document.getElementById('pStock').value);
+    const name      = document.getElementById('pName').value.trim();
+    const cat       = document.getElementById('pCat').value;
+    const cond      = document.getElementById('pCond').value;
+    const costPrice = parseFloat(document.getElementById('pCostPrice').value);
+    const price     = parseFloat(document.getElementById('pPrice').value);
+    const stock     = parseInt(document.getElementById('pStock').value);
     const description = document.getElementById('pDesc').value.trim();
-    if (!name || isNaN(price) || isNaN(stock)) { alert('Please fill in all fields.'); return; }
-    const body = { name, category: cat, condition: cond, price, stock, description };
+    if (!name || isNaN(costPrice) || isNaN(price) || isNaN(stock)) { alert('Please fill in all fields.'); return; }
+    const body = { name, category: cat, condition: cond, costPrice, price, stock, description };
     if (editingProductId) {
         await api('PUT', `/api/products?id=${editingProductId}`, body);
         showToast('Product updated!');
