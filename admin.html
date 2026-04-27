@@ -861,7 +861,7 @@ async function renderDashStats() {
     const revenue  = monthOrders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
     const pending  = orderList.filter(o => o.status === 'pending').length;
     const shipped  = monthOrders.filter(o => o.status === 'shipped' || o.status === 'delivered').length;
-    const lowStock = productList.filter(p => p.stock > 0 && p.stock <= 2).length;
+    const lowStock = productList.filter(p => p.stock <= 2).length;
     document.getElementById('statRevenue').textContent  = '$' + revenue.toLocaleString();
     document.getElementById('statPending').textContent  = pending;
     document.getElementById('statShipped').textContent  = shipped;
