@@ -494,6 +494,8 @@
                 <select id="pImage" onchange="updateProductImagePreview()">
                     <option value="">— No Image —</option>
                 </select>
+                <div style="margin-top:8px;font-size:12px;color:#6b7a8d;">Or upload from your computer:</div>
+                <input type="file" id="pImageFile" accept="image/*" onchange="uploadProductImage(this)" style="margin-top:4px;font-size:13px;width:100%;">
                 <div id="pImagePreview" style="display:none;align-items:center;gap:10px;margin-top:8px;">
                     <img id="pImagePreviewImg" src="" alt="Preview" style="height:72px;object-fit:contain;background:#f5f7fa;border-radius:8px;padding:6px;">
                     <button type="button" onclick="clearProductImage()" style="font-size:12px;color:#e74c3c;background:none;border:1px solid #e74c3c;border-radius:6px;padding:4px 10px;cursor:pointer;"><i class="fas fa-times"></i> Remove</button>
@@ -1274,6 +1276,27 @@ function updateProductImagePreview() {
 function clearProductImage() {
     document.getElementById('pImage').value = '';
     updateProductImagePreview();
+}
+
+async function uploadProductImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+    input.disabled = true;
+    const reader = new FileReader();
+    reader.onload = async () => {
+        const base64 = reader.result.split(',')[1];
+        const result = await api('POST', '/api/upload-image', { filename: file.name, data: base64 });
+        input.disabled = false;
+        input.value = '';
+        if (result && result.path) {
+            if (!PRODUCT_IMAGES.includes(result.path)) PRODUCT_IMAGES.push(result.path);
+            populateImageSelect(result.path);
+            showToast('Image uploaded!');
+        } else {
+            alert('Image upload failed. Please try again.');
+        }
+    };
+    reader.readAsDataURL(file);
 }
 
 // ── Product modal ──────────────────────────────────────────────────────────

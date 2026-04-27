@@ -14,6 +14,8 @@ import java.util.*;
 
 public class Main {
 
+    static Path projectRoot;
+
     static Connection getConnection() throws SQLException {
         try { Class.forName("com.mysql.cj.jdbc.Driver"); } catch (ClassNotFoundException e) { throw new SQLException("MySQL driver not found", e); }
         Properties cfg = new Properties();
@@ -24,8 +26,8 @@ public class Main {
 
     // ── Server entry point ───────────────────────────────────────────────────
     public static void main(String[] args) throws IOException {
-        int  port        = 8080;
-        Path projectRoot = Paths.get("..").toAbsolutePath().normalize();
+        int  port = 8080;
+        projectRoot = Paths.get("..").toAbsolutePath().normalize();
 
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/api/login",          new LoginHandler());
@@ -34,6 +36,7 @@ public class Main {
         server.createContext("/api/users",          new UsersHandler());
         server.createContext("/api/restock-orders", new RestockHandler());
         server.createContext("/api/contact-messages", new ContactMessagesHandler());
+        server.createContext("/api/upload-image",    new UploadImageHandler());
         server.createContext("/",                   new StaticFileHandler(projectRoot));
         server.setExecutor(null);
         System.out.println("ReNu Tech server running at http://localhost:" + port);
@@ -750,6 +753,32 @@ static class ContactMessagesHandler implements HttpHandler {
     }
 }
     
+    // ── Image upload ─────────────────────────────────────────────────────────
+    static class UploadImageHandler implements HttpHandler {
+        public void handle(HttpExchange ex) throws IOException {
+            cors(ex.getResponseHeaders());
+            if (ex.getRequestMethod().equalsIgnoreCase("OPTIONS")) { ex.sendResponseHeaders(204, -1); return; }
+            if (!ex.getRequestMethod().equalsIgnoreCase("POST")) { send(ex, 405, "{\"error\":\"Method not allowed\"}"); return; }
+            Map<String, String> b = parseJson(readBody(ex));
+            String filename = b.get("filename");
+            String data     = b.get("data");
+            if (filename == null || filename.isBlank() || data == null || data.isBlank()) {
+                send(ex, 400, "{\"error\":\"filename and data are required\"}"); return;
+            }
+            filename = filename.replaceAll("[^a-zA-Z0-9._-]", "-");
+            Path dest = projectRoot.resolve("public/images/" + filename).normalize();
+            if (!dest.startsWith(projectRoot.resolve("public/images"))) {
+                send(ex, 400, "{\"error\":\"Invalid filename\"}"); return;
+            }
+            try {
+                Files.write(dest, Base64.getDecoder().decode(data));
+                send(ex, 200, "{\"path\":\"public/images/" + esc(filename) + "\"}");
+            } catch (Exception e) {
+                send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
+            }
+        }
+    }
+
     // ── Static file server ───────────────────────────────────────────────────
     static class StaticFileHandler implements HttpHandler {
         private final Path root;
