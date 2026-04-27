@@ -474,6 +474,17 @@
 
     <script src="script.js"></script>
     <script>
+        fetch('/api/products').then(r => r.json()).then(products => {
+            products.forEach(p => {
+                if (!p.imageUrl) return;
+                const card = document.querySelector(`.product-card[data-product-id="${p.id}"]`);
+                if (!card) return;
+                const img = card.querySelector('.product-img img');
+                if (img) img.src = p.imageUrl;
+            });
+        }).catch(() => {});
+    </script>
+    <script>
         // ── Filter State ───────────────────────────────────────────
         const state = { category: 'all', model: [], size: [], color: [], storage: [] };
         const allCards     = document.querySelectorAll('.product-card[data-category]');

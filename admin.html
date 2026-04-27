@@ -489,6 +489,16 @@
                 <div class="form-group"><label>Stock Qty</label><input type="number" id="pStock" placeholder="5"></div>
             </div>
             <div class="form-group"><label>Description</label><textarea id="pDesc" placeholder="Describe the product's condition, specs, included accessories, etc."></textarea></div>
+            <div class="form-group">
+                <label>Product Image</label>
+                <select id="pImage" onchange="updateProductImagePreview()">
+                    <option value="">— No Image —</option>
+                </select>
+                <div id="pImagePreview" style="display:none;align-items:center;gap:10px;margin-top:8px;">
+                    <img id="pImagePreviewImg" src="" alt="Preview" style="height:72px;object-fit:contain;background:#f5f7fa;border-radius:8px;padding:6px;">
+                    <button type="button" onclick="clearProductImage()" style="font-size:12px;color:#e74c3c;background:none;border:1px solid #e74c3c;border-radius:6px;padding:4px 10px;cursor:pointer;"><i class="fas fa-times"></i> Remove</button>
+                </div>
+            </div>
         </div>
         <div class="modal-actions">
             <button class="btn-modal cancel" onclick="closeModal('productModal')">Cancel</button>
@@ -944,7 +954,7 @@ async function renderProducts() {
     tbody.innerHTML = productsCache.map(p => `
         <tr>
             <td><div class="product-cell">
-                <div class="product-thumb">${categoryEmoji(p.category)}</div>
+                <div class="product-thumb">${p.imageUrl ? `<img src="${p.imageUrl}" style="width:100%;height:100%;object-fit:contain;border-radius:4px;">` : categoryEmoji(p.category)}</div>
                 <div><div class="product-name">${p.name}</div><div class="product-sku">ID-${String(p.id).padStart(4,'0')}</div></div>
             </div></td>
             <td>${p.category}</td>
@@ -1210,6 +1220,62 @@ async function cancelOrder(orderId, orderRef) {
     showToast(`Order ${orderRef} cancelled.`, true);
 }
 
+// ── Product image helpers ───────────────────────────────────────────────────
+const PRODUCT_IMAGES = [
+    'public/images/iphone-16-pro-neutral.svg',
+    'public/images/iphone-16-pro-black.svg',
+    'public/images/iphone-16-pro-desert.svg',
+    'public/images/iphone-16-pro-white.svg',
+    'public/images/iphone-15-pro-black-titantium.svg',
+    'public/images/iphone-15-pro-blue-titantium.svg',
+    'public/images/iphone-15-pro-natural-titantium.svg',
+    'public/images/iphone-17-pro-blue.png',
+    'public/images/iphone-17-pro-orange.png',
+    'public/images/iphone-17-pro-silver.png',
+    'public/images/iphone-air-skyblue.png',
+    'public/images/mac-book-pro-m-4-space-black.svg',
+    'public/images/mac-book-pro-m-4-silver.svg',
+    'public/images/mac-book-pro-m-3-silver.svg',
+    'public/images/mac-book-pro-m-3-space-gray.svg',
+    'public/images/mac-book-air-m-4-midnight.svg',
+    'public/images/mac-book-air-m-4-silver.svg',
+    'public/images/mac-book-air-m-4-sky-blue.svg',
+    'public/images/mac-book-air-m-4-starlight.svg',
+    'public/images/apple-watch-white.svg',
+    'public/images/apple-watch-se-midnight.svg',
+    'public/images/Apple Watch S11 - 46mm.svg',
+    'public/images/Apple Watch S11 - 42mm.svg',
+    'public/images/apple-watch-black-green.svg',
+    'public/images/apple-watch-black-orange.svg',
+    'public/images/apple-watch-black-white.svg',
+    'public/images/apple-watch-green.svg',
+    'public/images/apple-watch-orange.svg',
+];
+
+function populateImageSelect(currentValue) {
+    const sel = document.getElementById('pImage');
+    sel.innerHTML = '<option value="">— No Image —</option>' +
+        PRODUCT_IMAGES.map(p => {
+            const label = p.split('/').pop().replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            const selected = p === currentValue ? ' selected' : '';
+            return `<option value="${p}"${selected}>${label}</option>`;
+        }).join('');
+    updateProductImagePreview();
+}
+
+function updateProductImagePreview() {
+    const val     = document.getElementById('pImage').value;
+    const preview = document.getElementById('pImagePreview');
+    const img     = document.getElementById('pImagePreviewImg');
+    if (val) { img.src = val; preview.style.display = 'flex'; }
+    else     { preview.style.display = 'none'; }
+}
+
+function clearProductImage() {
+    document.getElementById('pImage').value = '';
+    updateProductImagePreview();
+}
+
 // ── Product modal ──────────────────────────────────────────────────────────
 function openAddProduct() {
     editingProductId = null;
@@ -1219,6 +1285,7 @@ function openAddProduct() {
     document.getElementById('pPrice').value     = '';
     document.getElementById('pStock').value     = '';
     document.getElementById('pDesc').value      = '';
+    populateImageSelect('');
     document.getElementById('productModal').classList.add('open');
 }
 
@@ -1234,6 +1301,7 @@ function openEditProduct(id) {
     document.getElementById('pPrice').value     = p.price;
     document.getElementById('pStock').value     = p.stock;
     document.getElementById('pDesc').value      = p.description || '';
+    populateImageSelect(p.imageUrl || '');
     document.getElementById('productModal').classList.add('open');
 }
 
@@ -1245,8 +1313,9 @@ async function confirmProduct() {
     const price     = parseFloat(document.getElementById('pPrice').value);
     const stock     = parseInt(document.getElementById('pStock').value);
     const description = document.getElementById('pDesc').value.trim();
+    const imageUrl = document.getElementById('pImage').value;
     if (!name || isNaN(costPrice) || isNaN(price) || isNaN(stock)) { alert('Please fill in all fields.'); return; }
-    const body = { name, category: cat, condition: cond, costPrice, price, stock, description };
+    const body = { name, category: cat, condition: cond, costPrice, price, stock, description, imageUrl };
     if (editingProductId) {
         await api('PUT', `/api/products?id=${editingProductId}`, body);
         showToast('Product updated!');

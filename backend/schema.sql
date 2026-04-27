@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS products (
     price           DECIMAL(10,2) NOT NULL,
     stock           INT DEFAULT 0,
     description     TEXT,
+    image_url       VARCHAR(300) DEFAULT NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -104,16 +105,16 @@ INSERT INTO users (name, email, password, role) VALUES
     ('Tom Bradley',  'tom@email.com',    'pass123', 'customer');
 
 -- Products
-INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description) VALUES
-    ('iPhone 16 Pro — Neutral Titanium',    'iPhone',      'Like New',       550.00, 699.00,  4,  'Pristine condition, all accessories included.'),
-    ('iPhone 15 Pro — Black Titanium',      'iPhone',      'Good Condition', 380.00, 489.00,  7,  'Minor surface scratches, battery at 92%.'),
-    ('iPhone 17 — Blue',                    'iPhone',      'Fair Condition', 580.00, 749.00,  2,  'Visible wear, fully functional.'),
-    ('MacBook Pro M4 — Space Black 14"',    'MacBook',     'Like New',       980.00, 1299.00, 3,  'Factory reset, no marks.'),
-    ('MacBook Air M4 — Midnight 13"',       'MacBook',     'Good Condition', 580.00, 749.00,  1,  'Light use, keyboard in great shape.'),
-    ('MacBook Pro M3 — Silver 14"',         'MacBook',     'Like New',       760.00, 999.00,  5,  'Excellent condition, includes charger.'),
-    ('Apple Watch Ultra 3 — Natural',       'Apple Watch', 'Like New',       310.00, 399.00,  0,  'Out of stock — restock expected soon.'),
-    ('Apple Watch SE 2nd Gen — Midnight',   'Apple Watch', 'Good Condition', 120.00, 169.00,  6,  'Minimal wear, band included.'),
-    ('Apple Watch S11 — Midnight',          'Apple Watch', 'Good Condition', 200.00, 269.00,  3,  'Good condition, ceramic back intact.');
+INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description, image_url) VALUES
+    ('iPhone 16 Pro — Neutral Titanium',    'iPhone',      'Like New',       550.00, 699.00,  4,  'Pristine condition, all accessories included.',      'public/images/iphone-16-pro-neutral.svg'),
+    ('iPhone 15 Pro — Black Titanium',      'iPhone',      'Good Condition', 380.00, 489.00,  7,  'Minor surface scratches, battery at 92%.',           'public/images/iphone-15-pro-black-titantium.svg'),
+    ('iPhone 17 — Blue',                    'iPhone',      'Fair Condition', 580.00, 749.00,  2,  'Visible wear, fully functional.',                    'public/images/iphone-17-pro-blue.png'),
+    ('MacBook Pro M4 — Space Black 14"',    'MacBook',     'Like New',       980.00, 1299.00, 3,  'Factory reset, no marks.',                           'public/images/mac-book-pro-m-4-space-black.svg'),
+    ('MacBook Air M4 — Midnight 13"',       'MacBook',     'Good Condition', 580.00, 749.00,  1,  'Light use, keyboard in great shape.',                'public/images/mac-book-air-m-4-midnight.svg'),
+    ('MacBook Pro M3 — Silver 14"',         'MacBook',     'Like New',       760.00, 999.00,  5,  'Excellent condition, includes charger.',              'public/images/mac-book-pro-m-3-silver.svg'),
+    ('Apple Watch Ultra 3 — Natural',       'Apple Watch', 'Like New',       310.00, 399.00,  0,  'Out of stock — restock expected soon.',               'public/images/apple-watch-white.svg'),
+    ('Apple Watch SE 2nd Gen — Midnight',   'Apple Watch', 'Good Condition', 120.00, 169.00,  6,  'Minimal wear, band included.',                       'public/images/apple-watch-se-midnight.svg'),
+    ('Apple Watch S11 — Midnight',          'Apple Watch', 'Good Condition', 200.00, 269.00,  3,  'Good condition, ceramic back intact.',                'public/images/Apple Watch S11 - 46mm.svg');
 
 -- Sample orders
 INSERT INTO orders (order_ref, user_id, customer_name, customer_email, address, total, status, tracking_number) VALUES

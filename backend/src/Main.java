@@ -200,8 +200,9 @@ public class Main {
                 boolean first = true;
                 while (rs.next()) {
                     if (!first) sb.append(",");
+                    String imgUrl = rs.getString("image_url");
                     sb.append(String.format(
-                            "{\"id\":%d,\"name\":\"%s\",\"category\":\"%s\",\"condition\":\"%s\",\"costPrice\":%.2f,\"price\":%.2f,\"stock\":%d,\"description\":\"%s\"}",
+                            "{\"id\":%d,\"name\":\"%s\",\"category\":\"%s\",\"condition\":\"%s\",\"costPrice\":%.2f,\"price\":%.2f,\"stock\":%d,\"description\":\"%s\",\"imageUrl\":\"%s\"}",
                             rs.getInt("id"),
                             esc(rs.getString("name")),
                             esc(rs.getString("category")),
@@ -209,7 +210,8 @@ public class Main {
                             rs.getDouble("cost_price"),
                             rs.getDouble("price"),
                             rs.getInt("stock"),
-                            esc(rs.getString("description"))));
+                            esc(rs.getString("description")),
+                            imgUrl != null ? esc(imgUrl) : ""));
                     first = false;
                 }
                 send(ex, 200, sb.append("]").toString());
@@ -225,7 +227,7 @@ public class Main {
             }
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description) VALUES (?,?,?,?,?,?,?)",
+                         "INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description, image_url) VALUES (?,?,?,?,?,?,?,?)",
                          Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, b.get("name"));
                 ps.setString(2, b.get("category"));
@@ -234,6 +236,8 @@ public class Main {
                 ps.setDouble(5, Double.parseDouble(b.getOrDefault("price", "0")));
                 ps.setInt(6,    Integer.parseInt(b.getOrDefault("stock", "0")));
                 ps.setString(7, b.getOrDefault("description", ""));
+                String insertImg = b.getOrDefault("imageUrl", "");
+                ps.setString(8, insertImg.isEmpty() ? null : insertImg);
                 ps.executeUpdate();
                 ResultSet keys = ps.getGeneratedKeys();
                 send(ex, 201, "{\"success\":true,\"id\":" + (keys.next() ? keys.getInt(1) : -1) + "}");
@@ -248,7 +252,7 @@ public class Main {
             Map<String, String> b = parseJson(readBody(ex));
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "UPDATE products SET name=?, category=?, condition_grade=?, cost_price=?, price=?, stock=?, description=? WHERE id=?")) {
+                         "UPDATE products SET name=?, category=?, condition_grade=?, cost_price=?, price=?, stock=?, description=?, image_url=? WHERE id=?")) {
                 ps.setString(1, b.getOrDefault("name", ""));
                 ps.setString(2, b.getOrDefault("category", ""));
                 ps.setString(3, b.getOrDefault("condition", ""));
@@ -256,7 +260,9 @@ public class Main {
                 ps.setDouble(5, Double.parseDouble(b.getOrDefault("price", "0")));
                 ps.setInt(6,    Integer.parseInt(b.getOrDefault("stock", "0")));
                 ps.setString(7, b.getOrDefault("description", ""));
-                ps.setInt(8, Integer.parseInt(id));
+                String updateImg = b.getOrDefault("imageUrl", "");
+                ps.setString(8, updateImg.isEmpty() ? null : updateImg);
+                ps.setInt(9, Integer.parseInt(id));
                 send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
             } catch (SQLException e) {
                 send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
