@@ -382,6 +382,7 @@
             transition: color 0.2s;
         }
         .toggle-password:hover { color: var(--icons-prices-color); }
+        .toggle-password i { position: static; transform: none; left: auto; top: auto; pointer-events: none; }
 
         /* password strength bar */
         .strength-bar {
