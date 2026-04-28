@@ -166,6 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="user-drop-name">${user.name || 'User'}</div>
             <div class="user-drop-id">${user.id || 'GUEST'}</div>
             <a href="account.html" class="user-drop-item"><i class="fas fa-user"></i> View Account</a>
+            ${(user.role === 'staff' || user.role === 'admin')
+                ? `<a href="admin.html" class="user-drop-item admin-dash-link"><i class="fas fa-chart-line"></i> Admin Dashboard</a>`
+                : ''}
             <div class="user-drop-divider"></div>
             <a href="#" class="user-drop-item danger" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Logout</a>
         `;
@@ -203,6 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .user-drop-item:hover { background:#EDF1F3; }
                 .user-drop-item.danger { color:#e07070; }
                 .user-drop-item.danger:hover { background:#fff5f5; }
+                .user-drop-item.admin-dash-link { color:var(--icons-prices-color,#72AEC8); }
+                .user-drop-item.admin-dash-link:hover { background:#EDF6FB; }
                 .user-drop-divider { height:1px; background:#f0f4f6; margin:4px 0; }
             `;
             document.head.appendChild(s);
