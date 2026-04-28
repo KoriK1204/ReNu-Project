@@ -666,7 +666,7 @@ fetch('http://localhost:8080/api/products')
         card.addEventListener('click', (e) => {
             if (e.target.closest('.add-to-cart')) return;
             const id = card.dataset.productId;
-            if (id) window.location.href = `/ReNu-Project/product-detail.html?id=${id}`;
+            if (id) window.location.href = `product-detail.html?id=${id}`;
         });
         });
     </script>
