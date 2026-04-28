@@ -171,6 +171,10 @@
 
         // 3. Login with the account you just created in Signup.html
         if (foundUser) {
+            if (foundUser.status === 'suspended') {
+                showAlert('Your account has been suspended. Please contact an administrator.');
+                return;
+            }
             sessionStorage.setItem('renutech_user', JSON.stringify(foundUser));
             window.location.href = 'index.html';
             return;
@@ -193,6 +197,11 @@
 
             if (!res.ok || !data.success) {
                 showAlert(data.message || 'Invalid email or password. Please try again.');
+                return;
+            }
+
+            if (data.status === 'suspended') {
+                showAlert('Your account has been suspended. Please contact an administrator.');
                 return;
             }
 

@@ -1131,12 +1131,14 @@ async function renderStaffAccounts() {
             <td style="font-size:11px;color:#6a7580;">${fmtDate(s.joined)}</td>
             <td>${accStatusBadge(s.status)}</td>
             <td style="display:flex;gap:6px;flex-wrap:wrap;">
-                ${s.status === 'active'
-                    ? `<button class="action-btn danger" onclick="toggleUserStatus(${s.id},'${s.name}','suspended',false)"><i class="fas fa-ban"></i> Suspend</button>`
-                    : `<button class="action-btn success" onclick="toggleUserStatus(${s.id},'${s.name}','active',false)"><i class="fas fa-check-circle"></i> Activate</button>`}
+                ${s.role === 'admin'
+                    ? `<span style="font-size:10px;color:#8a9aa5;font-weight:700;padding:5px 4px;">Protected</span>`
+                    : s.status === 'active'
+                        ? `<button class="action-btn danger" onclick="toggleUserStatus(${s.id},'${s.name}','suspended',false)"><i class="fas fa-ban"></i> Suspend</button>`
+                        : `<button class="action-btn success" onclick="toggleUserStatus(${s.id},'${s.name}','active',false)"><i class="fas fa-check-circle"></i> Activate</button>`}
                 ${s.role !== 'admin'
                     ? `<button class="action-btn" onclick="demoteToCustomer(${s.id},'${s.name}')"><i class="fas fa-user-minus"></i> Demote</button>`
-                    : `<span style="font-size:10px;color:#8a9aa5;font-weight:700;padding:5px 4px;">Protected</span>`}
+                    : ''}
             </td>
         </tr>`).join('');
 }
