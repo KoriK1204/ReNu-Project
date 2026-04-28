@@ -426,11 +426,13 @@ public class Main {
         void get(HttpExchange ex) throws IOException {
             Map<String, String> p = queryParams(ex);
             String role   = p.get("role");
+            String status = p.get("status");
             String search = p.get("search");
 
             StringBuilder sql = new StringBuilder(
                     "SELECT id, name, email, role, status, created_at FROM users WHERE 1=1");
             if (role   != null && !role.isEmpty())   sql.append(" AND role = ?");
+            if (status != null && !status.isEmpty()) sql.append(" AND status = ?");
             if (search != null && !search.isEmpty())
                 sql.append(" AND (name LIKE ? OR email LIKE ?)");
             sql.append(" ORDER BY created_at DESC");
@@ -439,6 +441,7 @@ public class Main {
                  PreparedStatement ps = conn.prepareStatement(sql.toString())) {
                 int i = 1;
                 if (role   != null && !role.isEmpty())   ps.setString(i++, role);
+                if (status != null && !status.isEmpty()) ps.setString(i++, status);
                 if (search != null && !search.isEmpty()) {
                     ps.setString(i++, "%" + search + "%");
                     ps.setString(i++, "%" + search + "%");
@@ -492,12 +495,25 @@ public class Main {
             // Accept either a status change or a role change
             String field = b.containsKey("status") ? "status" : "role";
             String value = b.getOrDefault(field, "active");
-            try (Connection conn = getConnection();
-                 PreparedStatement ps = conn.prepareStatement(
-                         "UPDATE users SET " + field + " = ? WHERE id = ?")) {
-                ps.setString(1, value);
-                ps.setInt(2, Integer.parseInt(id));
-                send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
+            try (Connection conn = getConnection()) {
+                // Prevent suspending admin accounts
+                if ("status".equals(field) && "suspended".equals(value)) {
+                    try (PreparedStatement check = conn.prepareStatement(
+                            "SELECT role FROM users WHERE id = ?")) {
+                        check.setInt(1, Integer.parseInt(id));
+                        ResultSet rs = check.executeQuery();
+                        if (rs.next() && "admin".equals(rs.getString("role"))) {
+                            send(ex, 403, "{\"success\":false,\"message\":\"Admin accounts cannot be suspended\"}");
+                            return;
+                        }
+                    }
+                }
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE users SET " + field + " = ? WHERE id = ?")) {
+                    ps.setString(1, value);
+                    ps.setInt(2, Integer.parseInt(id));
+                    send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
+                }
             } catch (SQLException e) {
                 send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
             }
