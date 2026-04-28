@@ -53,7 +53,7 @@
             <div class="admin-avatar" id="adminAvatar">A</div>
             <div class="admin-info">
                 <div class="admin-name" id="adminName">Admin</div>
-                <div class="admin-role">Administrator</div>
+                <div class="admin-role" id="adminRole">Administrator</div>
             </div>
             <button class="logout-btn" id="logoutBtn" title="Sign out">
                 <i class="fas fa-sign-out-alt"></i>
@@ -712,14 +712,11 @@
 // ── Auth guard ─────────────────────────────────────────────────────────────
 (function() {
     const user = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
-    if (!user || user.role !== 'admin') {
-        // For demo purposes, don't redirect
-        document.getElementById('adminName').textContent = 'Admin';
-        document.getElementById('adminAvatar').textContent = 'A';
-    } else {
-        document.getElementById('adminName').textContent = user.name || 'Admin';
-        document.getElementById('adminAvatar').textContent = (user.name || 'A')[0].toUpperCase();
-    }
+    const name = (user && user.name) ? user.name : 'Admin';
+    const role = (user && user.role) ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Administrator';
+    document.getElementById('adminName').textContent   = name;
+    document.getElementById('adminRole').textContent   = role;
+    document.getElementById('adminAvatar').textContent = name[0].toUpperCase();
 })();
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
