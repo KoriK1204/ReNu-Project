@@ -1121,7 +1121,22 @@ async function renderStaffAccounts() {
     if (p.length) url += '?' + p.join('&');
     let users = await api('GET', url);
     if (!Array.isArray(users)) users = [];
-    const list = users.filter(u => u.role === 'staff' || u.role === 'admin');
+    const apiStaff = users.filter(u => u.role === 'staff' || u.role === 'admin');
+
+    // Merge in localStorage-promoted users (not in the API)
+    const localAll = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]');
+    const apiEmails = new Set(apiStaff.map(u => u.email));
+    const localStaff = localAll
+        .filter(u => (u.role === 'staff' || u.role === 'admin') && !apiEmails.has(u.email))
+        .filter(u => {
+            const matchQ = !q || `${u.name} ${u.email}`.toLowerCase().includes(q);
+            const matchR = !roleFilter || u.role === roleFilter;
+            const matchS = !statusFilter || (u.status || 'active') === statusFilter;
+            return matchQ && matchR && matchS;
+        })
+        .map(u => ({ ...u, _local: true }));
+
+    const list = [...apiStaff, ...localStaff];
     if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users-slash"></i><p>No staff found.</p></div></td></tr>`; return; }
     tbody.innerHTML = list.map(s => `
         <tr>
@@ -1129,15 +1144,21 @@ async function renderStaffAccounts() {
             <td style="font-size:12px;">${s.email}</td>
             <td>${roleBadge(s.role)}</td>
             <td style="font-size:11px;color:#6a7580;">${fmtDate(s.joined)}</td>
-            <td>${accStatusBadge(s.status)}</td>
+            <td>${accStatusBadge(s.status || 'active')}</td>
             <td style="display:flex;gap:6px;flex-wrap:wrap;">
                 ${s.role === 'admin'
                     ? `<span style="font-size:10px;color:#8a9aa5;font-weight:700;padding:5px 4px;">Protected</span>`
-                    : s.status === 'active'
-                        ? `<button class="action-btn danger" onclick="toggleUserStatus(${s.id},'${s.name}','suspended',false)"><i class="fas fa-ban"></i> Suspend</button>`
-                        : `<button class="action-btn success" onclick="toggleUserStatus(${s.id},'${s.name}','active',false)"><i class="fas fa-check-circle"></i> Activate</button>`}
+                    : s._local
+                        ? (s.status || 'active') === 'active'
+                            ? `<button class="action-btn danger" onclick="toggleLocalUserStatus(${s.id},'${s.name}','suspended')"><i class="fas fa-ban"></i> Suspend</button>`
+                            : `<button class="action-btn success" onclick="toggleLocalUserStatus(${s.id},'${s.name}','active')"><i class="fas fa-check-circle"></i> Activate</button>`
+                        : s.status === 'active'
+                            ? `<button class="action-btn danger" onclick="toggleUserStatus(${s.id},'${s.name}','suspended',false)"><i class="fas fa-ban"></i> Suspend</button>`
+                            : `<button class="action-btn success" onclick="toggleUserStatus(${s.id},'${s.name}','active',false)"><i class="fas fa-check-circle"></i> Activate</button>`}
                 ${s.role !== 'admin'
-                    ? `<button class="action-btn" onclick="demoteToCustomer(${s.id},'${s.name}')"><i class="fas fa-user-minus"></i> Demote</button>`
+                    ? s._local
+                        ? `<button class="action-btn" onclick="demoteLocalToCustomer(${s.id},'${s.name}')"><i class="fas fa-user-minus"></i> Demote</button>`
+                        : `<button class="action-btn" onclick="demoteToCustomer(${s.id},'${s.name}')"><i class="fas fa-user-minus"></i> Demote</button>`
                     : ''}
             </td>
         </tr>`).join('');
@@ -1148,7 +1169,17 @@ function toggleLocalUserStatus(id, name, newStatus) {
     const u = users.find(x => x.id === id);
     if (u) { u.status = newStatus; localStorage.setItem('renutech_mock_db', JSON.stringify(users)); }
     showToast(`${name} ${newStatus === 'active' ? 'activated' : 'suspended'}.`, newStatus === 'suspended');
-    renderCustomerAccounts();
+    if (u && (u.role === 'staff' || u.role === 'admin')) renderStaffAccounts();
+    else renderCustomerAccounts();
+}
+
+function demoteLocalToCustomer(id, name) {
+    if (!confirm(`Demote ${name} to customer?`)) return;
+    const users = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]');
+    const u = users.find(x => x.id === id);
+    if (u) { u.role = 'customer'; localStorage.setItem('renutech_mock_db', JSON.stringify(users)); }
+    showToast(`${name} moved to customer accounts.`, true);
+    renderStaffAccounts();
 }
 
 async function toggleUserStatus(id, name, newStatus, isCustomer) {
