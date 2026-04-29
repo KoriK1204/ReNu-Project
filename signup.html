@@ -145,7 +145,7 @@
 
                     <div class="terms-row">
                         <input type="checkbox" id="terms">
-                        <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                        <label for="terms">I agree to the <a href="#" onclick="openLegalModal('terms'); return false;">Terms of Service</a> and <a href="#" onclick="openLegalModal('privacy'); return false;">Privacy Policy</a></label>
                     </div>
 
                     <button class="auth-submit" onclick="handleSignup()">
@@ -158,6 +158,20 @@
             </div>
         </div>
     </div>
+    <!-- Terms of Service Modal -->
+    <div id="legalModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:16px;max-width:560px;width:90%;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.2);font-family:'Montserrat',sans-serif;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid #f0f4f6;">
+                <h3 id="legalModalTitle" style="margin:0;font-size:15px;font-weight:800;color:#272727;"></h3>
+                <button onclick="closeLegalModal()" style="background:none;border:none;cursor:pointer;font-size:18px;color:#8a9aa5;line-height:1;">&times;</button>
+            </div>
+            <div id="legalModalBody" style="overflow-y:auto;padding:20px 24px;font-size:12.5px;line-height:1.8;color:#4a5568;"></div>
+            <div style="padding:16px 24px;border-top:1px solid #f0f4f6;text-align:right;">
+                <button onclick="closeLegalModal()" style="background:var(--icons-prices-color,#72AEC8);color:#fff;border:none;border-radius:8px;padding:9px 22px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">Got it</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
     function togglePassword(id, btn) {
@@ -307,6 +321,52 @@ async function handleSignup() {
         showAlert('Cannot connect to backend. Make sure Java server is running on localhost:8080.');
     }
 }
+
+const legalContent = {
+    terms: {
+        title: 'Terms of Service',
+        body: `
+            <p><strong>Effective Date: April 28, 2026</strong></p>
+            <p>Welcome to ReNu Tech. By creating an account, you agree to the following terms:</p>
+            <p><strong>1. Eligibility</strong><br>You must be at least 18 years old to create an account and make purchases on our platform.</p>
+            <p><strong>2. Account Responsibility</strong><br>You are responsible for maintaining the confidentiality of your account credentials. Notify us immediately if you suspect unauthorised access.</p>
+            <p><strong>3. Products & Grading</strong><br>All refurbished products are graded and described accurately. Grades include Like New, Good Condition, and Fair Condition. Images are representative and may vary slightly.</p>
+            <p><strong>4. Orders & Payment</strong><br>Orders are confirmed upon successful payment. ReNu Tech reserves the right to cancel orders due to stock errors or pricing discrepancies.</p>
+            <p><strong>5. Returns & Warranty</strong><br>All products carry a 12-month warranty. Returns are accepted within 30 days of delivery provided the item is unused and in original packaging.</p>
+            <p><strong>6. Changes to Terms</strong><br>We may update these terms from time to time. Continued use of the platform constitutes acceptance of any changes.</p>
+            <p>For questions, contact us at <strong>support@renutech.com</strong>.</p>
+        `
+    },
+    privacy: {
+        title: 'Privacy Policy',
+        body: `
+            <p><strong>Effective Date: April 28, 2026</strong></p>
+            <p>ReNu Tech is committed to protecting your personal information. This policy explains what we collect and how we use it.</p>
+            <p><strong>1. Information We Collect</strong><br>We collect your name, email address, and password when you create an account. We also collect order details and delivery addresses when you make a purchase.</p>
+            <p><strong>2. How We Use Your Information</strong><br>Your information is used to process orders, manage your account, and communicate with you about your purchases. We do not sell your data to third parties.</p>
+            <p><strong>3. Data Storage</strong><br>Your data is stored securely on our servers. Passwords are handled with care and we recommend you use a strong, unique password.</p>
+            <p><strong>4. Cookies</strong><br>We use session cookies to keep you logged in during your visit. No tracking or advertising cookies are used.</p>
+            <p><strong>5. Your Rights</strong><br>You may request access to, correction of, or deletion of your personal data at any time by contacting us at <strong>privacy@renutech.com</strong>.</p>
+            <p><strong>6. Changes to This Policy</strong><br>We may update this policy periodically. We will notify you of significant changes via email.</p>
+        `
+    }
+};
+
+function openLegalModal(type) {
+    const content = legalContent[type];
+    document.getElementById('legalModalTitle').textContent = content.title;
+    document.getElementById('legalModalBody').innerHTML = content.body;
+    const modal = document.getElementById('legalModal');
+    modal.style.display = 'flex';
+}
+
+function closeLegalModal() {
+    document.getElementById('legalModal').style.display = 'none';
+}
+
+document.getElementById('legalModal').addEventListener('click', function(e) {
+    if (e.target === this) closeLegalModal();
+});
 </script>
 </body>
 </html>
