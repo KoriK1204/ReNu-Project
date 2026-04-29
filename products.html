@@ -157,240 +157,15 @@
     <section class="catalog">
         <div class="container">
             <div class="catalog-grid" id="catalogGrid">
-
-                <!-- iPhone 16 Pro -->
-                <div class="product-card"
-                     data-product-id="1"
-                     data-category="iphone"
-                     data-model="iphone-16-pro"
-                     data-size="6.3"
-                     data-color="neutral-titanium"
-                     data-storage="512gb">
-                    <div class="product-img">
-                        <img src="public/images/iphone-16-pro-neutral.svg" alt="iPhone 16 Pro Neutral">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag like-new">Like New</div>
-                        <h3 class="product-title">iPhone 16 Pro — Neutral Titanium</h3>
-                        <p class="product-desc">6.3" Super Retina XDR display, A18 Pro chip, 48MP camera system. 512GB. Professionally renewed and tested.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$699</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="iphone-16-pro-512gb-neutral-titanium" data-name="iPhone 16 Pro" data-color="Neutral Titanium" data-storage="512GB" data-price="699" data-condition="Like New" data-img="public/images/iphone-16-pro-neutral.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
+                <div id="catalogLoading" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#8a9aa5;font-family:'Montserrat',sans-serif;font-size:13px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:24px;margin-bottom:12px;display:block;"></i>Loading products…
                 </div>
-
-                <!-- iPhone 15 -->
-                <div class="product-card"
-                     data-product-id="2"
-                     data-category="iphone"
-                     data-model="iphone-15"
-                     data-size="6.1"
-                     data-color="midnight-black"
-                     data-storage="256gb">
-                    <div class="product-img">
-                        <img src="public/images/iphone-15-pro-black-titantium.svg" alt="iPhone 15 Pro Black Titantium">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag good">Good Condition</div>
-                        <h3 class="product-title">iPhone 15 Pro — Black Titanium</h3>
-                        <p class="product-desc">6.1" OLED display, A16 Bionic chip, 48MP main camera. 256GB. Minor cosmetic wear, fully functional.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$489</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="iphone-15-pro-256gb-black-titanium" data-name="iPhone 15 Pro" data-color="Black Titanium" data-storage="256GB" data-price="489" data-condition="Good Condition" data-img="public/images/iphone-15-pro-black-titantium.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
-                </div>
-
-                <!-- iPhone 17 -->
-                <div class="product-card"
-                     data-product-id="3"
-                     data-category="iphone"
-                     data-model="iphone-17-pro"
-                     data-size="6.3"
-                     data-color="blue"
-                     data-storage="512gb">
-                    <div class="product-img">
-                        <img src="public/images/iphone-17-pro-blue.png" alt="iPhone 17 Pro Blue">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag fair">Fair Condition</div>
-                        <h3 class="product-title">iPhone 17 — Blue</h3>
-                        <p class="product-desc">6.3" Super Retina XDR display with ProMotion, A18 Pro chip, 48MP camera with 5x telephoto, all-day battery. 512GB. Professionally renewed and tested.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$749</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="iphone-17-pro-512gb-blue" data-name="iPhone 17 Pro" data-color="Blue" data-storage="512GB" data-price="749" data-condition="Fair Condition" data-img="public/images/iphone-17-pro-blue.png"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
-                </div>
-
-                <!-- MacBook Pro M4 -->
-                <div class="product-card"
-                     data-product-id="4"
-                     data-category="macbook"
-                     data-model="macbook-pro-m4"
-                     data-size="14"
-                     data-color="space-black"
-                     data-storage="512gb">
-                    <div class="product-img">
-                        <img src="public/images/mac-book-pro-m-4-space-black.svg" alt="MacBook Pro M4 Space Black">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag like-new">Like New</div>
-                        <h3 class="product-title">MacBook Pro M4 — Space Black 14"</h3>
-                        <p class="product-desc">M4 chip, 16GB RAM, 512GB SSD, Liquid Retina XDR display. Barely used, immaculate condition.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$1,299</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="macbook-pro-m4-512gb-space-black" data-name="MacBook Pro M4 Space Black 14in" data-color="Space Black" data-storage="512GB" data-price="1299" data-condition="Like New" data-img="public/images/mac-book-pro-m-4-space-black.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
-                </div>
-
-                <!-- MacBook Air M4 -->
-                <div class="product-card"
-                     data-product-id="5"
-                     data-category="macbook"
-                     data-model="macbook-air-m4"
-                     data-size="13"
-                     data-color="midnight"
-                     data-storage="256gb">
-                    <div class="product-img">
-                        <img src="public/images/mac-book-air-m-4-midnight.svg" alt="MacBook Air M4 Midnight">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag good">Good Condition</div>
-                        <h3 class="product-title">MacBook Air M4 — Midnight 13"</h3>
-                        <p class="product-desc">M2 chip, 8GB RAM, 256GB SSD, fanless design. Light surface scratches, battery at 91% health.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$749</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="macbook-air-m4-256gb-midnight" data-name="MacBook Air M4 Midnight 13in" data-color="Midnight" data-storage="256GB" data-price="749" data-condition="Good Condition" data-img="public/images/mac-book-air-m-4-midnight.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
-                </div>
-
-                <!-- MacBook Pro M3 -->
-                <div class="product-card"
-                     data-product-id="6"
-                     data-category="macbook"
-                     data-model="macbook-pro-m3"
-                     data-size="14"
-                     data-color="silver"
-                     data-storage="512gb">
-                    <div class="product-img">
-                        <img src="public/images/mac-book-pro-m-3-silver.svg" alt="Mac Book Pro M3 Silver">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag like-new">Like New</div>
-                        <h3 class="product-title">MacBook Pro M3 — Silver 14"</h3>
-                        <p class="product-desc">M3 chip, 18GB RAM, 512GB SSD. ProMotion display, MagSafe charging. Open-box condition.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$999</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="macbook-pro-m3-512gb-silver" data-name="MacBook Pro M3 Silver 14in" data-color="Silver" data-storage="512GB" data-price="999" data-condition="Like New" data-img="public/images/mac-book-pro-m-3-silver.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
-                </div>
-
-                <!-- Apple Watch Ultra 3 -->
-                <div class="product-card"
-                     data-product-id="7"
-                     data-category="watch"
-                     data-model="watch-ultra"
-                     data-size="44mm"
-                     data-color="white"
-                     data-storage="n-a">
-                    <div class="product-img">
-                        <img src="public/images/apple-watch-white.svg" alt="Apple Watch White">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag like-new">Like New</div>
-                        <h3 class="product-title">Apple Watch Ultra 3 — Natural</h3>
-                        <p class="product-desc">Always-on Retina display, health sensors, crash detection. 44mm. Renewed with new band included.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$399</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="watch-ultra-3-44mm-natural" data-name="Apple Watch Ultra 3" data-color="Natural" data-storage="N/A" data-price="399" data-condition="Like New" data-img="public/images/apple-watch-white.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
-                </div>
-
-
-                <!-- Apple Watch SE -->
-                <div class="product-card"
-                     data-product-id="8"
-                     data-category="watch"
-                     data-model="watch-se"
-                     data-size="40mm"
-                     data-color="midnight"
-                     data-storage="n-a">
-                    <div class="product-img">
-                        <img src="public/images/apple-watch-se-midnight.svg" alt="Apple Watch SE Midnight">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag good">Good Condition</div>
-                        <h3 class="product-title">Apple Watch SE 2nd Gen — Midnight</h3>
-                        <p class="product-desc">S8 chip, fall detection, fitness tracking. 40mm. Affordable entry into the Apple Watch ecosystem.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$169</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="watch-se-2-40mm-midnight" data-name="Apple Watch SE 2nd Gen" data-color="Midnight" data-storage="N/A" data-price="169" data-condition="Good Condition" data-img="public/images/apple-watch-se-midnight.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
-                </div>
-
-                <!-- Apple Watch S11 -->
-                <div class="product-card"
-                     data-product-id="9"
-                     data-category="watch"
-                     data-model="watch-ultra"
-                     data-size="46mm"
-                     data-color="midnight"
-                     data-storage="n-a">
-                    <div class="product-img">
-                        <img src="public/images/Apple Watch S11 - 46mm.svg" alt="Apple Watch S11">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-tag good">Good Condition</div>
-                        <h3 class="product-title">Apple Watch S11 — Midnight</h3>
-                        <p class="product-desc">S11 chip, advanced health tracking, fitness features, larger 46mm. Premium performance in a sleek everyday smartwatch.</p>
-                        <div class="product-footer">
-                            <div class="product-price">$269</div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                            </div>
-                        </div>
-                        <button class="add-to-cart" data-id="watch-s11-46mm-midnight" data-name="Apple Watch S11" data-color="Midnight" data-storage="N/A" data-price="269" data-condition="Good Condition" data-img="public/images/Apple Watch S11 - 46mm.svg"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                    </div>
-                </div>
-
                 <!-- No results placeholder -->
-                <div class="no-results" id="noResults">
+                <div class="no-results" id="noResults" style="display:none;">
                     <i class="fas fa-search"></i>
                     <h3>No products match your filters</h3>
                     <p>Try adjusting or clearing your filters to see more results.</p>
                 </div>
-
             </div>
         </div>
     </section>
@@ -474,20 +249,8 @@
 
     <script src="script.js"></script>
     <script>
-        fetch('/api/products').then(r => r.json()).then(products => {
-            products.forEach(p => {
-                if (!p.imageUrl) return;
-                const card = document.querySelector(`.product-card[data-product-id="${p.id}"]`);
-                if (!card) return;
-                const img = card.querySelector('.product-img img');
-                if (img) img.src = p.imageUrl;
-            });
-        }).catch(() => {});
-    </script>
-    <script>
         // ── Filter State ───────────────────────────────────────────
         const state = { category: 'all', model: [], size: [], color: [], storage: [] };
-        const allCards     = document.querySelectorAll('.product-card[data-category]');
         const noResults    = document.getElementById('noResults');
         const visibleCount = document.getElementById('visibleCount');
         const filterBadge  = document.getElementById('filterBadge');
@@ -505,9 +268,8 @@
         const advancedToggle = document.getElementById('advancedToggle');
         const advancedPanel  = document.getElementById('advancedPanel');
         advancedToggle.addEventListener('click', () => {
-            const isOpen = advancedPanel.classList.contains('open');
-            advancedPanel.classList.toggle('open', !isOpen);
-            advancedToggle.classList.toggle('open', !isOpen);
+            advancedPanel.classList.toggle('open');
+            advancedToggle.classList.toggle('open');
         });
 
         document.querySelectorAll('.chip').forEach(chip => {
@@ -529,7 +291,7 @@
 
         function applyFilters() {
             let visible = 0;
-            allCards.forEach(card => {
+            document.querySelectorAll('.product-card[data-category]').forEach(card => {
                 const show = (state.category === 'all' || card.dataset.category === state.category)
                           && (state.model.length   === 0 || state.model.includes(card.dataset.model))
                           && (state.size.length    === 0 || state.size.includes(card.dataset.size))
@@ -538,8 +300,8 @@
                 card.classList.toggle('hidden', !show);
                 if (show) visible++;
             });
-            visibleCount.textContent = visible;
-            noResults.style.display  = visible === 0 ? 'block' : 'none';
+            if (visibleCount) visibleCount.textContent = visible;
+            noResults.style.display = visible === 0 ? 'block' : 'none';
             const advCount = state.model.length + state.size.length + state.color.length + state.storage.length;
             filterBadge.textContent = advCount;
             filterBadge.classList.toggle('visible', advCount > 0);
@@ -557,9 +319,6 @@
             filterSummary.innerHTML = `Filtering by: ${parts.join(', ')}`;
         }
 
-        applyFilters();
-
-        // ── Add to Cart (products grid) ───────────────────────────
         function showToast(msg) {
             const toast = document.getElementById('toast');
             document.getElementById('toastMsg').textContent = msg;
@@ -567,108 +326,95 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        /*document.querySelectorAll('.add-to-cart').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const d = btn.dataset;
-                addToCart({
-                    id:        d.id,
-                    name:      d.name,
-                    color:     d.color,
-                    storage:   d.storage,
-                    price:     '$' + Number(d.price).toLocaleString(),
-                    priceNum:  parseFloat(d.price),
-                    qty:       1,
-                    img:       d.img,
-                    condition: d.condition
-                }); */
-        
-        //--------------------Fetch live stock from backend, then set up buttons -----------------------//
-//Add to Cart
-function initButtons(stockMap) {
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        const card  = btn.closest('.product-card');
-        const dbId  = card ? parseInt(card.dataset.productId) : null;
-        const stock = (stockMap && dbId !== null) ? (stockMap[dbId] ?? 999) : 999;
-        btn.dataset.stock = stock;
-
-        if (stock === 0) {
-            btn.disabled = true;
-            btn.classList.add('out-of-stock');
-            btn.innerHTML = '<i class="fas fa-times-circle"></i> Out of Stock';
-            return; // skip adding click listener
+        function conditionClass(c) {
+            return { 'Like New': 'like-new', 'Good Condition': 'good', 'Fair Condition': 'fair' }[c] || 'good';
         }
 
-        btn.addEventListener('click', () => {
-            const d        = btn.dataset;
-            const cart     = getCart();
-            const inCart   = cart.find(x => x.id === d.id);
-            const qtyInCart = inCart ? inCart.qty : 0;
+        function categorySlug(cat) {
+            return { 'iPhone': 'iphone', 'MacBook': 'macbook', 'Apple Watch': 'watch' }[cat] || cat.toLowerCase().replace(/\s+/g, '-');
+        }
 
-            if (qtyInCart >= parseInt(d.stock)) {
-                showToast('Sorry, only ' + d.stock + ' in stock!');
-                return;
-            }
+        function buildCard(p) {
+            const cat  = categorySlug(p.category);
+            const cond = conditionClass(p.condition);
+            const img  = p.imageUrl || '';
+            const slug = `product-${p.id}`;
+            return `<div class="product-card" data-product-id="${p.id}" data-category="${cat}" style="cursor:pointer;">
+                <div class="product-img"><img src="${img}" alt="${p.name}" onerror="this.style.display='none'"></div>
+                <div class="product-info">
+                    <div class="product-tag ${cond}">${p.condition}</div>
+                    <h3 class="product-title">${p.name}</h3>
+                    <p class="product-desc">${p.description || ''}</p>
+                    <div class="product-footer">
+                        <div class="product-price">$${Number(p.price).toLocaleString()}</div>
+                        <div class="rating">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                    <button class="add-to-cart" data-id="${slug}" data-name="${p.name}" data-color="" data-storage="" data-price="${p.price}" data-condition="${p.condition}" data-img="${img}">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </div>`;
+        }
 
-            addToCart({
-                id:        d.id,
-                name:      d.name,
-                color:     d.color,
-                storage:   d.storage,
-                price:     '$' + Number(d.price).toLocaleString(),
-                priceNum:  parseFloat(d.price),
-                qty:       1,
-                img:       d.img,
-                condition: d.condition,
-                stock:     parseInt(d.stock)
+        function initButtons(stockMap) {
+            document.querySelectorAll('.add-to-cart').forEach(btn => {
+                const card  = btn.closest('.product-card');
+                const dbId  = card ? parseInt(card.dataset.productId) : null;
+                const stock = (stockMap && dbId !== null) ? (stockMap[dbId] ?? 999) : 999;
+                btn.dataset.stock = stock;
+                if (stock === 0) {
+                    btn.disabled = true;
+                    btn.classList.add('out-of-stock');
+                    btn.innerHTML = '<i class="fas fa-times-circle"></i> Out of Stock';
+                    return;
+                }
+                btn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const d = btn.dataset;
+                    const cart = getCart();
+                    const inCart = cart.find(x => x.id === d.id);
+                    if ((inCart ? inCart.qty : 0) >= parseInt(d.stock)) {
+                        showToast('Sorry, only ' + d.stock + ' in stock!');
+                        return;
+                    }
+                    addToCart({ id: d.id, name: d.name, color: d.color, storage: d.storage,
+                        price: '$' + Number(d.price).toLocaleString(), priceNum: parseFloat(d.price),
+                        qty: 1, img: d.img, condition: d.condition, stock: parseInt(d.stock) });
+                    const orig = btn.innerHTML;
+                    btn.classList.add('added');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+                    setTimeout(() => { btn.classList.remove('added'); btn.innerHTML = orig; }, 2000);
+                    showToast(d.name + ' added to cart!');
+                });
             });
-
-            const original = btn.innerHTML;
-            btn.classList.add('added');
-            btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-            setTimeout(() => {
-                btn.classList.remove('added');
-                btn.innerHTML = original;
-            }, 2000);
-
-            showToast(d.name + ' added to cart!');
-        });
-    });
-}
-
-// Try to get live stock — fall back gracefully if server is offline
-fetch('http://localhost:8080/api/products')
-    .then(res => res.json())
-    .then(products => {
-        const stockMap = {};
-        products.forEach(p => stockMap[p.id] = p.stock);
-        initButtons(stockMap);
-    })
-    .catch(() => {
-        console.warn('Server offline — buttons work without stock check.');
-        initButtons(null); // null = skip stock check, allow all adds
-    });
-//--------------------------------------------------------------------------------------//
-             /*   // Button feedback
-                const original = btn.innerHTML;
-                btn.classList.add('added');
-                btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-                setTimeout(() => {
-                    btn.classList.remove('added');
-                    btn.innerHTML = original;
-                }, 2000);
-
-                showToast(d.name + ' added to cart!');
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', e => {
+                    if (e.target.closest('.add-to-cart')) return;
+                    const id = card.dataset.productId;
+                    if (id) window.location.href = `product-detail.html?id=${id}`;
+                });
             });
-        }); */
-        // ── Make product cards clickable ──────────────────────────────
-        document.querySelectorAll('.product-card').forEach(card => {
-        card.style.cursor = 'pointer';
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('.add-to-cart')) return;
-            const id = card.dataset.productId;
-            if (id) window.location.href = `product-detail.html?id=${id}`;
-        });
-        });
+        }
+
+        // ── Fetch and render all products from API ─────────────────
+        fetch('http://localhost:8080/api/products')
+            .then(res => res.json())
+            .then(products => {
+                const grid = document.getElementById('catalogGrid');
+                const loading = document.getElementById('catalogLoading');
+                if (loading) loading.remove();
+                const stockMap = {};
+                const cards = products.map(p => { stockMap[p.id] = p.stock; return buildCard(p); }).join('');
+                noResults.insertAdjacentHTML('beforebegin', cards);
+                applyFilters();
+                initButtons(stockMap);
+            })
+            .catch(() => {
+                const loading = document.getElementById('catalogLoading');
+                if (loading) loading.innerHTML = '<i class="fas fa-exclamation-circle" style="font-size:24px;margin-bottom:12px;display:block;color:#e07070;"></i>Could not load products. Make sure the server is running.';
+            });
     </script>
 </body>
 </html>
