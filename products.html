@@ -381,7 +381,8 @@
                     }
                     addToCart({ id: d.id, name: d.name, color: d.color, storage: d.storage,
                         price: '$' + Number(d.price).toLocaleString(), priceNum: parseFloat(d.price),
-                        qty: 1, img: d.img, condition: d.condition, stock: parseInt(d.stock) });
+                        qty: 1, img: d.img, condition: d.condition, stock: parseInt(d.stock),
+                        productId: dbId });
                     const orig = btn.innerHTML;
                     btn.classList.add('added');
                     btn.innerHTML = '<i class="fas fa-check"></i> Added!';

@@ -521,7 +521,7 @@ public class Main {
 
                 // Adjust stock based on status transition
                 if ("pending".equals(prevStatus) && "shipped".equals(newStatus)) {
-                    // Decrement stock for each item in the order
+                    // Decrement by product_id where available
                     try (PreparedStatement ps = conn.prepareStatement(
                             "UPDATE products p JOIN order_items oi ON p.id = oi.product_id " +
                             "SET p.stock = GREATEST(0, p.stock - oi.quantity) " +
@@ -529,14 +529,30 @@ public class Main {
                         ps.setInt(1, Integer.parseInt(id));
                         ps.executeUpdate();
                     }
+                    // Fallback: decrement by product name for items with no product_id
+                    try (PreparedStatement ps = conn.prepareStatement(
+                            "UPDATE products p JOIN order_items oi ON p.name = oi.product_name " +
+                            "SET p.stock = GREATEST(0, p.stock - oi.quantity) " +
+                            "WHERE oi.order_id = ? AND oi.product_id IS NULL")) {
+                        ps.setInt(1, Integer.parseInt(id));
+                        ps.executeUpdate();
+                    }
                 } else if ("pending".equals(prevStatus) && "cancelled".equals(newStatus)) {
                     // Order never shipped — no stock was decremented, nothing to restore
                 } else if ("shipped".equals(prevStatus) && "cancelled".equals(newStatus)) {
-                    // Restore stock if cancelled after shipping
+                    // Restore by product_id where available
                     try (PreparedStatement ps = conn.prepareStatement(
                             "UPDATE products p JOIN order_items oi ON p.id = oi.product_id " +
                             "SET p.stock = p.stock + oi.quantity " +
                             "WHERE oi.order_id = ?")) {
+                        ps.setInt(1, Integer.parseInt(id));
+                        ps.executeUpdate();
+                    }
+                    // Fallback: restore by name for items with no product_id
+                    try (PreparedStatement ps = conn.prepareStatement(
+                            "UPDATE products p JOIN order_items oi ON p.name = oi.product_name " +
+                            "SET p.stock = p.stock + oi.quantity " +
+                            "WHERE oi.order_id = ? AND oi.product_id IS NULL")) {
                         ps.setInt(1, Integer.parseInt(id));
                         ps.executeUpdate();
                     }
@@ -858,21 +874,39 @@ static class ContactHandler implements HttpHandler {
                     ResultSet rs = ps.executeQuery();
                     while (rs.next()) monthly[rs.getInt("m") - 1] = rs.getDouble("rev");
                 }
-                StringBuilder catSb = new StringBuilder("[");
-                boolean first = true;
+                // Seed all known categories at 0 so every category appears even with no sales
+                java.util.LinkedHashMap<String, Double> catMap = new java.util.LinkedHashMap<>();
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT DISTINCT category FROM products ORDER BY category")) {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) catMap.put(rs.getString("category"), 0.0);
+                }
+                // Add shipped/delivered totals matched by product_id
                 try (PreparedStatement ps = conn.prepareStatement(
                         "SELECT p.category, SUM(oi.quantity * oi.price) AS total " +
                         "FROM order_items oi JOIN products p ON oi.product_id = p.id " +
                         "JOIN orders o ON oi.order_id = o.id " +
-                        "WHERE o.status IN ('shipped','delivered') " +
-                        "GROUP BY p.category ORDER BY total DESC")) {
+                        "WHERE o.status IN ('shipped','delivered') GROUP BY p.category")) {
                     ResultSet rs = ps.executeQuery();
-                    while (rs.next()) {
-                        if (!first) catSb.append(",");
-                        catSb.append(String.format("{\"category\":\"%s\",\"total\":%.2f}",
-                                esc(rs.getString("category")), rs.getDouble("total")));
-                        first = false;
-                    }
+                    while (rs.next()) catMap.merge(rs.getString("category"), rs.getDouble("total"), Double::sum);
+                }
+                // Also match by name for items where product_id was NULL
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT p.category, SUM(oi.quantity * oi.price) AS total " +
+                        "FROM order_items oi JOIN products p ON p.name = oi.product_name " +
+                        "JOIN orders o ON oi.order_id = o.id " +
+                        "WHERE o.status IN ('shipped','delivered') AND oi.product_id IS NULL GROUP BY p.category")) {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) catMap.merge(rs.getString("category"), rs.getDouble("total"), Double::sum);
+                }
+                java.util.List<java.util.Map.Entry<String,Double>> catEntries = new java.util.ArrayList<>(catMap.entrySet());
+                catEntries.sort((a, b) -> Double.compare(b.getValue(), a.getValue()));
+                StringBuilder catSb = new StringBuilder("[");
+                boolean first = true;
+                for (java.util.Map.Entry<String,Double> entry : catEntries) {
+                    if (!first) catSb.append(",");
+                    catSb.append(String.format("{\"category\":\"%s\",\"total\":%.2f}", esc(entry.getKey()), entry.getValue()));
+                    first = false;
                 }
                 catSb.append("]");
                 String[] labels = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
