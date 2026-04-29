@@ -341,7 +341,8 @@
         });
 
         // Place order
-        document.getElementById('placeOrderBtn').addEventListener('click', () => {
+        document.getElementById('placeOrderBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
             const cart = getCart();
             if (cart.length === 0) { alert('Your cart is empty.'); return; }
 
@@ -383,42 +384,53 @@
             if (!valid) return;
 
             // Build order object
-            const user = JSON.parse(sessionStorage.getItem('renutech_user') || '{}');
             const subtotal = cart.reduce((s, i) => s + i.priceNum * i.qty, 0);
             const tax = subtotal * TAX_RATE;
             const total = subtotal + tax;
             const shippingAddress = `${document.getElementById('address1').value}${document.getElementById('address2').value ? ', ' + document.getElementById('address2').value : ''}, ${document.getElementById('city').value}, ${document.getElementById('state').value} ${document.getElementById('zip').value}`;
-            const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
 
-            const order = {
-                orderId,
-                customerId: user.customerId || 'GUEST',
-                customerName: document.getElementById('fullName').value,
-                email: document.getElementById('coEmail').value,
-                shippingAddress,
-                paymentType: payType,
-                items: cart,
-                subtotal: subtotal.toFixed(2),
-                tax: tax.toFixed(2),
-                total: total.toFixed(2),
-                status: 'Processing',
-                datePurchased: new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
+            const payload = {
+                customer_name:  document.getElementById('fullName').value,
+                customer_email: document.getElementById('coEmail').value,
+                address:        shippingAddress,
+                total:          total.toFixed(2),
+                items_json:     JSON.stringify(cart.map(i => ({
+                    product_id:   i.productId ? String(i.productId) : '',
+                    product_name: i.name,
+                    qty:          String(i.qty),
+                    price:        String(i.priceNum)
+                })))
             };
 
-            // Save to localStorage so admin page and order-confirmation can read it
-            sessionStorage.setItem('renutech_last_order', JSON.stringify(order));
-            const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
-            allOrders.push(order);
-            localStorage.setItem('renutech_orders', JSON.stringify(allOrders));
+            try {
+                const res = await fetch('http://localhost:8080/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Server error ' + res.status);
+                const data = await res.json();
 
-            // ══════════════════════════════════════════════════════════════════
-            // BACKEND HOOK:
-            // await fetch('/api/orders', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(order) });
-            // ══════════════════════════════════════════════════════════════════
+                // Save for confirmation page
+                sessionStorage.setItem('renutech_last_order', JSON.stringify({
+                    orderId:         data.ref,
+                    customerName:    payload.customer_name,
+                    email:           payload.customer_email,
+                    shippingAddress: payload.address,
+                    paymentType:     payType,
+                    items:           cart,
+                    subtotal:        subtotal.toFixed(2),
+                    tax:             tax.toFixed(2),
+                    total:           total.toFixed(2),
+                    status:          'pending',
+                    datePurchased:   new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
+                }));
 
-            // Clear cart and redirect
-            localStorage.removeItem('renuCart');
-            window.location.href = '/orderconfirmation.html';
+                localStorage.removeItem('renuCart');
+                window.location.href = '/orderconfirmation.html';
+            } catch (err) {
+                alert('Could not place order — please try again.');
+            }
         });
         document.addEventListener("DOMContentLoaded", function() {
         // 1. Try to get user from sessionStorage first, then localStorage

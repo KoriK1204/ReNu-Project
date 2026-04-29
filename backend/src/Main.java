@@ -180,6 +180,32 @@ public class Main {
         return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
     }
 
+    static List<String> splitJsonArray(String json) {
+        List<String> items = new ArrayList<>();
+        if (json == null) return items;
+        json = json.trim();
+        if (!json.startsWith("[") || !json.endsWith("]")) return items;
+        json = json.substring(1, json.length() - 1).trim();
+        int depth = 0, start = 0;
+        boolean inStr = false;
+        for (int i = 0; i < json.length(); i++) {
+            char c = json.charAt(i);
+            if (c == '\\' && inStr) { i++; continue; }
+            if (c == '"') { inStr = !inStr; continue; }
+            if (inStr) continue;
+            if (c == '{' || c == '[') depth++;
+            else if (c == '}' || c == ']') {
+                depth--;
+                if (depth == 0) {
+                    items.add(json.substring(start, i + 1).trim());
+                    start = i + 2;
+                    i++;
+                }
+            }
+        }
+        return items;
+    }
+
     // ── POST /api/login ──────────────────────────────────────────────────────
     static class LoginHandler implements HttpHandler {
         public void handle(HttpExchange ex) throws IOException {
@@ -434,18 +460,27 @@ public class Main {
                     ResultSet keys = ps.getGeneratedKeys();
                     orderId = keys.next() ? keys.getInt(1) : -1;
                 }
-                // Insert order item
-                String productName = b.getOrDefault("product_name", "");
-                String productId   = b.get("product_id");
-                if (!productName.isEmpty() && orderId > 0) {
+                // Insert all order items from items_json array
+                String itemsJson = b.getOrDefault("items_json", "");
+                List<String> itemList = splitJsonArray(itemsJson);
+                if (!itemList.isEmpty() && orderId > 0) {
                     try (PreparedStatement pi = conn.prepareStatement(
-                            "INSERT INTO order_items (order_id, product_id, product_name, quantity, price) VALUES (?,?,?,1,?)")) {
-                        pi.setInt(1, orderId);
-                        if (productId != null) pi.setInt(2, Integer.parseInt(productId));
-                        else                   pi.setNull(2, Types.INTEGER);
-                        pi.setString(3, productName);
-                        pi.setDouble(4, Double.parseDouble(b.getOrDefault("total", "0")));
-                        pi.executeUpdate();
+                            "INSERT INTO order_items (order_id, product_id, product_name, quantity, price) VALUES (?,?,?,?,?)")) {
+                        for (String itemStr : itemList) {
+                            Map<String, String> item = parseJson(itemStr);
+                            String pName = item.getOrDefault("product_name", "");
+                            String pId   = item.get("product_id");
+                            int    qty   = Integer.parseInt(item.getOrDefault("qty", "1"));
+                            double price = Double.parseDouble(item.getOrDefault("price", "0"));
+                            pi.setInt(1, orderId);
+                            if (pId != null && !pId.isEmpty()) pi.setInt(2, Integer.parseInt(pId));
+                            else                               pi.setNull(2, Types.INTEGER);
+                            pi.setString(3, pName);
+                            pi.setInt(4, qty);
+                            pi.setDouble(5, price);
+                            pi.addBatch();
+                        }
+                        pi.executeBatch();
                     }
                 }
                 conn.commit();
