@@ -416,10 +416,11 @@ public class Main {
             cors(ex.getResponseHeaders());
             if (ex.getRequestMethod().equalsIgnoreCase("OPTIONS")) { ex.sendResponseHeaders(204, -1); return; }
             switch (ex.getRequestMethod().toUpperCase()) {
-                case "GET"  -> get(ex);
-                case "POST" -> post(ex);
-                case "PUT"  -> put(ex);
-                default     -> ex.sendResponseHeaders(405, -1);
+                case "GET"    -> get(ex);
+                case "POST"   -> post(ex);
+                case "PUT"    -> put(ex);
+                case "DELETE" -> delete(ex);
+                default       -> ex.sendResponseHeaders(405, -1);
             }
         }
 
@@ -512,6 +513,30 @@ public class Main {
                         "UPDATE users SET " + field + " = ? WHERE id = ?")) {
                     ps.setString(1, value);
                     ps.setInt(2, Integer.parseInt(id));
+                    send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
+                }
+            } catch (SQLException e) {
+                send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
+            }
+        }
+
+        void delete(HttpExchange ex) throws IOException {
+            String id = queryParams(ex).get("id");
+            if (id == null) { send(ex, 400, "{\"error\":\"id is required\"}"); return; }
+            try (Connection conn = getConnection()) {
+                // Only allow deleting customer accounts
+                try (PreparedStatement check = conn.prepareStatement(
+                        "SELECT role FROM users WHERE id = ?")) {
+                    check.setInt(1, Integer.parseInt(id));
+                    ResultSet rs = check.executeQuery();
+                    if (!rs.next()) { send(ex, 404, "{\"error\":\"User not found\"}"); return; }
+                    if (!"customer".equals(rs.getString("role"))) {
+                        send(ex, 403, "{\"error\":\"Only customer accounts can be deleted\"}"); return;
+                    }
+                }
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "DELETE FROM users WHERE id = ? AND role = 'customer'")) {
+                    ps.setInt(1, Integer.parseInt(id));
                     send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
                 }
             } catch (SQLException e) {

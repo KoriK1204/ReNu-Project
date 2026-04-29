@@ -1179,6 +1179,15 @@ function demoteLocalToCustomer(id, name) {
     renderStaffAccounts();
 }
 
+function deleteAccount(email) {
+    if (!confirm(`Delete the account for ${email}? This cannot be undone.`)) return;
+    const users = JSON.parse(localStorage.getItem('renutech_mock_db') || '[]');
+    const filtered = users.filter(u => u.email !== email);
+    localStorage.setItem('renutech_mock_db', JSON.stringify(filtered));
+    showToast('Account deleted.', true);
+    renderCustomerAccounts();
+}
+
 async function toggleUserStatus(id, name, newStatus, isCustomer) {
     await api('PUT', `/api/users?id=${id}`, { status: newStatus });
     showToast(`${name} ${newStatus === 'active' ? 'activated' : 'suspended'}.`, newStatus === 'suspended');
