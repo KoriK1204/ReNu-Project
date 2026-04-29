@@ -513,6 +513,23 @@
         .badge.draft     { background: #fef9c3; color: #ca8a04; }
         .badge.archived  { background: #f3f4f6; color: #6b7280; }
 
+        /* Product modal — scrollable form body */
+        #productModal .modal {
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #productModal .modal-form {
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 4px;
+        }
+        #productModal .modal-actions {
+            padding-top: 16px;
+            background: var(--white);
+        }
+
         /* Blog post editor modal */
         #blogModal .modal {
             max-width: 700px;
