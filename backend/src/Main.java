@@ -80,6 +80,7 @@ public class Main {
         server.createContext("/api/orders",         new OrdersHandler());
         server.createContext("/api/users",          new UsersHandler());
         server.createContext("/api/restock-orders", new RestockHandler());
+        server.createContext("/api/stats",          new StatsHandler());
         server.createContext("/api/contact-messages", new ContactMessagesHandler());
         server.createContext("/api/upload-image",    new UploadImageHandler());
         server.createContext("/",                   new StaticFileHandler(projectRoot));
@@ -840,6 +841,53 @@ static class ContactHandler implements HttpHandler {
         }
     }
 }
+
+    // ── /api/stats  (GET) ────────────────────────────────────────────────────
+    static class StatsHandler implements HttpHandler {
+        public void handle(HttpExchange ex) throws IOException {
+            cors(ex.getResponseHeaders());
+            if (ex.getRequestMethod().equalsIgnoreCase("OPTIONS")) { ex.sendResponseHeaders(204, -1); return; }
+            if (!ex.getRequestMethod().equalsIgnoreCase("GET"))    { ex.sendResponseHeaders(405, -1); return; }
+            try (Connection conn = getConnection()) {
+                int year = java.time.Year.now().getValue();
+                double[] monthly = new double[12];
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT MONTH(order_date) AS m, SUM(total) AS rev FROM orders " +
+                        "WHERE YEAR(order_date)=? AND status IN ('shipped','delivered') GROUP BY m")) {
+                    ps.setInt(1, year);
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) monthly[rs.getInt("m") - 1] = rs.getDouble("rev");
+                }
+                StringBuilder catSb = new StringBuilder("[");
+                boolean first = true;
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT p.category, SUM(oi.quantity * oi.price) AS total " +
+                        "FROM order_items oi JOIN products p ON oi.product_id = p.id " +
+                        "JOIN orders o ON oi.order_id = o.id " +
+                        "WHERE o.status IN ('shipped','delivered') " +
+                        "GROUP BY p.category ORDER BY total DESC")) {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        if (!first) catSb.append(",");
+                        catSb.append(String.format("{\"category\":\"%s\",\"total\":%.2f}",
+                                esc(rs.getString("category")), rs.getDouble("total")));
+                        first = false;
+                    }
+                }
+                catSb.append("]");
+                String[] labels = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+                StringBuilder mSb = new StringBuilder("[");
+                for (int i = 0; i < 12; i++) {
+                    if (i > 0) mSb.append(",");
+                    mSb.append(String.format("{\"l\":\"%s\",\"v\":%.2f}", labels[i], monthly[i]));
+                }
+                mSb.append("]");
+                send(ex, 200, "{\"monthly\":" + mSb + ",\"byCategory\":" + catSb + "}");
+            } catch (SQLException e) {
+                send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
+            }
+        }
+    }
 
 // ── /api/contact-messages (GET, PUT, DELETE) ─────────────────
 static class ContactMessagesHandler implements HttpHandler {

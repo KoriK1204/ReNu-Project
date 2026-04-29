@@ -109,26 +109,7 @@
             </div>
             <div class="chart-card">
                 <div class="chart-title">Sales by <span>Category</span></div>
-                <div class="donut-wrap">
-                    <div class="donut-row">
-                        <div class="donut-color" style="background:var(--teal)"></div>
-                        <span class="donut-key">iPhone</span>
-                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:52%;background:var(--teal)"></div></div>
-                        <span class="donut-pct">52%</span>
-                    </div>
-                    <div class="donut-row">
-                        <div class="donut-color" style="background:var(--dark)"></div>
-                        <span class="donut-key">MacBook</span>
-                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:34%;background:var(--dark)"></div></div>
-                        <span class="donut-pct">34%</span>
-                    </div>
-                    <div class="donut-row">
-                        <div class="donut-color" style="background:var(--green)"></div>
-                        <span class="donut-key">Apple Watch</span>
-                        <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:14%;background:var(--green)"></div></div>
-                        <span class="donut-pct">14%</span>
-                    </div>
-                </div>
+                <div class="donut-wrap" id="categoryChart"></div>
             </div>
         </div>
 
@@ -937,7 +918,7 @@ async function renderDashStats() {
         const d = new Date(o.date);
         return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
     });
-    const revenue  = monthOrders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+    const revenue  = monthOrders.filter(o => o.status === 'shipped' || o.status === 'delivered').reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
     const pending  = orderList.filter(o => o.status === 'pending').length;
     const shipped  = monthOrders.filter(o => o.status === 'shipped' || o.status === 'delivered').length;
     const lowStock = productList.filter(p => p.stock <= 2).length;
@@ -1312,20 +1293,20 @@ async function confirmShip() {
     const fullTracking = document.getElementById('shipCarrier').value + '-' + tracking;
     await api('PUT', `/api/orders?id=${currentShipOrderId}`, { status: 'shipped', tracking: fullTracking });
     closeModal('shipModal');
-    renderDashStats(); renderDashRecent(); renderOrders();
+    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts();
     showToast(`Order ${currentShipOrderRef} marked as shipped!`);
 }
 
 async function markDelivered(orderId, orderRef) {
     await api('PUT', `/api/orders?id=${orderId}`, { status: 'delivered', tracking: '' });
-    renderDashStats(); renderDashRecent(); renderOrders();
+    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts();
     showToast(`Order ${orderRef} marked as delivered!`);
 }
 
 async function cancelOrder(orderId, orderRef) {
     if (!confirm(`Cancel order ${orderRef}?`)) return;
     await api('PUT', `/api/orders?id=${orderId}`, { status: 'cancelled', tracking: '' });
-    renderDashStats(); renderDashRecent(); renderOrders();
+    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts();
     showToast(`Order ${orderRef} cancelled.`, true);
 }
 
@@ -1854,16 +1835,37 @@ function buildBarChart(containerId, data) {
         </div>`).join('');
 }
 
-const months      = [{l:'Jan',v:9200},{l:'Feb',v:11400},{l:'Mar',v:10800},{l:'Apr',v:18420},{l:'May',v:0},{l:'Jun',v:0},{l:'Jul',v:0},{l:'Aug',v:0}];
-const orderMonths = [{l:'Jan',v:28},{l:'Feb',v:34},{l:'Mar',v:31},{l:'Apr',v:41},{l:'May',v:0},{l:'Jun',v:0}];
+const CAT_COLORS = ['var(--teal)','var(--dark)','var(--green)','#f59e0b','#8b5cf6','#ef4444'];
+
+async function renderDashCharts() {
+    const stats = await api('GET', '/api/stats');
+    if (!stats || stats.error) return;
+
+    // Monthly revenue bar chart
+    buildBarChart('revenueChart', stats.monthly);
+
+    // Sales by category
+    const container = document.getElementById('categoryChart');
+    if (!stats.byCategory || !stats.byCategory.length) {
+        container.innerHTML = '<div style="color:#aaa;font-size:13px;padding:12px 0;">No shipped sales yet.</div>';
+        return;
+    }
+    const grandTotal = stats.byCategory.reduce((s, c) => s + c.total, 0);
+    container.innerHTML = stats.byCategory.map((c, i) => {
+        const pct = grandTotal > 0 ? Math.round((c.total / grandTotal) * 100) : 0;
+        return `<div class="donut-row">
+            <div class="donut-color" style="background:${CAT_COLORS[i % CAT_COLORS.length]}"></div>
+            <span class="donut-key">${c.category}</span>
+            <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:${pct}%;background:${CAT_COLORS[i % CAT_COLORS.length]}"></div></div>
+            <span class="donut-pct">${pct}%</span>
+        </div>`;
+    }).join('');
+}
 
 // ── Init ───────────────────────────────────────────────────────────────────
 renderDashStats();
 renderDashRecent();
-setTimeout(() => {
-    buildBarChart('revenueChart', months);
-    buildBarChart('ordersChart', orderMonths);
-}, 100);
+renderDashCharts();
 
 // Close modals on overlay click
 ['shipModal','productModal','createStaffModal','viewOrderModal','blogModal','confirmDeleteBlogModal','cmMsgModal'].forEach(id => {
