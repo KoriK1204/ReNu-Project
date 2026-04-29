@@ -215,51 +215,58 @@
         document.getElementById('profileJoined').textContent      = user.joined || 'Today';
 
         // Load orders belonging to this customer
-        function loadOrders() {
-            const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
-            const myOrders  = allOrders.filter(o => o.customerId === user.id || o.email === user.email);
+        async function loadOrders() {
             const container = document.getElementById('ordersContent');
-
-            if (myOrders.length === 0) {
-                container.innerHTML = `
-                    <div class="orders-empty">
-                        <i class="fas fa-box-open"></i>
-                        <p>No orders yet. <a href="/products.html">Start shopping!</a></p>
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = myOrders.map(o => `
-                <div class="order-card">
-                    <div class="order-card-header">
-                        <div>
-                            <span class="order-card-id">${o.orderId}</span>
-                            <span class="order-card-date">${o.datePurchased}</span>
-                        </div>
-                        <span class="order-status-badge ${o.status.toLowerCase()}">${o.status}</span>
-                    </div>
-                    <div class="order-card-items">
-                        ${o.items.map(item => `
-                            <div class="order-item-row">
-                                <span class="order-item-name">${item.name} <span class="order-item-qty">×${item.qty}</span></span>
-                                <span class="order-item-price">$${(item.priceNum * item.qty).toLocaleString()}</span>
+            container.innerHTML = `<div class="orders-empty"><i class="fas fa-spinner fa-spin"></i><p>Loading orders…</p></div>`;
+            try {
+                const res = await fetch('http://localhost:8080/api/orders?email=' + encodeURIComponent(user.email));
+                const orders = res.ok ? await res.json() : [];
+                if (!orders.length) {
+                    container.innerHTML = `
+                        <div class="orders-empty">
+                            <i class="fas fa-box-open"></i>
+                            <p>No orders yet. <a href="/products.html">Start shopping!</a></p>
+                        </div>`;
+                    return;
+                }
+                const fmtDate = d => d ? new Date(d).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : '';
+                container.innerHTML = orders.map(o => `
+                    <div class="order-card">
+                        <div class="order-card-header">
+                            <div>
+                                <span class="order-card-id">${o.ref}</span>
+                                <span class="order-card-date">${fmtDate(o.date)}</span>
                             </div>
-                        `).join('')}
+                            <span class="order-status-badge ${o.status.toLowerCase()}">${o.status}</span>
+                        </div>
+                        <div class="order-card-items">
+                            <div class="order-item-row">
+                                <span class="order-item-name">${o.products || '—'}</span>
+                            </div>
+                        </div>
+                        <div class="order-card-footer">
+                            <span class="order-ship-to"><i class="fas fa-map-marker-alt"></i> ${o.address}</span>
+                            <span class="order-total">Total: <strong>$${parseFloat(o.total).toLocaleString()}</strong></span>
+                        </div>
                     </div>
-                    <div class="order-card-footer">
-                        <span class="order-ship-to"><i class="fas fa-map-marker-alt"></i> ${o.shippingAddress}</span>
-                        <span class="order-total">Total: <strong>$${o.total}</strong></span>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+
+                // Fill saved address from most recent order
+                const addr = user.shippingAddress || (orders[0] && orders[0].address) || '';
+                if (addr) {
+                    document.getElementById('addressEmpty').style.display = 'none';
+                    document.getElementById('addressCard').style.display  = 'flex';
+                    document.getElementById('addressText').textContent     = addr;
+                }
+            } catch (err) {
+                container.innerHTML = `<div class="orders-empty"><i class="fas fa-exclamation-circle"></i><p>Could not load orders.</p></div>`;
+            }
         }
         loadOrders();
 
         // Load shipping address from last order
         function loadAddress() {
-            const allOrders = JSON.parse(localStorage.getItem('renutech_orders') || '[]');
-            const myOrders  = allOrders.filter(o => o.customerId === user.id || o.email === user.email);
-            const addr      = user.shippingAddress || (myOrders.length ? myOrders[myOrders.length - 1].shippingAddress : '');
+            const addr = user.shippingAddress || '';
             if (addr) {
                 document.getElementById('addressEmpty').style.display = 'none';
                 document.getElementById('addressCard').style.display  = 'flex';

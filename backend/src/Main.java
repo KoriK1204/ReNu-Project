@@ -390,6 +390,7 @@ public class Main {
             Map<String, String> p = queryParams(ex);
             String status = p.get("status");
             String search = p.get("search");
+            String email  = p.get("email");
 
             StringBuilder sql = new StringBuilder(
                 "SELECT o.id, o.order_ref, o.customer_name, o.customer_email, o.address, " +
@@ -399,6 +400,7 @@ public class Main {
             if (status != null && !status.isEmpty()) sql.append(" AND o.status = ?");
             if (search != null && !search.isEmpty())
                 sql.append(" AND (o.order_ref LIKE ? OR o.customer_name LIKE ?)");
+            if (email  != null && !email.isEmpty())  sql.append(" AND o.customer_email = ?");
             sql.append(" GROUP BY o.id ORDER BY o.order_date DESC");
 
             try (Connection conn = getConnection();
@@ -409,6 +411,7 @@ public class Main {
                     ps.setString(i++, "%" + search + "%");
                     ps.setString(i++, "%" + search + "%");
                 }
+                if (email  != null && !email.isEmpty())  ps.setString(i++, email);
                 ResultSet rs = ps.executeQuery();
                 StringBuilder sb = new StringBuilder("[");
                 boolean first = true;
