@@ -516,16 +516,14 @@
             </div>
 
             <div class="form-group">
-                <label>Product Image</label>
-                <select id="pImage" onchange="updateProductImagePreview()">
-                    <option value="">— No Image —</option>
-                </select>
-                <div style="margin-top:8px;font-size:12px;color:#6b7a8d;">Or upload from your computer:</div>
-                <input type="file" id="pImageFile" accept="image/*" onchange="uploadProductImage(this)" style="margin-top:4px;font-size:13px;width:100%;">
-                <div id="pImagePreview" style="display:none;align-items:center;gap:10px;margin-top:8px;">
-                    <img id="pImagePreviewImg" src="" alt="Preview" style="height:72px;object-fit:contain;background:#f5f7fa;border-radius:8px;padding:6px;">
-                    <button type="button" onclick="clearProductImage()" style="font-size:12px;color:#e74c3c;background:none;border:1px solid #e74c3c;border-radius:6px;padding:4px 10px;cursor:pointer;"><i class="fas fa-times"></i> Remove</button>
+                <label>Product Images</label>
+                <div id="pImagesContainer" style="display:flex;flex-wrap:wrap;gap:8px;min-height:36px;padding:8px;background:#f5f7fa;border:1px dashed #d1d9e0;border-radius:8px;margin-bottom:10px;align-items:center;"></div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+                    <select id="pImage" style="flex:1;"></select>
+                    <button type="button" onclick="addImageFromSelect()" style="font-size:12px;background:var(--teal,#72AEC8);color:#fff;border:none;border-radius:6px;padding:7px 14px;cursor:pointer;white-space:nowrap;"><i class="fas fa-plus"></i> Add</button>
                 </div>
+                <div style="font-size:12px;color:#6b7a8d;margin-bottom:4px;">Or upload from your computer:</div>
+                <input type="file" id="pImageFile" accept="image/*" onchange="uploadProductImage(this)" style="margin-top:4px;font-size:13px;width:100%;">
             </div>
         </div>
         <div class="modal-actions">
@@ -1363,30 +1361,43 @@ const PRODUCT_IMAGES = [
     'public/images/apple-watch-orange.svg',
 ];
 
-function populateImageSelect(currentValue) {
+let productImagesArray = [];
+
+function renderProductImages() {
+    const container = document.getElementById('pImagesContainer');
+    if (!productImagesArray.length) {
+        container.innerHTML = '<span style="color:#aaa;font-size:12px;font-style:italic;">No images added yet.</span>';
+        return;
+    }
+    container.innerHTML = productImagesArray.map((url, i) => `
+        <div style="position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:4px;">
+            <img src="${url}" style="height:72px;width:72px;object-fit:contain;background:#fff;border-radius:8px;border:1px solid #d1d9e0;padding:4px;">
+            <button type="button" onclick="removeProductImage(${i})" style="font-size:10px;color:#e74c3c;background:none;border:1px solid #e74c3c;border-radius:4px;padding:2px 6px;cursor:pointer;"><i class="fas fa-times"></i> Remove</button>
+        </div>
+    `).join('');
+}
+
+function addImageFromSelect() {
+    const val = document.getElementById('pImage').value;
+    if (!val || productImagesArray.includes(val)) return;
+    productImagesArray.push(val);
+    renderProductImages();
+}
+
+function removeProductImage(index) {
+    productImagesArray.splice(index, 1);
+    renderProductImages();
+}
+
+function populateImageSelect(extraUrl) {
     const sel = document.getElementById('pImage');
     const images = [...PRODUCT_IMAGES];
-    if (currentValue && !images.includes(currentValue)) images.unshift(currentValue);
-    sel.innerHTML = '<option value="">— No Image —</option>' +
+    if (extraUrl && !images.includes(extraUrl)) images.unshift(extraUrl);
+    sel.innerHTML = '<option value="">— Select from library —</option>' +
         images.map(p => {
             const label = p.split('/').pop().replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            const selected = p === currentValue ? ' selected' : '';
-            return `<option value="${p}"${selected}>${label}</option>`;
+            return `<option value="${p}">${label}</option>`;
         }).join('');
-    updateProductImagePreview();
-}
-
-function updateProductImagePreview() {
-    const val     = document.getElementById('pImage').value;
-    const preview = document.getElementById('pImagePreview');
-    const img     = document.getElementById('pImagePreviewImg');
-    if (val) { img.src = val; preview.style.display = 'flex'; }
-    else     { preview.style.display = 'none'; }
-}
-
-function clearProductImage() {
-    document.getElementById('pImage').value = '';
-    updateProductImagePreview();
 }
 
 async function uploadProductImage(input) {
@@ -1401,7 +1412,11 @@ async function uploadProductImage(input) {
         input.value = '';
         if (result && result.path) {
             if (!PRODUCT_IMAGES.includes(result.path)) PRODUCT_IMAGES.push(result.path);
-            populateImageSelect(result.path);
+            populateImageSelect('');
+            if (!productImagesArray.includes(result.path)) {
+                productImagesArray.push(result.path);
+                renderProductImages();
+            }
             showToast('Image uploaded!');
         } else {
             alert('Image upload failed. Please try again.');
@@ -1421,6 +1436,8 @@ function openAddProduct() {
     document.getElementById('pDesc').value      = '';
     ['pChip','pDisplay','pRearCamera','pFrontCamera','pBattery','pOs','pBatteryHealth','pCosmetic','pUnlocked','pAccessories'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('p5g').value = 'Yes';
+    productImagesArray = [];
+    renderProductImages();
     populateImageSelect('');
     document.getElementById('productModal').classList.add('open');
 }
@@ -1437,7 +1454,9 @@ function openEditProduct(id) {
     document.getElementById('pPrice').value     = p.price;
     document.getElementById('pStock').value     = p.stock;
     document.getElementById('pDesc').value      = p.description || '';
-    populateImageSelect(p.imageUrl || '');
+    productImagesArray = Array.isArray(p.imageUrls) ? [...p.imageUrls] : (p.imageUrl ? [p.imageUrl] : []);
+    renderProductImages();
+    populateImageSelect('');
     const s = p.specs || {};
     document.getElementById('pChip').value          = s.chip          || '';
     document.getElementById('pDisplay').value       = s.display       || '';
@@ -1461,7 +1480,7 @@ async function confirmProduct() {
     const price     = parseFloat(document.getElementById('pPrice').value);
     const stock     = parseInt(document.getElementById('pStock').value);
     const description = document.getElementById('pDesc').value.trim();
-    const imageUrl = document.getElementById('pImage').value;
+    const imageUrl = productImagesArray[0] || '';
     if (!name || isNaN(costPrice) || isNaN(price) || isNaN(stock)) { alert('Please fill in all fields.'); return; }
     const specs = JSON.stringify({
         chip:          document.getElementById('pChip').value.trim(),
@@ -1476,7 +1495,8 @@ async function confirmProduct() {
         unlocked:      document.getElementById('pUnlocked').value.trim(),
         accessories:   document.getElementById('pAccessories').value.trim()
     });
-    const body = { name, category: cat, condition: cond, costPrice, price, stock, description, imageUrl, specs };
+    const imageUrls = JSON.stringify(productImagesArray);
+    const body = { name, category: cat, condition: cond, costPrice, price, stock, description, imageUrl, imageUrls, specs };
     if (editingProductId) {
         await api('PUT', `/api/products?id=${editingProductId}`, body);
         showToast('Product updated!');

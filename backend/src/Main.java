@@ -27,19 +27,40 @@ public class Main {
     // ── Database initialisation (run on startup) ─────────────────────────────
     static void initDatabase() {
         try (Connection conn = getConnection(); Statement st = conn.createStatement()) {
-            ResultSet colCheck = st.executeQuery(
-                "SELECT COUNT(*) FROM information_schema.columns WHERE table_name='products' AND column_name='specs' AND table_schema=DATABASE()");
-            colCheck.next();
-            if (colCheck.getInt(1) == 0) {
-                st.executeUpdate("ALTER TABLE products ADD COLUMN specs TEXT DEFAULT NULL");
-            }
+            // Add specs column
+            ResultSet c1 = st.executeQuery("SELECT COUNT(*) FROM information_schema.columns WHERE table_name='products' AND column_name='specs' AND table_schema=DATABASE()");
+            c1.next(); if (c1.getInt(1) == 0) st.executeUpdate("ALTER TABLE products ADD COLUMN specs TEXT DEFAULT NULL");
 
-            String iphone14Specs = "{\"chip\":\"A16 Bionic\",\"display\":\"6.7\\\" Super Retina XDR ProMotion 120Hz\",\"rearCamera\":\"48MP Main + 12MP Ultra Wide + 12MP 3x Telephoto\",\"frontCamera\":\"12MP TrueDepth\",\"battery\":\"Up to 29 hours video playback\",\"os\":\"iOS 18\",\"has5g\":\"Yes\",\"batteryHealth\":\"91%\",\"cosmetic\":\"Minor surface scratches, screen clear\",\"unlocked\":\"Yes — all carriers\",\"accessories\":\"USB-C cable included\"}";
+            // Add image_urls column
+            ResultSet c2 = st.executeQuery("SELECT COUNT(*) FROM information_schema.columns WHERE table_name='products' AND column_name='image_urls' AND table_schema=DATABASE()");
+            c2.next(); if (c2.getInt(1) == 0) st.executeUpdate("ALTER TABLE products ADD COLUMN image_urls TEXT DEFAULT NULL");
+
+            // Seed specs for all products (only when specs IS NULL, so admin edits are never overwritten)
+            String[][] specSeeds = {
+                {"iPhone 14 Pro Max - Gold",
+                 "{\"chip\":\"A16 Bionic\",\"display\":\"6.7-inch Super Retina XDR ProMotion 120Hz\",\"rearCamera\":\"48MP Main + 12MP Ultra Wide + 12MP 3x Telephoto\",\"frontCamera\":\"12MP TrueDepth\",\"battery\":\"Up to 29 hours video playback\",\"os\":\"iOS 18\",\"has5g\":\"Yes\",\"batteryHealth\":\"91%\",\"cosmetic\":\"Minor surface scratches, screen clear\",\"unlocked\":\"Yes — all carriers\",\"accessories\":\"USB-C cable included\"}"},
+                {"iPhone 16 Pro — Neutral Titanium",
+                 "{\"chip\":\"A18 Pro\",\"display\":\"6.3-inch Super Retina XDR ProMotion 120Hz\",\"rearCamera\":\"48MP Main + 48MP Ultra Wide + 12MP 5x Telephoto\",\"frontCamera\":\"12MP TrueDepth\",\"battery\":\"Up to 27 hours video playback\",\"os\":\"iOS 18\",\"has5g\":\"Yes\",\"batteryHealth\":\"97%\",\"cosmetic\":\"No visible scratches or marks\",\"unlocked\":\"Yes — all carriers\",\"accessories\":\"USB-C cable included\"}"},
+                {"iPhone 15 Pro — Black Titanium",
+                 "{\"chip\":\"A17 Pro\",\"display\":\"6.1-inch Super Retina XDR ProMotion 120Hz\",\"rearCamera\":\"48MP Main + 12MP Ultra Wide + 12MP 3x Telephoto\",\"frontCamera\":\"12MP TrueDepth\",\"battery\":\"Up to 23 hours video playback\",\"os\":\"iOS 17\",\"has5g\":\"Yes\",\"batteryHealth\":\"89%\",\"cosmetic\":\"Light scratches on frame, screen clear\",\"unlocked\":\"Yes — all carriers\",\"accessories\":\"USB-C cable included\"}"},
+                {"iPhone 17 — Blue",
+                 "{\"chip\":\"A19\",\"display\":\"6.3-inch Super Retina XDR ProMotion 120Hz\",\"rearCamera\":\"48MP Fusion + 12MP Ultra Wide\",\"frontCamera\":\"24MP TrueDepth\",\"battery\":\"Up to 26 hours video playback\",\"os\":\"iOS 18\",\"has5g\":\"Yes\",\"batteryHealth\":\"95%\",\"cosmetic\":\"Minor surface marks on glass back\",\"unlocked\":\"Yes — all carriers\",\"accessories\":\"USB-C cable included\"}"},
+                {"MacBook Pro M4 — Space Black 14\"",
+                 "{\"chip\":\"Apple M4 Pro\",\"display\":\"14.2-inch Liquid Retina XDR ProMotion 120Hz\",\"rearCamera\":\"\",\"frontCamera\":\"12MP Center Stage\",\"battery\":\"Up to 24 hours\",\"os\":\"macOS Sequoia\",\"has5g\":\"No\",\"batteryHealth\":\"96%\",\"cosmetic\":\"No scratches, pristine condition\",\"unlocked\":\"\",\"accessories\":\"96W USB-C Power Adapter included\"}"},
+                {"MacBook Air M4 — Midnight 13\"",
+                 "{\"chip\":\"Apple M4\",\"display\":\"13.6-inch Liquid Retina\",\"rearCamera\":\"\",\"frontCamera\":\"12MP Center Stage\",\"battery\":\"Up to 18 hours\",\"os\":\"macOS Sequoia\",\"has5g\":\"No\",\"batteryHealth\":\"91%\",\"cosmetic\":\"Light surface scratches on bottom, screen perfect\",\"unlocked\":\"\",\"accessories\":\"30W USB-C Power Adapter included\"}"},
+                {"MacBook Pro M3 — Silver 14\"",
+                 "{\"chip\":\"Apple M3 Pro\",\"display\":\"14.2-inch Liquid Retina XDR ProMotion 120Hz\",\"rearCamera\":\"\",\"frontCamera\":\"12MP Center Stage\",\"battery\":\"Up to 18 hours\",\"os\":\"macOS Sonoma\",\"has5g\":\"No\",\"batteryHealth\":\"94%\",\"cosmetic\":\"No visible marks, like new condition\",\"unlocked\":\"\",\"accessories\":\"70W USB-C Power Adapter included\"}"},
+                {"Apple Watch Ultra 3 — Natural",
+                 "{\"chip\":\"S10\",\"display\":\"49mm Always-On Retina LTPO OLED\",\"rearCamera\":\"\",\"frontCamera\":\"\",\"battery\":\"Up to 36 hours\",\"os\":\"watchOS 11\",\"has5g\":\"No\",\"batteryHealth\":\"95%\",\"cosmetic\":\"No scratches, pristine titanium case\",\"unlocked\":\"Yes — all carriers LTE\",\"accessories\":\"Alpine Loop band + USB-C magnetic cable\"}"},
+                {"Apple Watch SE 2nd Gen — Midnight",
+                 "{\"chip\":\"S8\",\"display\":\"44mm Retina LTPO2 OLED\",\"rearCamera\":\"\",\"frontCamera\":\"\",\"battery\":\"Up to 18 hours\",\"os\":\"watchOS 11\",\"has5g\":\"No\",\"batteryHealth\":\"88%\",\"cosmetic\":\"Minor scuff on case, band in good condition\",\"unlocked\":\"GPS only\",\"accessories\":\"Magnetic charging cable included\"}"},
+                {"Apple Watch S11 — Midnight",
+                 "{\"chip\":\"S11\",\"display\":\"46mm Always-On Retina LTPO OLED\",\"rearCamera\":\"\",\"frontCamera\":\"\",\"battery\":\"Up to 20 hours\",\"os\":\"watchOS 12\",\"has5g\":\"No\",\"batteryHealth\":\"92%\",\"cosmetic\":\"No visible scratches, like new\",\"unlocked\":\"Yes — GPS + Cellular, all carriers\",\"accessories\":\"Braided Solo Loop + USB-C magnetic cable\"}"},
+            };
             try (PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE products SET specs = ? WHERE name LIKE ? AND specs IS NULL")) {
-                ps.setString(1, iphone14Specs);
-                ps.setString(2, "%iPhone 14 Pro Max%Gold%");
-                ps.executeUpdate();
+                    "UPDATE products SET specs = ? WHERE name = ? AND specs IS NULL")) {
+                for (String[] s : specSeeds) { ps.setString(1, s[1]); ps.setString(2, s[0]); ps.executeUpdate(); }
             }
             System.out.println("Database initialised.");
         } catch (SQLException e) {
@@ -230,11 +251,13 @@ public class Main {
                 boolean first = true;
                 while (rs.next()) {
                     if (!first) sb.append(",");
-                    String imgUrl    = rs.getString("image_url");
-                    String specsRaw  = rs.getString("specs");
-                    String specsJson = (specsRaw != null && !specsRaw.isEmpty()) ? specsRaw : "null";
+                    String imgUrl     = rs.getString("image_url");
+                    String specsRaw   = rs.getString("specs");
+                    String imgUrlsRaw = rs.getString("image_urls");
+                    String specsJson  = (specsRaw   != null && !specsRaw.isEmpty())   ? specsRaw   : "null";
+                    String imgUrlsJson= (imgUrlsRaw != null && !imgUrlsRaw.isEmpty()) ? imgUrlsRaw : "null";
                     sb.append(String.format(
-                            "{\"id\":%d,\"name\":\"%s\",\"category\":\"%s\",\"condition\":\"%s\",\"costPrice\":%.2f,\"price\":%.2f,\"stock\":%d,\"description\":\"%s\",\"imageUrl\":\"%s\",\"specs\":%s}",
+                            "{\"id\":%d,\"name\":\"%s\",\"category\":\"%s\",\"condition\":\"%s\",\"costPrice\":%.2f,\"price\":%.2f,\"stock\":%d,\"description\":\"%s\",\"imageUrl\":\"%s\",\"imageUrls\":%s,\"specs\":%s}",
                             rs.getInt("id"),
                             esc(rs.getString("name")),
                             esc(rs.getString("category")),
@@ -244,6 +267,7 @@ public class Main {
                             rs.getInt("stock"),
                             esc(rs.getString("description")),
                             imgUrl != null ? esc(imgUrl) : "",
+                            imgUrlsJson,
                             specsJson));
                     first = false;
                 }
@@ -260,7 +284,7 @@ public class Main {
             }
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description, image_url, specs) VALUES (?,?,?,?,?,?,?,?,?)",
+                         "INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description, image_url, specs, image_urls) VALUES (?,?,?,?,?,?,?,?,?,?)",
                          Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, b.get("name"));
                 ps.setString(2, b.get("category"));
@@ -269,10 +293,12 @@ public class Main {
                 ps.setDouble(5, Double.parseDouble(b.getOrDefault("price", "0")));
                 ps.setInt(6,    Integer.parseInt(b.getOrDefault("stock", "0")));
                 ps.setString(7, b.getOrDefault("description", ""));
-                String insertImg   = b.getOrDefault("imageUrl", "");
-                String insertSpecs = b.getOrDefault("specs", "");
-                ps.setString(8, insertImg.isEmpty()   ? null : insertImg);
-                ps.setString(9, insertSpecs.isEmpty() ? null : insertSpecs);
+                String insertImg     = b.getOrDefault("imageUrl", "");
+                String insertSpecs   = b.getOrDefault("specs", "");
+                String insertImgUrls = b.getOrDefault("imageUrls", "");
+                ps.setString(8,  insertImg.isEmpty()     ? null : insertImg);
+                ps.setString(9,  insertSpecs.isEmpty()   ? null : insertSpecs);
+                ps.setString(10, insertImgUrls.isEmpty() ? null : insertImgUrls);
                 ps.executeUpdate();
                 ResultSet keys = ps.getGeneratedKeys();
                 send(ex, 201, "{\"success\":true,\"id\":" + (keys.next() ? keys.getInt(1) : -1) + "}");
@@ -287,7 +313,7 @@ public class Main {
             Map<String, String> b = parseJson(readBody(ex));
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "UPDATE products SET name=?, category=?, condition_grade=?, cost_price=?, price=?, stock=?, description=?, image_url=?, specs=? WHERE id=?")) {
+                         "UPDATE products SET name=?, category=?, condition_grade=?, cost_price=?, price=?, stock=?, description=?, image_url=?, specs=?, image_urls=? WHERE id=?")) {
                 ps.setString(1, b.getOrDefault("name", ""));
                 ps.setString(2, b.getOrDefault("category", ""));
                 ps.setString(3, b.getOrDefault("condition", ""));
@@ -295,11 +321,13 @@ public class Main {
                 ps.setDouble(5, Double.parseDouble(b.getOrDefault("price", "0")));
                 ps.setInt(6,    Integer.parseInt(b.getOrDefault("stock", "0")));
                 ps.setString(7, b.getOrDefault("description", ""));
-                String updateImg   = b.getOrDefault("imageUrl", "");
-                String updateSpecs = b.getOrDefault("specs", "");
-                ps.setString(8, updateImg.isEmpty()   ? null : updateImg);
-                ps.setString(9, updateSpecs.isEmpty() ? null : updateSpecs);
-                ps.setInt(10, Integer.parseInt(id));
+                String updateImg     = b.getOrDefault("imageUrl", "");
+                String updateSpecs   = b.getOrDefault("specs", "");
+                String updateImgUrls = b.getOrDefault("imageUrls", "");
+                ps.setString(8,  updateImg.isEmpty()     ? null : updateImg);
+                ps.setString(9,  updateSpecs.isEmpty()   ? null : updateSpecs);
+                ps.setString(10, updateImgUrls.isEmpty() ? null : updateImgUrls);
+                ps.setInt(11, Integer.parseInt(id));
                 send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
             } catch (SQLException e) {
                 send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");

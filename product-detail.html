@@ -69,17 +69,7 @@
                     <span class="condition-badge-img like-new">Like New</span>
                     <img src="./public/images/iphone-16-pro-neutral.svg" alt="iPhone 16 Pro" id="mainImage">
                 </div>
-                <div class="thumbnails">
-                    <div class="thumb active" data-img="./public/images/iphone-16-pro-neutral.svg">
-                        <img src="./public/images/iphone-16-pro-neutral.svg" alt="">
-                    </div>
-                    <div class="thumb" data-img="./public/images/iphone-16-pro-neutral.svg">
-                        <img src="./public/images/iphone-16-pro-neutral.svg" alt="">
-                    </div>
-                    <div class="thumb" data-img="./public/images/iphone-16-pro-neutral.svg">
-                        <img src="./public/images/iphone-16-pro-neutral.svg" alt="">
-                    </div>
-                </div>
+                <div class="thumbnails" id="thumbsContainer"></div>
             </div>
 
             <!-- Info Panel -->
@@ -408,8 +398,7 @@ if (product) {
   `;
 
   document.getElementById('mainImage').src = product.image;
-  document.querySelectorAll('.thumb img').forEach(img => img.src = product.image);
-  document.querySelectorAll('.thumb').forEach(t => t.dataset.img = product.image);
+  renderThumbs([product.image]);
 
   document.querySelector('.page-label').innerHTML = `<i class="fas ${product.icon}"></i> ${product.category}`;
   document.querySelector('h1').innerHTML = `${product.name} — <span id="selectedColorName">${product.colors[0].name}</span>`;
@@ -470,13 +459,22 @@ if (product) {
         document.getElementById('currentPrice').textContent = '$' + apiProduct.price;
         document.getElementById('originalPrice').textContent = '';
         document.getElementById('priceSave').textContent = '';
-        if (apiProduct.imageUrl) {
-            document.getElementById('mainImage').src = apiProduct.imageUrl;
-            document.querySelectorAll('.thumb img').forEach(img => img.src = apiProduct.imageUrl);
-            document.querySelectorAll('.thumb').forEach(t => t.dataset.img = apiProduct.imageUrl);
+        const fallbackUrls = Array.isArray(apiProduct.imageUrls) && apiProduct.imageUrls.length
+            ? apiProduct.imageUrls : (apiProduct.imageUrl ? [apiProduct.imageUrl] : []);
+        if (fallbackUrls.length) {
+            document.getElementById('mainImage').src = fallbackUrls[0];
+            renderThumbs(fallbackUrls);
         }
         document.querySelector('.color-options').innerHTML = '';
         document.getElementById('storageOptions').innerHTML = '';
+    }
+
+    // Update thumbnails from image_urls if this is a known product
+    if (product && apiProduct) {
+        const urls = Array.isArray(apiProduct.imageUrls) && apiProduct.imageUrls.length
+            ? apiProduct.imageUrls : [product.image];
+        renderThumbs(urls);
+        document.getElementById('mainImage').src = urls[0];
     }
 
     // Render specs
@@ -521,13 +519,22 @@ if (product) {
 
         updateCartBadge();
 
-        // ── Thumbnails ──────────────────────────────────────────────
-        document.querySelectorAll('.thumb').forEach(t => {
-            t.addEventListener('click', () => {
-                document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
-                t.classList.add('active');
-                document.getElementById('mainImage').src = t.dataset.img;
-            });
+        // ── Thumbnails (dynamic, event delegation) ─────────────────
+        function renderThumbs(urls) {
+            const container = document.getElementById('thumbsContainer');
+            container.innerHTML = urls.map((url, i) => `
+                <div class="thumb ${i === 0 ? 'active' : ''}" data-img="${url}">
+                    <img src="${url}" alt="">
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('thumbsContainer').addEventListener('click', e => {
+            const thumb = e.target.closest('.thumb');
+            if (!thumb) return;
+            document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
+            thumb.classList.add('active');
+            document.getElementById('mainImage').src = thumb.dataset.img;
         });
 
         // ── Color swatches ──────────────────────────────────────────
