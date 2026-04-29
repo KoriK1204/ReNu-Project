@@ -1092,14 +1092,8 @@ async function renderCustomerAccounts() {
                     ? `<button class="action-btn danger" onclick="toggleLocalUserStatus(${c.id},'${c.name}','suspended')"><i class="fas fa-ban"></i> Suspend</button>`
                     : `<button class="action-btn success" onclick="toggleLocalUserStatus(${c.id},'${c.name}','active')"><i class="fas fa-check-circle"></i> Activate</button>`}
                 <button class="action-btn" onclick="promoteToStaff(${c.id},'${c.name}')"><i class="fas fa-user-shield"></i> Promote</button>
-            </td>
-            <td>
-            <div style="display:flex; gap:8px;">
-                <button class="btn-action" onclick="alert('Viewing Customer ${c.name}')"><i class="fas fa-eye"></i></button>
-                <button class="btn-action" style="color:#ef4444; border-color:#fca5a5;" onclick="deleteAccount('${c.email}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
+                <button class="action-btn" onclick="alert('Viewing Customer ${c.name}')"><i class="fas fa-eye"></i> View</button>
+                <button class="action-btn danger" onclick="deleteAccount('${c.email}')"><i class="fas fa-trash"></i> Delete</button>
             </td>
         </tr>`).join('');
 }
