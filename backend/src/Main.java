@@ -497,13 +497,52 @@ public class Main {
             String id = queryParams(ex).get("id");
             if (id == null) { send(ex, 400, "{\"error\":\"id is required\"}"); return; }
             Map<String, String> b = parseJson(readBody(ex));
-            try (Connection conn = getConnection();
-                 PreparedStatement ps = conn.prepareStatement(
-                         "UPDATE orders SET status=?, tracking_number=? WHERE id=?")) {
-                ps.setString(1, b.getOrDefault("status", "pending"));
-                ps.setString(2, b.getOrDefault("tracking", ""));
-                ps.setInt(3, Integer.parseInt(id));
-                send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
+            String newStatus = b.getOrDefault("status", "pending");
+            try (Connection conn = getConnection()) {
+                conn.setAutoCommit(false);
+
+                // Get current status before updating
+                String prevStatus = "pending";
+                try (PreparedStatement ps = conn.prepareStatement("SELECT status FROM orders WHERE id=?")) {
+                    ps.setInt(1, Integer.parseInt(id));
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) prevStatus = rs.getString("status");
+                }
+
+                // Update order status
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE orders SET status=?, tracking_number=? WHERE id=?")) {
+                    ps.setString(1, newStatus);
+                    ps.setString(2, b.getOrDefault("tracking", ""));
+                    ps.setInt(3, Integer.parseInt(id));
+                    ps.executeUpdate();
+                }
+
+                // Adjust stock based on status transition
+                if ("pending".equals(prevStatus) && "shipped".equals(newStatus)) {
+                    // Decrement stock for each item in the order
+                    try (PreparedStatement ps = conn.prepareStatement(
+                            "UPDATE products p JOIN order_items oi ON p.id = oi.product_id " +
+                            "SET p.stock = GREATEST(0, p.stock - oi.quantity) " +
+                            "WHERE oi.order_id = ?")) {
+                        ps.setInt(1, Integer.parseInt(id));
+                        ps.executeUpdate();
+                    }
+                } else if ("pending".equals(prevStatus) && "cancelled".equals(newStatus)) {
+                    // Order never shipped — no stock was decremented, nothing to restore
+                } else if ("shipped".equals(prevStatus) && "cancelled".equals(newStatus)) {
+                    // Restore stock if cancelled after shipping
+                    try (PreparedStatement ps = conn.prepareStatement(
+                            "UPDATE products p JOIN order_items oi ON p.id = oi.product_id " +
+                            "SET p.stock = p.stock + oi.quantity " +
+                            "WHERE oi.order_id = ?")) {
+                        ps.setInt(1, Integer.parseInt(id));
+                        ps.executeUpdate();
+                    }
+                }
+
+                conn.commit();
+                send(ex, 200, "{\"success\":true}");
             } catch (SQLException e) {
                 send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
             }
