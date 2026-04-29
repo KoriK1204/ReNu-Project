@@ -24,10 +24,34 @@ public class Main {
         return DriverManager.getConnection(cfg.getProperty("db.url"), cfg.getProperty("db.user"), cfg.getProperty("db.pass"));
     }
 
+    // ── Database initialisation (run on startup) ─────────────────────────────
+    static void initDatabase() {
+        try (Connection conn = getConnection(); Statement st = conn.createStatement()) {
+            ResultSet colCheck = st.executeQuery(
+                "SELECT COUNT(*) FROM information_schema.columns WHERE table_name='products' AND column_name='specs' AND table_schema=DATABASE()");
+            colCheck.next();
+            if (colCheck.getInt(1) == 0) {
+                st.executeUpdate("ALTER TABLE products ADD COLUMN specs TEXT DEFAULT NULL");
+            }
+
+            String iphone14Specs = "{\"chip\":\"A16 Bionic\",\"display\":\"6.7\\\" Super Retina XDR ProMotion 120Hz\",\"rearCamera\":\"48MP Main + 12MP Ultra Wide + 12MP 3x Telephoto\",\"frontCamera\":\"12MP TrueDepth\",\"battery\":\"Up to 29 hours video playback\",\"os\":\"iOS 18\",\"has5g\":\"Yes\",\"batteryHealth\":\"91%\",\"cosmetic\":\"Minor surface scratches, screen clear\",\"unlocked\":\"Yes — all carriers\",\"accessories\":\"USB-C cable included\"}";
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "UPDATE products SET specs = ? WHERE name LIKE ? AND specs IS NULL")) {
+                ps.setString(1, iphone14Specs);
+                ps.setString(2, "%iPhone 14 Pro Max%Gold%");
+                ps.executeUpdate();
+            }
+            System.out.println("Database initialised.");
+        } catch (SQLException e) {
+            System.err.println("initDatabase warning: " + e.getMessage());
+        }
+    }
+
     // ── Server entry point ───────────────────────────────────────────────────
     public static void main(String[] args) throws IOException {
         int  port = 8080;
         projectRoot = Paths.get("..").toAbsolutePath().normalize();
+        initDatabase();
 
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/api/login",          new LoginHandler());
@@ -185,17 +209,20 @@ public class Main {
 
         void get(HttpExchange ex) throws IOException {
             Map<String, String> p  = queryParams(ex);
-            String category = p.get("category");
-            String search   = p.get("search");
+            String idParam   = p.get("id");
+            String category  = p.get("category");
+            String search    = p.get("search");
 
             StringBuilder sql = new StringBuilder("SELECT * FROM products WHERE 1=1");
-            if (category != null && !category.isEmpty()) sql.append(" AND category = ?");
-            if (search   != null && !search.isEmpty())   sql.append(" AND name LIKE ?");
+            if (idParam   != null && !idParam.isEmpty())   sql.append(" AND id = ?");
+            if (category  != null && !category.isEmpty())  sql.append(" AND category = ?");
+            if (search    != null && !search.isEmpty())    sql.append(" AND name LIKE ?");
             sql.append(" ORDER BY id");
 
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(sql.toString())) {
                 int i = 1;
+                if (idParam  != null && !idParam.isEmpty())  ps.setInt(i++, Integer.parseInt(idParam));
                 if (category != null && !category.isEmpty()) ps.setString(i++, category);
                 if (search   != null && !search.isEmpty())   ps.setString(i++, "%" + search + "%");
                 ResultSet rs = ps.executeQuery();
@@ -203,9 +230,11 @@ public class Main {
                 boolean first = true;
                 while (rs.next()) {
                     if (!first) sb.append(",");
-                    String imgUrl = rs.getString("image_url");
+                    String imgUrl    = rs.getString("image_url");
+                    String specsRaw  = rs.getString("specs");
+                    String specsJson = (specsRaw != null && !specsRaw.isEmpty()) ? specsRaw : "null";
                     sb.append(String.format(
-                            "{\"id\":%d,\"name\":\"%s\",\"category\":\"%s\",\"condition\":\"%s\",\"costPrice\":%.2f,\"price\":%.2f,\"stock\":%d,\"description\":\"%s\",\"imageUrl\":\"%s\"}",
+                            "{\"id\":%d,\"name\":\"%s\",\"category\":\"%s\",\"condition\":\"%s\",\"costPrice\":%.2f,\"price\":%.2f,\"stock\":%d,\"description\":\"%s\",\"imageUrl\":\"%s\",\"specs\":%s}",
                             rs.getInt("id"),
                             esc(rs.getString("name")),
                             esc(rs.getString("category")),
@@ -214,7 +243,8 @@ public class Main {
                             rs.getDouble("price"),
                             rs.getInt("stock"),
                             esc(rs.getString("description")),
-                            imgUrl != null ? esc(imgUrl) : ""));
+                            imgUrl != null ? esc(imgUrl) : "",
+                            specsJson));
                     first = false;
                 }
                 send(ex, 200, sb.append("]").toString());
@@ -230,7 +260,7 @@ public class Main {
             }
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description, image_url) VALUES (?,?,?,?,?,?,?,?)",
+                         "INSERT INTO products (name, category, condition_grade, cost_price, price, stock, description, image_url, specs) VALUES (?,?,?,?,?,?,?,?,?)",
                          Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, b.get("name"));
                 ps.setString(2, b.get("category"));
@@ -239,8 +269,10 @@ public class Main {
                 ps.setDouble(5, Double.parseDouble(b.getOrDefault("price", "0")));
                 ps.setInt(6,    Integer.parseInt(b.getOrDefault("stock", "0")));
                 ps.setString(7, b.getOrDefault("description", ""));
-                String insertImg = b.getOrDefault("imageUrl", "");
-                ps.setString(8, insertImg.isEmpty() ? null : insertImg);
+                String insertImg   = b.getOrDefault("imageUrl", "");
+                String insertSpecs = b.getOrDefault("specs", "");
+                ps.setString(8, insertImg.isEmpty()   ? null : insertImg);
+                ps.setString(9, insertSpecs.isEmpty() ? null : insertSpecs);
                 ps.executeUpdate();
                 ResultSet keys = ps.getGeneratedKeys();
                 send(ex, 201, "{\"success\":true,\"id\":" + (keys.next() ? keys.getInt(1) : -1) + "}");
@@ -255,7 +287,7 @@ public class Main {
             Map<String, String> b = parseJson(readBody(ex));
             try (Connection conn = getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "UPDATE products SET name=?, category=?, condition_grade=?, cost_price=?, price=?, stock=?, description=?, image_url=? WHERE id=?")) {
+                         "UPDATE products SET name=?, category=?, condition_grade=?, cost_price=?, price=?, stock=?, description=?, image_url=?, specs=? WHERE id=?")) {
                 ps.setString(1, b.getOrDefault("name", ""));
                 ps.setString(2, b.getOrDefault("category", ""));
                 ps.setString(3, b.getOrDefault("condition", ""));
@@ -263,9 +295,11 @@ public class Main {
                 ps.setDouble(5, Double.parseDouble(b.getOrDefault("price", "0")));
                 ps.setInt(6,    Integer.parseInt(b.getOrDefault("stock", "0")));
                 ps.setString(7, b.getOrDefault("description", ""));
-                String updateImg = b.getOrDefault("imageUrl", "");
-                ps.setString(8, updateImg.isEmpty() ? null : updateImg);
-                ps.setInt(9, Integer.parseInt(id));
+                String updateImg   = b.getOrDefault("imageUrl", "");
+                String updateSpecs = b.getOrDefault("specs", "");
+                ps.setString(8, updateImg.isEmpty()   ? null : updateImg);
+                ps.setString(9, updateSpecs.isEmpty() ? null : updateSpecs);
+                ps.setInt(10, Integer.parseInt(id));
                 send(ex, 200, "{\"success\":" + (ps.executeUpdate() > 0) + "}");
             } catch (SQLException e) {
                 send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");

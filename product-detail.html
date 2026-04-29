@@ -186,14 +186,8 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="accordion-body">
-                            <table class="spec-table">
-                                <tr><td>Chip</td><td>A18 Pro</td></tr>
-                                <tr><td>Display</td><td>6.3" Super Retina XDR, ProMotion 120Hz</td></tr>
-                                <tr><td>Rear Camera</td><td>48MP Main + 48MP Ultra Wide + 12MP 5x Telephoto</td></tr>
-                                <tr><td>Front Camera</td><td>12MP TrueDepth</td></tr>
-                                <tr><td>Battery</td><td>Up to 27 hours video playback</td></tr>
-                                <tr><td>OS</td><td>iOS 18</td></tr>
-                                <tr><td>5G</td><td>Yes</td></tr>
+                            <table class="spec-table" id="techSpecsTable">
+                                <tr><td colspan="2" style="color:#aaa;font-style:italic;">Loading…</td></tr>
                             </table>
                         </div>
                     </div>
@@ -203,13 +197,8 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                         <div class="accordion-body">
-                            <table class="spec-table">
-                                <tr><td>Grade</td><td>Like New</td></tr>
-                                <tr><td>Battery Health</td><td>97%</td></tr>
-                                <tr><td>Cosmetic</td><td>No visible scratches or marks</td></tr>
-                                <tr><td>Tested</td><td>72-point inspection passed</td></tr>
-                                <tr><td>Unlocked</td><td>Yes — all carriers</td></tr>
-                                <tr><td>Accessories</td><td>USB-C cable included</td></tr>
+                            <table class="spec-table" id="condSpecsTable">
+                                <tr><td colspan="2" style="color:#aaa;font-style:italic;">Loading…</td></tr>
                             </table>
                         </div>
                     </div>
@@ -408,10 +397,7 @@ const rawId = params.get('id');
 const productId = Number(rawId) || 1;
 const product = allProducts[productId];
 
-if (!product) {
-  window.location.href = 'products.html';
-}
-
+// Render the static (colors/storage) part if product is in allProducts
 if (product) {
   document.title = product.name + ' — ReNu Tech';
 
@@ -452,7 +438,75 @@ if (product) {
   document.getElementById('colorLabel').textContent    = '— ' + product.colors[0].name;
   const pct = Math.round((1 - parseInt(def.price.replace(',','')) / parseInt(def.original.replace(',',''))) * 100);
   document.getElementById('priceSave').textContent = 'Save ' + pct + '%';
+}
+
+// Always fetch from API to get specs (and handle products not in allProducts)
+(async () => {
+    let apiProduct = null;
+    try {
+        const res = await fetch('http://localhost:8080/api/products');
+        if (res.ok) {
+            const all = await res.json();
+            apiProduct = all.find(x => x.id === productId);
+        }
+    } catch(e) {}
+
+    if (!product && !apiProduct) {
+        window.location.href = 'products.html';
+        return;
     }
+
+    // If product not in allProducts but found in API, fill in basic info
+    if (!product && apiProduct) {
+        document.title = apiProduct.name + ' — ReNu Tech';
+        document.querySelector('.breadcrumb').innerHTML = `
+            <a href="/index.html">Home</a><span>/</span>
+            <a href="/products.html">Products</a><span>/</span>
+            ${apiProduct.name}
+        `;
+        document.querySelector('.page-label').innerHTML = `<i class="fas fa-mobile-alt"></i> ${apiProduct.category}`;
+        document.querySelector('h1').textContent = apiProduct.name;
+        document.querySelector('.condition-badge-img').textContent = apiProduct.condition;
+        document.getElementById('currentPrice').textContent = '$' + apiProduct.price;
+        document.getElementById('originalPrice').textContent = '';
+        document.getElementById('priceSave').textContent = '';
+        if (apiProduct.imageUrl) {
+            document.getElementById('mainImage').src = apiProduct.imageUrl;
+            document.querySelectorAll('.thumb img').forEach(img => img.src = apiProduct.imageUrl);
+            document.querySelectorAll('.thumb').forEach(t => t.dataset.img = apiProduct.imageUrl);
+        }
+        document.querySelector('.color-options').innerHTML = '';
+        document.getElementById('storageOptions').innerHTML = '';
+    }
+
+    // Render specs
+    const s = apiProduct && apiProduct.specs ? apiProduct.specs : null;
+    const conditionLabel = (product && product.condition) || (apiProduct && apiProduct.condition) || '';
+
+    if (s) {
+        const row = (label, val) => val ? `<tr><td>${label}</td><td>${val}</td></tr>` : '';
+        document.getElementById('techSpecsTable').innerHTML =
+            row('Chip', s.chip) +
+            row('Display', s.display) +
+            row('Rear Camera', s.rearCamera) +
+            row('Front Camera', s.frontCamera) +
+            row('Battery', s.battery) +
+            row('OS', s.os) +
+            row('5G', s.has5g) || '<tr><td colspan="2" style="color:#aaa;font-style:italic;">No specs on file.</td></tr>';
+
+        document.getElementById('condSpecsTable').innerHTML =
+            row('Grade', conditionLabel) +
+            row('Battery Health', s.batteryHealth) +
+            row('Cosmetic', s.cosmetic) +
+            '<tr><td>Tested</td><td>72-point inspection passed</td></tr>' +
+            row('Unlocked', s.unlocked) +
+            row('Accessories', s.accessories) || '<tr><td colspan="2" style="color:#aaa;font-style:italic;">No condition details on file.</td></tr>';
+    } else {
+        const na = '<tr><td colspan="2" style="color:#aaa;font-style:italic;">No specs on file.</td></tr>';
+        document.getElementById('techSpecsTable').innerHTML = na;
+        document.getElementById('condSpecsTable').innerHTML = na;
+    }
+})();
         // ── Cart (localStorage) ──────────────────────────────────────
         function getCart() {
             return JSON.parse(localStorage.getItem('renuCart') || '[]');
