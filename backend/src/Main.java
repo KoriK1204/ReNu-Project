@@ -431,7 +431,7 @@ public class Main {
             String search = p.get("search");
 
             StringBuilder sql = new StringBuilder(
-                    "SELECT id, name, email, role, status, created_at FROM users WHERE 1=1");
+                    "SELECT id, name, email, password, role, status, created_at FROM users WHERE 1=1");
             if (role   != null && !role.isEmpty())   sql.append(" AND role = ?");
             if (status != null && !status.isEmpty()) sql.append(" AND status = ?");
             if (search != null && !search.isEmpty())
@@ -453,10 +453,11 @@ public class Main {
                 while (rs.next()) {
                     if (!first) sb.append(",");
                     sb.append(String.format(
-                            "{\"id\":%d,\"name\":\"%s\",\"email\":\"%s\",\"role\":\"%s\",\"status\":\"%s\",\"joined\":\"%s\"}",
+                            "{\"id\":%d,\"name\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"%s\",\"status\":\"%s\",\"joined\":\"%s\"}",
                             rs.getInt("id"),
                             esc(rs.getString("name")),
                             esc(rs.getString("email")),
+                            esc(rs.getString("password")),
                             esc(rs.getString("role")),
                             esc(rs.getString("status")),
                             esc(String.valueOf(rs.getTimestamp("created_at")))));
