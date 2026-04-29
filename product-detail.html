@@ -430,8 +430,8 @@ if (product) {
 }
 
 // Always fetch from API to get specs (and handle products not in allProducts)
+let apiProduct = null;
 (async () => {
-    let apiProduct = null;
     try {
         const res = await fetch('http://localhost:8080/api/products');
         if (res.ok) {
@@ -576,23 +576,28 @@ if (product) {
 
         // ── Add to Cart ─────────────────────────────────────────────
         document.getElementById('addToCartBtn').addEventListener('click', () => {
+            const src = product || apiProduct;
+            if (!src) return;
             const activeStorage = document.querySelector('#storageOptions .option-chip.active');
             const activeColor   = document.querySelector('.color-swatch.active');
             const price         = document.getElementById('currentPrice').textContent;
-            const colorName     = activeColor ? activeColor.dataset.name : product.colors[0].name;
-            const storage       = activeStorage ? activeStorage.dataset.storage.toUpperCase() : product.defaultStorage.toUpperCase();
-        
+            const colorName     = activeColor ? activeColor.dataset.name : (product ? product.colors[0].name : '');
+            const storage       = activeStorage ? activeStorage.dataset.storage.toUpperCase() : (product ? product.defaultStorage.toUpperCase() : '');
+            const img           = product ? product.image
+                                : (Array.isArray(apiProduct.imageUrls) && apiProduct.imageUrls.length
+                                    ? apiProduct.imageUrls[0] : (apiProduct.imageUrl || ''));
+
             const item = {
-                id: product.name.toLowerCase().replace(/\s+/g, '-') + '-' + storage.toLowerCase() + '-' + (activeColor ? activeColor.dataset.color : ''),
-                productId: productId,   // ← numeric ID for linking back
-                name: product.name,
+                id: src.name.toLowerCase().replace(/\s+/g, '-') + '-' + storage.toLowerCase() + '-' + (activeColor ? activeColor.dataset.color : ''),
+                productId: productId,
+                name: src.name,
                 color: colorName,
                 storage: storage,
                 price: price,
                 priceNum: parseFloat(price.replace('$','').replace(',','')),
                 qty: qty,
-                img: product.image,
-                condition: product.condition
+                img: img,
+                condition: src.condition
             };
 
             const cart = getCart();
