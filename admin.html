@@ -708,6 +708,18 @@
     </div>
 </div>
 
+<!-- ── View Account Modal ── -->
+<div class="modal-overlay" id="viewAccountModal">
+    <div class="modal" style="max-width:480px;">
+        <button class="modal-close" onclick="closeModal('viewAccountModal')">&times;</button>
+        <h3 id="viewAccTitle" style="margin-bottom:18px;">Account Info</h3>
+        <div id="viewAccBody" style="display:flex;flex-direction:column;gap:12px;font-family:'Montserrat',sans-serif;"></div>
+        <div class="modal-actions" style="margin-top:20px;">
+            <button class="btn-modal cancel" onclick="closeModal('viewAccountModal')">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // ── Auth guard ─────────────────────────────────────────────────────────────
 const currentUser = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
@@ -734,11 +746,44 @@ async function api(method, path, body) {
     } catch(e) { return {}; }
 }
 
+// ── View Account Modal ─────────────────────────────────────────────────────
+function openViewModal(data, title) {
+    document.getElementById('viewAccTitle').textContent = title || 'Account Info';
+    const fields = [
+        { label: 'Account ID',    value: data.id },
+        { label: 'Name',          value: data.name },
+        { label: 'Email',         value: data.email },
+        { label: 'Password',      value: data.password, mask: true },
+        { label: 'Role',          value: data.role ? data.role.charAt(0).toUpperCase() + data.role.slice(1) : null },
+        { label: 'Status',        value: data.status ? data.status.charAt(0).toUpperCase() + data.status.slice(1) : null },
+        { label: 'Phone',         value: data.phone },
+        { label: 'Date of Birth', value: data.dob },
+        { label: 'Address',       value: data.address },
+        { label: 'Joined',        value: data.joined ? new Date(data.joined).toLocaleDateString('en-AU', { year:'numeric', month:'long', day:'numeric' }) : null },
+    ];
+    const body = document.getElementById('viewAccBody');
+    body.innerHTML = fields
+        .filter(f => f.value !== undefined && f.value !== null && f.value !== '' && f.value !== 'Not provided')
+        .map(f => {
+            const display = f.mask
+                ? `<span id="pw-display" style="letter-spacing:2px;">●●●●●●●●</span>
+                   <button onclick="const el=document.getElementById('pw-display');el.textContent=el.textContent==='${f.value}'?'●●●●●●●●':'${f.value}';"
+                     style="background:none;border:none;cursor:pointer;font-size:11px;color:#72AEC8;font-weight:700;margin-left:8px;">Show/Hide</button>`
+                : `<span>${f.value}</span>`;
+            return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#f8fafc;border-radius:8px;border:1px solid #e8f0f3;">
+                        <span style="font-size:11px;font-weight:700;color:#8a9aa5;min-width:110px;">${f.label}</span>
+                        <span style="font-size:12px;font-weight:600;color:#272727;text-align:right;">${display}</span>
+                    </div>`;
+        }).join('');
+    document.getElementById('viewAccountModal').classList.add('open');
+}
+
 // ── State ──────────────────────────────────────────────────────────────────
 let productsCache       = [];
 let ordersCache         = [];
 let currentShipOrderId  = null;
 let currentShipOrderRef = null;
+const viewCache         = {};
 let editingProductId    = null;
 let currentBlogView     = 'grid';
 let editingBlogId       = null;
@@ -1080,6 +1125,7 @@ async function renderCustomerAccounts() {
         });
 
     if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-user-slash"></i><p>No customers found.</p></div></td></tr>`; return; }
+    list.forEach(c => viewCache[`c_${c.id}`] = c);
     tbody.innerHTML = list.map(c => `
         <tr>
             <td><div class="customer-cell"><span class="customer-name">${c.name}</span><span class="customer-email">${c.email}</span></div></td>
@@ -1092,7 +1138,7 @@ async function renderCustomerAccounts() {
                     ? `<button class="action-btn danger" onclick="toggleLocalUserStatus(${c.id},'${c.name}','suspended')"><i class="fas fa-ban"></i> Suspend</button>`
                     : `<button class="action-btn success" onclick="toggleLocalUserStatus(${c.id},'${c.name}','active')"><i class="fas fa-check-circle"></i> Activate</button>`}
                 <button class="action-btn" onclick="promoteToStaff(${c.id},'${c.name}')"><i class="fas fa-user-shield"></i> Promote</button>
-                <button class="action-btn" onclick="alert('Viewing Customer ${c.name}')"><i class="fas fa-eye"></i> View</button>
+                <button class="action-btn" onclick="openViewModal(viewCache['c_${c.id}'],'Customer Account')"><i class="fas fa-eye"></i> View</button>
                 <button class="action-btn danger" onclick="deleteAccount('${c.email}')"><i class="fas fa-trash"></i> Delete</button>
             </td>
         </tr>`).join('');
@@ -1129,6 +1175,7 @@ async function renderStaffAccounts() {
 
     const list = [...apiStaff, ...localStaff];
     if (!list.length) { tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users-slash"></i><p>No staff found.</p></div></td></tr>`; return; }
+    list.forEach(s => viewCache[`s_${s.id}`] = s);
     tbody.innerHTML = list.map(s => `
         <tr>
             <td><div class="customer-cell"><span class="customer-name">${s.name}</span><span class="customer-email">${s.email}</span></div></td>
@@ -1152,7 +1199,7 @@ async function renderStaffAccounts() {
                         : `<button class="action-btn" onclick="demoteToCustomer(${s.id},'${s.name}')"><i class="fas fa-user-minus"></i> Demote</button>`
                     : ''}
                 ${currentUser && currentUser.role === 'admin'
-                    ? `<button class="action-btn" onclick="alert('Viewing Staff: ${s.name}\\nEmail: ${s.email}\\nRole: ${s.role}')"><i class="fas fa-eye"></i> View</button>`
+                    ? `<button class="action-btn" onclick="openViewModal(viewCache['s_${s.id}'],'Staff Account')"><i class="fas fa-eye"></i> View</button>`
                     : ''}
             </td>
         </tr>`).join('');
