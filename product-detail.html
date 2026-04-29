@@ -587,8 +587,18 @@ let apiProduct = null;
                                 : (Array.isArray(apiProduct.imageUrls) && apiProduct.imageUrls.length
                                     ? apiProduct.imageUrls[0] : (apiProduct.imageUrl || ''));
 
+            const stock  = apiProduct ? (apiProduct.stock ?? 999) : 999;
+            const itemId = 'product-' + productId;
+
+            const cart = getCart();
+            const inCart = cart.find(x => x.id === itemId);
+            if ((inCart ? inCart.qty : 0) + qty > stock) {
+                showToast('Sorry, only ' + stock + ' in stock!');
+                return;
+            }
+
             const item = {
-                id: src.name.toLowerCase().replace(/\s+/g, '-') + '-' + storage.toLowerCase() + '-' + (activeColor ? activeColor.dataset.color : ''),
+                id: itemId,
                 productId: productId,
                 name: src.name,
                 color: colorName,
@@ -597,11 +607,11 @@ let apiProduct = null;
                 priceNum: parseFloat(price.replace('$','').replace(',','')),
                 qty: qty,
                 img: img,
-                condition: src.condition
+                condition: src.condition,
+                stock: stock
             };
 
-            const cart = getCart();
-            const existingIdx = cart.findIndex(x => x.id === item.id);
+            const existingIdx = cart.findIndex(x => x.id === itemId);
             if (existingIdx > -1) {
                 cart[existingIdx].qty += qty;
             } else {
