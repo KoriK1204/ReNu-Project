@@ -710,10 +710,10 @@
 
 <script>
 // ── Auth guard ─────────────────────────────────────────────────────────────
+const currentUser = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
 (function() {
-    const user = JSON.parse(sessionStorage.getItem('renutech_user') || 'null');
-    const name = (user && user.name) ? user.name : 'Admin';
-    const role = (user && user.role) ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Administrator';
+    const name = (currentUser && currentUser.name) ? currentUser.name : 'Admin';
+    const role = (currentUser && currentUser.role) ? currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1) : 'Administrator';
     document.getElementById('adminName').textContent   = name;
     document.getElementById('adminRole').textContent   = role;
     document.getElementById('adminAvatar').textContent = name[0].toUpperCase();
@@ -1150,6 +1150,9 @@ async function renderStaffAccounts() {
                     ? s._local
                         ? `<button class="action-btn" onclick="demoteLocalToCustomer(${s.id},'${s.name}')"><i class="fas fa-user-minus"></i> Demote</button>`
                         : `<button class="action-btn" onclick="demoteToCustomer(${s.id},'${s.name}')"><i class="fas fa-user-minus"></i> Demote</button>`
+                    : ''}
+                ${currentUser && currentUser.role === 'admin'
+                    ? `<button class="action-btn" onclick="alert('Viewing Staff: ${s.name}\\nEmail: ${s.email}\\nRole: ${s.role}')"><i class="fas fa-eye"></i> View</button>`
                     : ''}
             </td>
         </tr>`).join('');
