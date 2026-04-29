@@ -223,22 +223,39 @@
     <!-- ══ ANALYTICS ══ -->
     <div class="panel" id="panel-analytics">
         <div class="stats-grid">
-            <div class="stat-card"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-label">Total Revenue</div><div class="stat-value">$84,290</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> All time</div></div>
-            <div class="stat-card green"><div class="stat-icon"><i class="fas fa-shopping-cart"></i></div><div class="stat-label">Total Orders</div><div class="stat-value">247</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> All time</div></div>
-            <div class="stat-card orange"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-label">Customers</div><div class="stat-value">189</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> +14 this month</div></div>
-            <div class="stat-card"><div class="stat-icon"><i class="fas fa-undo"></i></div><div class="stat-label">Return Rate</div><div class="stat-value">2.1%</div><div class="stat-change up"><i class="fas fa-arrow-down"></i> Below average</div></div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value" id="anTotalRevenue">—</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> All time, shipped &amp; delivered</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-value" id="anTotalOrders">—</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> Shipped &amp; delivered</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-label">Customers</div>
+                <div class="stat-value" id="anTotalCustomers">—</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> Registered accounts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                <div class="stat-label">Cancellation Rate</div>
+                <div class="stat-value" id="anCancelRate">—</div>
+                <div class="stat-change down" id="anCancelDetail"><i class="fas fa-info-circle"></i> Of all orders</div>
+            </div>
         </div>
         <div class="charts-row">
-            <div class="chart-card"><div class="chart-title">Orders Per Month <span>2026</span></div><div class="bar-chart" id="ordersChart"></div></div>
+            <div class="chart-card">
+                <div class="chart-title">Orders Per Month <span id="anYear">2026</span></div>
+                <div class="bar-chart" id="ordersChart"></div>
+            </div>
             <div class="chart-card">
                 <div class="chart-title">Top <span>Products</span></div>
-                <div class="donut-wrap">
-                    <div class="donut-row"><div class="donut-color" style="background:var(--teal)"></div><span class="donut-key">iPhone 16 Pro</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:68%;background:var(--teal)"></div></div><span class="donut-pct">68 sold</span></div>
-                    <div class="donut-row"><div class="donut-color" style="background:var(--dark)"></div><span class="donut-key">MacBook Pro M4</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:42%;background:var(--dark)"></div></div><span class="donut-pct">42 sold</span></div>
-                    <div class="donut-row"><div class="donut-color" style="background:var(--orange)"></div><span class="donut-key">iPhone 15 Pro</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:38%;background:var(--orange)"></div></div><span class="donut-pct">38 sold</span></div>
-                    <div class="donut-row"><div class="donut-color" style="background:var(--green)"></div><span class="donut-key">Watch Ultra 3</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:22%;background:var(--green)"></div></div><span class="donut-pct">22 sold</span></div>
-                    <div class="donut-row"><div class="donut-color" style="background:var(--muted)"></div><span class="donut-key">MacBook Air M2</span><div class="donut-bar-bg"><div class="donut-bar-fill" style="width:18%;background:var(--muted)"></div></div><span class="donut-pct">18 sold</span></div>
-                </div>
+                <div class="donut-wrap" id="topProductsChart"><div style="color:#aaa;font-size:13px;padding:12px 0;">Loading…</div></div>
             </div>
         </div>
     </div>
@@ -872,6 +889,7 @@ function switchPanel(name) {
     if (name === 'products')   renderProducts();
     if (name === 'accounts')   renderActiveAccountSubtab();
     if (name === 'blog')       renderBlogPosts();
+    if (name === 'analytics')  renderAnalytics();
 }
 
 // ── Subtab system ──────────────────────────────────────────────────────────
@@ -1293,20 +1311,20 @@ async function confirmShip() {
     const fullTracking = document.getElementById('shipCarrier').value + '-' + tracking;
     await api('PUT', `/api/orders?id=${currentShipOrderId}`, { status: 'shipped', tracking: fullTracking });
     closeModal('shipModal');
-    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts();
+    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts(); renderAnalytics();
     showToast(`Order ${currentShipOrderRef} marked as shipped!`);
 }
 
 async function markDelivered(orderId, orderRef) {
     await api('PUT', `/api/orders?id=${orderId}`, { status: 'delivered', tracking: '' });
-    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts();
+    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts(); renderAnalytics();
     showToast(`Order ${orderRef} marked as delivered!`);
 }
 
 async function cancelOrder(orderId, orderRef) {
     if (!confirm(`Cancel order ${orderRef}?`)) return;
     await api('PUT', `/api/orders?id=${orderId}`, { status: 'cancelled', tracking: '' });
-    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts();
+    renderDashStats(); renderDashRecent(); renderOrders(); renderDashCharts(); renderAnalytics();
     showToast(`Order ${orderRef} cancelled.`, true);
 }
 
@@ -1836,6 +1854,44 @@ function buildBarChart(containerId, data) {
 }
 
 const CAT_COLORS = ['var(--teal)','var(--dark)','var(--green)','#f59e0b','#8b5cf6','#ef4444'];
+
+async function renderAnalytics() {
+    const stats = await api('GET', '/api/stats');
+    if (!stats || stats.error) return;
+
+    document.getElementById('anYear').textContent = new Date().getFullYear();
+
+    // Stat cards
+    document.getElementById('anTotalRevenue').textContent =
+        '$' + parseFloat(stats.totalRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById('anTotalOrders').textContent   = stats.totalOrders   || 0;
+    document.getElementById('anTotalCustomers').textContent = stats.totalCustomers || 0;
+    const cancelRate = stats.allOrders > 0
+        ? ((stats.cancelledOrders / stats.allOrders) * 100).toFixed(1) : '0.0';
+    document.getElementById('anCancelRate').textContent   = cancelRate + '%';
+    document.getElementById('anCancelDetail').innerHTML   =
+        `<i class="fas fa-info-circle"></i> ${stats.cancelledOrders || 0} cancelled of ${stats.allOrders || 0} total`;
+
+    // Orders per month chart
+    if (stats.ordersByMonth) buildBarChart('ordersChart', stats.ordersByMonth);
+
+    // Top products chart
+    const topContainer = document.getElementById('topProductsChart');
+    if (!stats.topProducts || !stats.topProducts.length) {
+        topContainer.innerHTML = '<div style="color:#aaa;font-size:13px;padding:12px 0;">No shipped sales yet.</div>';
+    } else {
+        const maxQty = stats.topProducts[0].qty;
+        topContainer.innerHTML = stats.topProducts.map((p, i) => {
+            const pct = maxQty > 0 ? Math.round((p.qty / maxQty) * 100) : 0;
+            return `<div class="donut-row">
+                <div class="donut-color" style="background:${CAT_COLORS[i % CAT_COLORS.length]}"></div>
+                <span class="donut-key">${p.name}</span>
+                <div class="donut-bar-bg"><div class="donut-bar-fill" style="width:${pct}%;background:${CAT_COLORS[i % CAT_COLORS.length]}"></div></div>
+                <span class="donut-pct">${p.qty} sold</span>
+            </div>`;
+        }).join('');
+    }
+}
 
 async function renderDashCharts() {
     const stats = await api('GET', '/api/stats');

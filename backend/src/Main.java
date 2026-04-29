@@ -909,6 +909,7 @@ static class ContactHandler implements HttpHandler {
                     first = false;
                 }
                 catSb.append("]");
+                // Monthly revenue bar chart JSON
                 String[] labels = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
                 StringBuilder mSb = new StringBuilder("[");
                 for (int i = 0; i < 12; i++) {
@@ -916,7 +917,91 @@ static class ContactHandler implements HttpHandler {
                     mSb.append(String.format("{\"l\":\"%s\",\"v\":%.2f}", labels[i], monthly[i]));
                 }
                 mSb.append("]");
-                send(ex, 200, "{\"monthly\":" + mSb + ",\"byCategory\":" + catSb + "}");
+
+                // All-time total revenue (shipped + delivered)
+                double totalRevenue = 0;
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT COALESCE(SUM(total),0) FROM orders WHERE status IN ('shipped','delivered')")) {
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) totalRevenue = rs.getDouble(1);
+                }
+
+                // All-time shipped/delivered order count
+                int totalOrders = 0;
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT COUNT(*) FROM orders WHERE status IN ('shipped','delivered')")) {
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) totalOrders = rs.getInt(1);
+                }
+
+                // Total registered customers
+                int totalCustomers = 0;
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT COUNT(*) FROM users WHERE role='customer'")) {
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) totalCustomers = rs.getInt(1);
+                }
+
+                // All orders and cancelled count (for cancellation rate)
+                int allOrders = 0, cancelledOrders = 0;
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT COUNT(*) AS total, " +
+                        "SUM(CASE WHEN status='cancelled' THEN 1 ELSE 0 END) AS cancelled FROM orders")) {
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) { allOrders = rs.getInt("total"); cancelledOrders = rs.getInt("cancelled"); }
+                }
+
+                // Orders per month for current year (non-cancelled)
+                int[] ordersByMonth = new int[12];
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT MONTH(order_date) AS m, COUNT(*) AS cnt FROM orders " +
+                        "WHERE YEAR(order_date)=? AND status != 'cancelled' GROUP BY m")) {
+                    ps.setInt(1, year);
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) ordersByMonth[rs.getInt("m") - 1] = rs.getInt("cnt");
+                }
+                StringBuilder omSb = new StringBuilder("[");
+                for (int i = 0; i < 12; i++) {
+                    if (i > 0) omSb.append(",");
+                    omSb.append(String.format("{\"l\":\"%s\",\"v\":%d}", labels[i], ordersByMonth[i]));
+                }
+                omSb.append("]");
+
+                // Top 5 products by qty sold (shipped+delivered), with name fallback
+                java.util.LinkedHashMap<String,Integer> topMap = new java.util.LinkedHashMap<>();
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT p.name, SUM(oi.quantity) AS qty " +
+                        "FROM order_items oi JOIN products p ON oi.product_id = p.id " +
+                        "JOIN orders o ON oi.order_id = o.id " +
+                        "WHERE o.status IN ('shipped','delivered') GROUP BY p.name ORDER BY qty DESC LIMIT 10")) {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) topMap.put(rs.getString("name"), rs.getInt("qty"));
+                }
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "SELECT oi.product_name, SUM(oi.quantity) AS qty " +
+                        "FROM order_items oi JOIN orders o ON oi.order_id = o.id " +
+                        "WHERE o.status IN ('shipped','delivered') AND oi.product_id IS NULL GROUP BY oi.product_name")) {
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next()) topMap.merge(rs.getString("product_name"), rs.getInt("qty"), Integer::sum);
+                }
+                java.util.List<java.util.Map.Entry<String,Integer>> topList = new java.util.ArrayList<>(topMap.entrySet());
+                topList.sort((a, b) -> Integer.compare(b.getValue(), a.getValue()));
+                if (topList.size() > 5) topList = topList.subList(0, 5);
+                StringBuilder topSb = new StringBuilder("[");
+                boolean firstTop = true;
+                for (java.util.Map.Entry<String,Integer> e : topList) {
+                    if (!firstTop) topSb.append(",");
+                    topSb.append(String.format("{\"name\":\"%s\",\"qty\":%d}", esc(e.getKey()), e.getValue()));
+                    firstTop = false;
+                }
+                topSb.append("]");
+
+                send(ex, 200, String.format(
+                    "{\"monthly\":%s,\"byCategory\":%s,\"ordersByMonth\":%s,\"topProducts\":%s," +
+                    "\"totalRevenue\":%.2f,\"totalOrders\":%d,\"totalCustomers\":%d," +
+                    "\"allOrders\":%d,\"cancelledOrders\":%d}",
+                    mSb, catSb, omSb, topSb,
+                    totalRevenue, totalOrders, totalCustomers, allOrders, cancelledOrders));
             } catch (SQLException e) {
                 send(ex, 500, "{\"error\":\"" + esc(e.getMessage()) + "\"}");
             }
