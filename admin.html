@@ -1339,8 +1339,10 @@ const PRODUCT_IMAGES = [
 
 function populateImageSelect(currentValue) {
     const sel = document.getElementById('pImage');
+    const images = [...PRODUCT_IMAGES];
+    if (currentValue && !images.includes(currentValue)) images.unshift(currentValue);
     sel.innerHTML = '<option value="">— No Image —</option>' +
-        PRODUCT_IMAGES.map(p => {
+        images.map(p => {
             const label = p.split('/').pop().replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
             const selected = p === currentValue ? ' selected' : '';
             return `<option value="${p}"${selected}>${label}</option>`;
